@@ -147,37 +147,7 @@ Route::group(['middleware'=>'admin'],function(){
     });
     /** Customer Route **/
     Route::prefix('admin/customer')->group(function() {
-        Route::controller(CustomerController::class)->group(function() {
-            Route::get('/list', 'index')->name('admin.customer.index');
-            Route::get('/all-data', 'get_all_data')->name('admin.customer.get_all_data');
-            Route::get('/edit/{id}', 'edit')->name('admin.customer.edit');
-            Route::get('/view/{id}', 'view')->name('admin.customer.view');
-            Route::post('/delete', 'delete')->name('admin.customer.delete');
-            Route::post('/store', 'store')->name('admin.customer.store');
-            Route::post('/update/{id}', 'update')->name('admin.customer.update');
-        });
-
-        /** Customer Invoice Route **/
-        Route::prefix('invoice')->controller(InvoiceController::class)->group(function() {
-            Route::get('/create', 'create_invoice')->name('admin.customer.invoice.create_invoice');
-            Route::get('/get_all_data', 'show_invoice_data')->name('admin.customer.invoice.show_invoice_data');
-            Route::get('/show', 'show_invoice')->name('admin.customer.invoice.show_invoice');
-            Route::post('/pay', 'pay_due_amount')->name('admin.customer.invoice.pay_due_amount');
-            Route::post('/store', 'store_invoice')->name('admin.customer.invoice.store_invoice');
-            Route::get('/view/{id}', 'view_invoice')->name('admin.customer.invoice.view_invoice');
-            Route::get('/edit/{id}', 'edit_invoice')->name('admin.customer.invoice.edit_invoice');
-            Route::post('/update', 'update_invoice')->name('admin.customer.invoice.update_invoice');
-            Route::post('/delete', 'delete_invoice')->name('admin.customer.invoice.delete_invoice');
-        });
-        /** Customer Ticket Route **/
-        Route::prefix('ticket')->controller(TicketController::class)->group(function() {
-            Route::get('/list', 'index')->name('admin.customer.tickets.index');
-            Route::get('/all-data', 'get_all_data')->name('admin.customer.tickets.get_all_data');
-            Route::get('/edit/{id}', 'edit')->name('admin.customer.tickets.edit');
-            Route::post('/delete', 'delete')->name('admin.customer.tickets.delete');
-            Route::post('/store', 'store')->name('admin.customer.tickets.store');
-            Route::post('/update/{id}', 'update')->name('admin.customer.tickets.update');
-        });
+        
     });
     /** Supplier Route **/
     Route::prefix('admin/supplier')->group(function(){

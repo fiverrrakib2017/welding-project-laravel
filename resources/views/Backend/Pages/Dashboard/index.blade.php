@@ -3,201 +3,260 @@
 @section('title','Dashboard | Admin Panel')
 
 @section('content')
-<div class="row">
-  <div class="col-md-2 offset-md-12 mt-3 mb-2">
-    <div>
-      <select name="dateFilter" class="form-select" style="width: 100%;">
-        <option label="Choose one"></option>
-        <option value="today" selected>Today</option>
-        <option value="last7days">Last 7 Days</option>
-        <option value="this_month">This Month</option>
-        <option value="last_month">Last Month</option>
-        <option value="this_year">This Year</option>
-        <option value="last_year">Last Year</option>
-        <option value="last_two_years">Last 2 Years</option>
-      </select>
+<div class="row mb-3">
+    <div class="col-md-12 d-flex flex-wrap gap-2">
+        <button class="btn btn-primary m-1"><i class="fas fa-user-clock"></i> New Request</button>
+        <button class="btn btn-secondary m-1"><i class="fas fa-user-plus"></i> Add Customer</button>
+        <button class="btn btn-success m-1"><i class="fas fa-bolt"></i> Recharge Now</button>
+        <button class="btn btn-danger m-1"><i class="fas fa-ticket-alt"></i> Add Ticket</button>
+        <button class="btn btn-warning m-1"><i class="fas fa-envelope"></i> SMS Notification</button>
+        <button class="btn btn-info m-1"><i class="fas fa-chart-line"></i> Reports</button>
+        <button class="btn btn-dark m-1"><i class="fas fa-user-shield"></i> Admin Panel</button>
+         <button class="btn btn-secondary m-1"><i class="fas fa-cogs"></i> Settings</button>
+        <button class="btn btn-primary m-1"><i class="fas fa-user-cog"></i> User Management</button>
     </div>
-  </div>
 </div>
 
 
-  <div class="row">
-      <div class="col-lg-3 col-6">
-        <!-- small box -->
-        <div class="small-box bg-info">
-          <div class="inner">
-            <h3 id="total_sales_amount">00</h3>
 
-            <p>Total Sales</p>
-          </div>
-          <div class="icon">
-            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-          </div>
-          <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+  <div class="row" id="dashboardCards">
+     @php
+        $dashboardCards = [
+            ['title' => 'Online', 'value' => 0, 'bg' => 'success', 'icon' => 'fa-user-check'],
+            ['title' => 'Offline', 'value' => 0, 'bg' => 'info', 'icon' => 'fa-user-times'],
+            ['title' => 'Active Customers', 'value' => 0, 'bg' => 'primary', 'icon' => 'fa-users'],
+            ['title' => 'Expired', 'value' => 0, 'bg' => 'danger', 'icon' => 'fa-user-clock'],
+            ['title' => 'Disabled', 'value' => 0, 'bg' => 'warning', 'icon' => 'fa-user-lock'],
+            ['title' => 'Requests', 'value' => 0, 'bg' => 'dark', 'icon' => 'fa-user-edit'],
+            ['title' => 'Total Revenue', 'value' => '$0', 'bg' => 'success', 'icon' => 'fa-dollar-sign'],
+            ['title' => 'Pending Payments', 'value' => '$0', 'bg' => 'danger', 'icon' => 'fa-exclamation-circle'],
+            ['title' => 'Total Bandwidth Used', 'value' => '0GB', 'bg' => 'info', 'icon' => 'fa-network-wired'],
+            ['title' => 'Active Connections', 'value' => 0, 'bg' => 'primary', 'icon' => 'fa-plug'],
+            ['title' => 'New Connection Requests', 'value' => 0, 'bg' => 'warning', 'icon' => 'fa-user-plus'],
+            ['title' => 'Due Amounts', 'value' => '$0', 'bg' => 'danger', 'icon' => 'fa-hand-holding-usd'],
+            ['title' => 'Resolved Tickets', 'value' => 0, 'bg' => 'success', 'icon' => 'fa-check-circle'],
+            ['title' => 'New Registrations', 'value' => 0, 'bg' => 'primary', 'icon' => 'fa-user-plus'],
+             ['title' => 'Complaints', 'value' => 0, 'bg' => 'danger', 'icon' => 'fa-exclamation-triangle'],
+            ['title' => 'Support Requests', 'value' => 0, 'bg' => 'info', 'icon' => 'fa-headset']
+
+        ];
+    @endphp
+
+     @foreach($dashboardCards as $card)
+    <div class="col-lg-3 col-6 card-item" >
+        <div class="small-box bg-{{ $card['bg'] }}">
+            <div class="inner">
+                <h3>{{ $card['value'] }}</h3>
+                <p>{{ $card['title'] }}</p>
+            </div>
+            <div class="icon">
+                <i class="fas {{ $card['icon'] }} fa-2x text-gray-300"></i>
+            </div>
         </div>
-      </div>
-      <!-- ./col -->
-      <div class="col-lg-3 col-6">
-        <!-- small box -->
-        <div class="small-box bg-success">
-          <div class="inner">
-            <h3 id="total_purchase_amount">00</h3>
+    </div>
+    @endforeach
+</div>
 
-            <p>Total Purchase</p>
-          </div>
-          <div class="icon">
-            <i class="fas fa-cart-plus fa-2x text-gray-300"></i>
-          </div>
-          <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+
+  <div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-info text-white">Recent Transactions</div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Customer</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>John Doe</td>
+                            <td>$50</td>
+                            <td><span class="badge bg-success">Paid</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-      </div>
-      <!-- ./col -->
-      <div class="col-lg-3 col-6">
-        <!-- small box -->
-        <div class="small-box bg-warning">
-          <div class="inner">
-            <h3 id="total_customer_invoice">00</h3>
+    </div>
 
-            <p>Total Customer Invoices</p>
-          </div>
-          <div class="icon">
-            <i class="fas fa-file-invoice-dollar fa-2x text-gray-300"></i>
-          </div>
-          <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-warning text-white">Recent Tickets</div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Customer</th>
+                            <th>Issue</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Jane Smith</td>
+                            <td>No Internet</td>
+                            <td><span class="badge bg-danger">Open</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-      </div>
-      <!-- ./col -->
-      <div class="col-lg-3 col-6">
-        <!-- small box -->
-        <div class="small-box bg-success">
-          <div class="inner">
-            <h3 id="net_profit">00</h3>
+    </div>
+</div>
 
-            <p>Net Profit</p>
-          </div>
-          <div class="icon">
-            <i class="fas fa-chart-line fa-2x text-gray-300"></i>
-          </div>
-          <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-dark text-white">Yearly Revenue Chart</div>
+            <div class="card-body">
+                <canvas id="revenueChart"></canvas>
+            </div>
         </div>
-      </div>
-      <!-- ./col -->
-  </div>
-  <div class="row">
-      <div class="col-lg-3 col-6">
-        <!-- small box -->
-        <div class="small-box bg-info">
-          <div class="inner">
-            <h3 id="total_customer">00</h3>
-
-            <p>Total Customers</p>
-          </div>
-          <div class="icon">
-            <i class="fas fa-users fa-2x text-gray-300"></i>
-          </div>
-          <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+             <div class="card-header bg-primary text-white">Active vs Inactive Customers</div>
+              <div class="card-body">
+                <canvas id="customerChart"></canvas>
+              </div>
         </div>
-      </div>
-      <!-- ./col -->
-      <div class="col-lg-3 col-6">
-        <!-- small box -->
-        <div class="small-box bg-success">
-          <div class="inner">
-            <h3 id="total_supplier">00</h3>
+    </div>
+</div>
 
-            <p>Total Suppliers</p>
-          </div>
-          <div class="icon">
-            <i class="fas fa-truck fa-2x text-gray-300"></i>
-          </div>
-          <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-info text-white">Bandwidth Usage Chart</div>
+            <div class="card-body">
+                <canvas id="bandwidthChart"></canvas>
+            </div>
         </div>
-      </div>
-      <!-- ./col -->
-      <div class="col-lg-3 col-6">
-        <!-- small box -->
-        <div class="small-box bg-info">
-          <div class="inner">
-            <h3 id="total_supplier_invoice">00</h3>
+    </div>
 
-            <p>Total Suppliers Invoice</p>
-          </div>
-          <div class="icon">
-            <i class="fas fa-boxes fa-2x text-gray-300"></i>
-          </div>
-          <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">Payment Status Chart</div>
+            <div class="card-body">
+                <canvas id="paymentChart"></canvas>
+            </div>
         </div>
-      </div>
-      <!-- ./col -->
-      <div class="col-lg-3 col-6">
-        <!-- small box -->
-        <div class="small-box bg-warning">
-          <div class="inner">
-            <h3 id="total_products">00</h3>
-
-            <p>Total Products</p>
-          </div>
-          <div class="icon">
-            <i class="fas fa-boxes fa-2x text-gray-300"></i>
-          </div>
-          <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-        </div>
-      </div>
-      <!-- ./col -->
-      <div class="col-lg-3 col-6">
-        <!-- small box -->
-        <div class="small-box bg-danger">
-          <div class="inner">
-            <h3 id="total_stock">65</h3>
-
-            <p>Total Stock</p>
-          </div>
-          <div class="icon">
-            <i class="fas fa-box-open fa-2x text-gray-300"></i>
-          </div>
-          <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-        </div>
-      </div>
-      <!-- ./col -->
-  </div>
-
+    </div>
+</div>
 
 
 @endsection
 
 @section('script')
-  <script type="text/javascript">
-    $("select[name='dateFilter']").select2();
-    __fetch_data("today");
-    $('select[name="dateFilter"]').on('change', function () {
-      var data = $(this).val();
-      __fetch_data(data);
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script>
+    $(document).ready(function(){
+        console.log("Dashboard Loaded Successfully");
+    });
+    
+    var ctx = document.getElementById('revenueChart').getContext('2d');
+    var revenueChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun','July','Augest','September','Octobar','November','December'],
+            datasets: [{
+                label: 'Revenue',
+                data: [1200, 1900, 3000, 5000, 2000, 3000,1200, 1900, 3000, 5000, 2000, 3000],
+                backgroundColor: 'rgba(54, 162, 235, 0.6)'
+            }]
+        },
+        options: {
+            responsive: true
+        }
     });
 
-    function __fetch_data(date) {
-      $.ajax({
-        url: "{{ route('admin.dashboard_get_all_data') }}",
-        type: 'POST',
-        data: { date: date },
-        headers: {
-          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+
+    var ctx2 = document.getElementById('customerChart').getContext('2d');
+    new Chart(ctx2, {
+        type: 'pie',
+        data: {
+            labels: ['Active', 'Inactive'],
+            datasets: [{
+                data: [80, 20],
+                backgroundColor: ['#28a745', '#dc3545']
+            }]
         },
-        success: function (response) {
-          $('#total_sales_amount').text(response.total_sales_amount);
-          $('#total_purchase_amount').text(response.total_purchase_amount);
-          $('#total_customer').text(response.total_customer);
-          $('#total_supplier').text(response.total_supplier);
-          $('#total_products').text(response.total_products);
-          $('#total_customer_invoice').text(response.total_customer_invoice);
-          $('#total_supplier_invoice').text(response.total_supplier_invoice);
-          $('#net_profit').text(response.net_profit);
-          $('#total_customer_order').text(response.total_customer_order);
-          $('#total_stock').text(response.total_quantity);
+        options: { responsive: true }
+    });
+
+    var ctx3 = document.getElementById('bandwidthChart').getContext('2d');
+    new Chart(ctx3, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'Bandwidth Usage (GB)',
+                data: [100, 150, 200, 250, 300, 350],
+                backgroundColor: 'rgba(255, 159, 64, 0.6)'
+            }]
         },
-        error: function (xhr, status, error) {
-          console.error(xhr.responseText);
-        }
-      });
-    }
-  </script>
+        options: { responsive: true }
+    });
+
+    var ctx4 = document.getElementById('paymentChart').getContext('2d');
+    new Chart(ctx4, {
+        type: 'doughnut',
+        data: {
+            labels: ['Paid', 'Pending', 'Overdue'],
+            datasets: [{
+                data: [70, 20, 10],
+                backgroundColor: ['#28a745', '#ffc107', '#dc3545']
+            }]
+        },
+        options: { responsive: true }
+    });
+
+
+     // function saveOrder() {
+     //        let order = [];
+     //        $(".card-item").each(function() {
+     //            order.push($(this).data("id"));
+     //        });
+     //        localStorage.setItem("dashboardOrder", JSON.stringify(order));
+     //    }
+
+     //    function loadOrder() {
+     //        let savedOrder = localStorage.getItem("dashboardOrder");
+     //        if (savedOrder) {
+     //            let order = JSON.parse(savedOrder);
+     //            let container = $("#dashboardCards");
+     //            let elements = {};
+
+     //            $(".card-item").each(function() {
+     //                let id = $(this).data("id");
+     //                elements[id] = $(this);
+     //            });
+                
+     //            container.empty();
+     //            order.forEach(id => {
+     //                if (elements[id]) {
+     //                    container.append(elements[id]);
+     //                }
+     //            });
+     //        }
+     //    }
+
+     //    $("#dashboardCards").sortable({
+     //        update: function(event, ui) {
+     //            saveOrder();
+     //        }
+     //    });
+
+     //    loadOrder();
+</script>
 @endsection
