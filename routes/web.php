@@ -49,12 +49,11 @@ use App\Http\Controllers\Backend\Tickets\Ticket_controller;
 use App\Models\Product_Category;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
-require __DIR__.'/Frontend.php';
 /*Backend Route*/
 Route::get('/admin/login', [AdminController::class, 'login_form'])->name('admin.login');
 Route::post('login-functionality',[AdminController::class,'login_functionality'])->name('login.functionality');
 Route::group(['middleware'=>'admin'],function(){
-    Route::get('/admin/dashboard',[AdminController::class,'dashboard'])->name('admin.dashboard');
+    Route::get('/',[AdminController::class,'dashboard'])->name('admin.dashboard');
     Route::get('admin/logout',[AdminController::class,'logout'])->name('admin.logout');
     Route::post('/admin/get_dashboard_data',[AdminController::class,'get_data'])->name('admin.dashboard_get_all_data');
 
@@ -518,50 +517,6 @@ Route::group(['middleware'=>'admin'],function(){
         Route::get('/stock', [StockController::class, 'index'])->name('admin.product.stock.index');
     });
 
-    /** Settings Management  Route **/
-    Route::prefix('admin/settings/website/')->group(function(){
-        /** Banner Route **/
-        Route::prefix('banner')->group(function(){
-            Route::controller(BannerController::class)->group(function(){
-                Route::get('/list','index')->name('admin.settings.website.banner.index');
-                 Route::get('/get_all_data','get_all_data')->name('admin.settings.website.banner.get_all_data');
-                Route::get('/edit/{id}','edit')->name('admin.settings.website.banner.edit');
-                Route::post('/update','update')->name('admin.settings.website.banner.update');
-                Route::post('/store','store')->name('admin.settings.website.banner.store');
-                Route::post('/delete','delete')->name('admin.settings.website.banner.delete');
-            });
-        });
-        /** Slider Route **/
-        Route::prefix('slider')->group(function(){
-            Route::controller(SliderController::class)->group(function(){
-                Route::get('/list','index')->name('admin.settings.website.slider.index');
-                 Route::get('/get_all_data','get_all_data')->name('admin.settings.website.slider.get_all_data');
-                Route::get('/edit/{id}','edit')->name('admin.settings.website.slider.edit');
-                Route::post('/update','update')->name('admin.settings.website.slider.update');
-                Route::post('/store','store')->name('admin.settings.website.slider.store');
-                Route::post('/delete','delete')->name('admin.settings.website.slider.delete');
-            });
-        });
-        /** Speech Route **/
-        Route::prefix('speech')->group(function(){
-            Route::controller(SpeechController::class)->group(function(){
-                Route::get('/list','index')->name('admin.settings.website.speech.index');
-                Route::get('/get_all_data','get_all_data')->name('admin.settings.website.speech.get_all_data');
-                Route::get('/edit/{id}','edit')->name('admin.settings.website.speech.edit');
-                Route::post('/update','update')->name('admin.settings.website.speech.update');
-                Route::post('/store','store')->name('admin.settings.website.speech.store');
-                Route::post('/delete','delete')->name('admin.settings.website.speech.delete');
-            });
-        });
-        /** Gallery Route **/
-        Route::prefix('gallery')->group(function(){
-            Route::controller(GalleryController::class)->group(function(){
-                Route::get('/list','index')->name('admin.settings.website.gallery.index');
-                Route::post('/store','store')->name('admin.settings.website.gallery.store');
-                Route::post('/delete/{id}','delete')->name('admin.settings.website.gallery.delete');
-            });
-        });
-    });
     Route::get('/optimize',function(){
         Artisan::call('optimize:clear');
         return 'Optimize Clear Completed';

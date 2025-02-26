@@ -171,8 +171,6 @@ return [
         App\Providers\InvoiceServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
         App\Providers\DateServiceProvider::class,
-        App\Providers\TeacherServiceProvider::class,
-        App\Providers\StudentServiceProvider::class,
     ])->toArray(),
 
     /*
