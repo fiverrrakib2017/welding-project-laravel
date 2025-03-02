@@ -84,7 +84,6 @@
 
         ];
     @endphp
- <!-- ['id' => 17, 'title' => 'Server Status', 'value' => 'Running', 'bg' => 'success', 'icon' => 'fa-server'], -->
      @foreach($dashboardCards as $card)
     <div class="col-lg-3 col-6 card-item wow animate__animated animate__fadeInUp" data-id="{{ $card['id'] }}" data-wow-delay="0.{{ $card['id'] }}s">
         <div class="small-box bg-{{ $card['bg'] }}">

@@ -27,7 +27,14 @@
                 <p>Dashboard</p>
             </a>
         </li>
-
+        <li class="nav-item ">
+            <select class="form-control">
+                <option value="1">--Select--</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select>
+        </li>
            <li class="nav-item has-treeview">
                 <a href="#" class="nav-link">
                     <i class="nav-icon fas fa-users"></i>
@@ -286,87 +293,6 @@
             </ul>
         </li>
 
-
-
-          @php
-              $active_prefix=['admin.customer','admin.supplier','admin.product','admin.brand','admin.category','admin.unit','admin.store'];
-          @endphp
-          <li class="nav-item">
-            <a href="#" class="nav-link {{ Str::startsWith($currentRoute, $active_prefix) ? 'active' : '' }}">
-                <i class="nav-icon fas fa-warehouse"></i>
-              <p>&nbsp; Inventory <i class="right fas fa-angle-left"></i> </p>
-            </a>
-            <ul class="nav nav-treeview" style="{{ Str::startsWith($currentRoute, $active_prefix) ? 'display: block;' : 'display: none;' }}">
-
-              <li class="nav-item">
-                 <a href="{{ route('admin.customer.invoice.create_invoice') }}" class="nav-link  {{($route=='admin.customer.invoice.create_invoice') ?  'active':''}}"><i class="far fa-circle nav-icon"></i><p>Sale</p></a>
-              </li>
-              <li class="nav-item">
-                 <a href="{{ route('admin.customer.invoice.show_invoice') }}" class="nav-link {{($route=='admin.customer.invoice.show_invoice') ?  'active':''}}"><i class="far fa-circle nav-icon"></i><p>Sale Invoice</p></a>
-              </li>
-              <li class="nav-item">
-                 <a href="{{ route('admin.supplier.invoice.create_invoice') }}" class="nav-link {{($route=='admin.supplier.invoice.create_invoice') ?  'active':''}}"><i class="far fa-circle nav-icon"></i><p>Purchase</p></a>
-              </li>
-              <li class="nav-item">
-                <a href="{{ route('admin.supplier.invoice.show_invoice') }}" class="nav-link {{($route=='admin.supplier.invoice.show_invoice') ?  'active':''}}"><i class="far fa-circle nav-icon"></i><p>Purchase Invoice</p></a>
-              </li>
-              <li class="nav-item">
-                <a href="{{ route('admin.brand.index') }}" class="nav-link {{($route=='admin.brand.index') ?  'active':''}}"><i class="far fa-circle nav-icon"></i><p>Brand</p></a>
-              </li>
-              <li class="nav-item">
-                 <a href="{{ route('admin.category.index') }}" class="nav-link {{($route=='admin.category.index') ?  'active':''}}"><i class="far fa-circle nav-icon"></i><p>Category</p></a>
-              </li>
-              <li class="nav-item">
-                 <a href="{{ route('admin.unit.index') }}" class="nav-link {{($route=='admin.unit.index') ?  'active':''}}"><i class="far fa-circle nav-icon"></i><p>Units</p></a>
-              </li>
-              <li class="nav-item">
-                 <a href="{{ route('admin.store.index') }}" class="nav-link {{($route=='admin.store.index') ?  'active':''}}"><i class="far fa-circle nav-icon"></i><p>Store</p></a>
-              </li>
-              <li class="nav-item">
-                 <a href="{{ route('admin.product.index') }}" class="nav-link  {{($route=='admin.product.index') ?  'active':''}}"><i class="far fa-circle nav-icon"></i><p>Products</p></a>
-              </li>
-              <li class="nav-item">
-                 <a href="{{ route('admin.supplier.index') }}" class="nav-link {{($route=='admin.supplier.index') ?  'active':''}}"><i class="far fa-circle nav-icon"></i><p>Supplier</p></a>
-              </li>
-              <li class="nav-item">
-                 <a href="{{ route('admin.customer.index') }}" class="nav-link {{($route=='admin.customer.index') ?  'active':''}}"><i class="far fa-circle nav-icon"></i><p>Customer</p></a>
-              </li>
-              <li class="nav-item">
-                 <a href="{{ route('admin.customer.tickets.index') }}" class="nav-link {{($route=='admin.customer.tickets.index') ?  'active':''}}"><i class="far fa-circle nav-icon"></i><p>Customer Ticket</p></a>
-              </li>
-            </ul>
-          </li>
-
-          @php
-              $active_prefix=['admin.master_ledger','admin.ledger','admin.sub_ledger','admin.transaction'];
-          @endphp
-
-          <li class="nav-item">
-            <a href="#" class="nav-link  {{ Str::startsWith($currentRoute, $active_prefix) ? 'active' : '' }}">
-                <i class="nav-icon fas fa-calculator"></i>
-              <p>&nbsp; Accounts <i class="right fas fa-angle-left"></i> </p>
-            </a>
-            <ul class="nav nav-treeview"  style="{{ Str::startsWith($currentRoute, $active_prefix) ? 'display: block;' : 'display: none;' }}">
-
-              <li class="nav-item">
-                 <a href="{{ route('admin.master_ledger.index') }}" class="nav-link {{($route=='admin.master_ledger.index') ?  'active':''}}"><i class="far fa-circle nav-icon"></i><p>Master Ledger</p></a>
-              </li>
-              <li class="nav-item">
-                 <a href="{{ route('admin.ledger.index') }}" class="nav-link  {{($route=='admin.ledger.index') ?  'active':''}}"><i class="far fa-circle nav-icon"></i><p>Ledger</p></a>
-              </li>
-              <li class="nav-item">
-                 <a href="{{ route('admin.sub_ledger.index') }}" class="nav-link {{($route=='admin.sub_ledger.index') ?  'active':''}}"><i class="far fa-circle nav-icon"></i><p>Sub Ledger</p></a>
-              </li>
-              <li class="nav-item">
-                <a href="{{ route('admin.transaction.index') }}" class="nav-link  {{($route=='admin.transaction.index') ?  'active':''}}"><i class="far fa-circle nav-icon"></i><p>Transaction</p></a>
-              </li>
-              <li class="nav-item">
-                <a href="{{ route('admin.transaction.report.index') }}" class="nav-link  {{($route=='admin.transaction.report.index') ?  'active':''}}"><i class="far fa-circle nav-icon"></i><p>Report</p></a>
-              </li>
-
-            </ul>
-          </li>
-
           <!-----------------Accounts--------------------->
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
@@ -381,13 +307,13 @@
 
                 <!-- Accounting Reports -->
                 <li class="nav-item">
-                    <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>জাবেদা</p></a>
+                    <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Journals</p></a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>খতিয়ান</p></a>
+                    <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Ledgers</p></a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>রেওয়ামিল</p></a>
+                    <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Trial Balance</p></a>
                 </li>
 
                 <!-- Financial Statements -->
@@ -426,7 +352,39 @@
                 </li>
             </ul>
         </li>
-
+        <!-----------------Task Management--------------------->
+        <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-tasks"></i>
+                <p>Task Management <i class="right fas fa-angle-left"></i></p>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>All Tasks</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Create Task</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Task Types</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Task Report</p>
+                    </a>
+                </li>
+            </ul>
+        </li>
 
 
         </ul>
