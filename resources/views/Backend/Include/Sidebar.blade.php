@@ -191,7 +191,7 @@
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-envelope"></i>
-                <p>SMS Management <i class="right fas fa-angle-left"></i></p>
+                <p>SMS <i class="right fas fa-angle-left"></i></p>
             </a>
             <ul class="nav nav-treeview">
                 <li class="nav-item"><a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Send SMS</p></a></li>
@@ -252,7 +252,7 @@
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-calculator"></i>
-                <p>Accounts Management <i class="right fas fa-angle-left"></i></p>
+                <p>Accounts <i class="right fas fa-angle-left"></i></p>
             </a>
             <ul class="nav nav-treeview">
                 <!-- Account List -->
@@ -336,6 +336,30 @@
                     <a href="#" class="nav-link">
                         <i class="far fa-circle nav-icon"></i>
                         <p>Task Report</p>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        @php
+            $active_prefix=['admin.router'];
+        @endphp
+        <!-----------------Router Management--------------------->
+        <li class="nav-item has-treeview">
+            <a href="#" class="nav-link {{ Str::startsWith($currentRoute, $active_prefix) ? 'active' : '' }}">
+                <i class="nav-icon fas fa-network-wired"></i>
+                <p>Router <i class="right fas fa-angle-left"></i></p>
+            </a>
+            <ul class="nav nav-treeview" style="{{ Str::startsWith($currentRoute, $active_prefix) ? 'display: block;' : 'display: none;' }}">
+                <li class="nav-item">
+                    <a href="{{ route('admin.router.index') }}" class="nav-link {{($route=='admin.router.index') ?  'active':''}}">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>NAS</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Settings</p>
                     </a>
                 </li>
             </ul>

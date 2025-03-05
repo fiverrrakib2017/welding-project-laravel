@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
-            //$table->unsignedBigInteger('student_id')->nullable();
+            $table->unsignedBigInteger('customer_id');
             $table->integer('ticket_for');
             $table->unsignedBigInteger('ticket_assign_id');
             $table->unsignedBigInteger('ticket_complain_id');
@@ -25,7 +25,7 @@ return new class extends Migration
             $table->integer('status');
             $table->timestamps();
 
-            //$table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
             $table->foreign('ticket_assign_id')->references('id')->on('ticket_assigns')->onDelete('cascade');
             $table->foreign('ticket_complain_id')->references('id')->on('ticket_complain_types')->onDelete('cascade');
         });

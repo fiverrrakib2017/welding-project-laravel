@@ -24,6 +24,7 @@ use App\Http\Controllers\Backend\Product\SizeController;
 use App\Http\Controllers\Backend\Product\StockController;
 use App\Http\Controllers\Backend\Product\StoreController;
 use App\Http\Controllers\Backend\Product\UnitController;
+use App\Http\Controllers\Backend\Router\RouterController;
 use App\Http\Controllers\Backend\Settings\Website\BannerController;
 use App\Http\Controllers\Backend\Settings\Website\GalleryController;
 use App\Http\Controllers\Backend\Settings\Website\SliderController;
@@ -304,6 +305,18 @@ Route::group(['middleware'=>'admin'],function(){
             });
         });
 
+    });
+     /* Mikrotik Router Management Route */
+    Route::prefix('admin/mikrotik')->group(function() {
+        /* mikrotik Route */
+        Route::prefix('router')->group(function() {
+            Route::controller(RouterController::class)->group(function() {
+                Route::get('/list', 'index')->name('admin.router.index');
+                Route::get('/edit/{id}', 'edit')->name('admin.router.edit');
+                Route::post('/delete', 'delete')->name('admin.router.delete');
+                Route::post('/store', 'store')->name('admin.router.store');
+            });
+        });
     });
     Route::get('/optimize',function(){
         Artisan::call('optimize:clear');
