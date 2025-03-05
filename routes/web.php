@@ -10,6 +10,7 @@ use App\Http\Controllers\Backend\Student\ExamRoutine_controller;
 use App\Http\Controllers\Backend\Supplier\Supplier_invoiceController;
 use App\Http\Controllers\Backend\Supplier\Supplier_returnController;
 use App\Http\Controllers\Backend\Customer\InvoiceController;
+use App\Http\Controllers\Backend\Customer\PoolController;
 use App\Http\Controllers\Backend\Customer\TicketController;
 use App\Http\Controllers\Backend\Pop\PopController;
 use App\Http\Controllers\Backend\Pop\Area\AreaController;
@@ -150,7 +151,18 @@ Route::group(['middleware'=>'admin'],function(){
     });
     /** Customer Route **/
     Route::prefix('admin/customer')->group(function() {
-
+        /* IP POOL Route */
+        Route::prefix('ip-pool')->group(function() {
+            Route::controller(PoolController::class)->group(function() {
+                Route::get('/list', 'index')->name('admin.customer.ip_pool.index');
+                Route::get('/all-data', 'get_all_data')->name('admin.customer.ip_pool.get_all_data');
+                Route::get('/edit/{id}', 'edit')->name('admin.customer.ip_pool.edit');
+                Route::get('/view/{id}', 'pop_view')->name('admin.customer.ip_pool.view');
+                Route::post('/delete', 'delete')->name('admin.customer.ip_pool.delete');
+                Route::post('/store', 'store')->name('admin.customer.ip_pool.store');
+                Route::post('/update/{id}', 'update')->name('admin.customer.ip_pool.update');
+            });
+        });
     });
     /** Supplier Route **/
     Route::prefix('admin/supplier')->group(function(){

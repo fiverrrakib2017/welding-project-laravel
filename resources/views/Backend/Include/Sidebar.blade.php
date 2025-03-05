@@ -18,6 +18,7 @@
                 <p>Dashboard</p>
             </a>
         </li>
+
         <li class="nav-item ">
             <select class="form-control">
                 <option value="1">---Select---</option>
@@ -34,14 +35,22 @@
                 });
             </script>
         </li>
+        <br>
+            @php
+                $active_prefix=['admin.customer.ip_pool'];
+            @endphp
             <li class="nav-item has-treeview">
-                <a href="#" class="nav-link">
+                <a href="#" class="nav-link {{ Str::startsWith($currentRoute, $active_prefix) ? 'active' : '' }}">
                     <i class="nav-icon fas fa-users"></i>
                     <p>Customer <i class="right fas fa-angle-left"></i></p>
                 </a>
-                <ul class="nav nav-treeview">
+                <ul class="nav nav-treeview" style="{{ Str::startsWith($currentRoute, $active_prefix) ? 'display: block;' : 'display: none;' }}">
                     <li class="nav-item"><a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Customer List</p></a></li>
+
                     <li class="nav-item"><a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Add Customer</p></a></li>
+
+                    <li class="nav-item"><a href="{{ route('admin.customer.ip_pool.index') }}" class="nav-link {{($route=='admin.customer.ip_pool.index') ?  'active':''}}"><i class="far fa-circle nav-icon"></i><p>IP Pool</p></a></li>
+
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
