@@ -6,15 +6,6 @@
       </a>
     <!-- Sidebar -->
     <div class="sidebar">
-      <!-- Sidebar user panel (optional) -->
-      {{-- <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="image">
-          <img src="{{asset('Backend/images/avatar.png')}}" class="img-circle elevation-2" alt="User Image">
-        </div>
-        <div class="info">
-          <a href="{{route('admin.dashboard')}}" class="d-block">{{Auth::guard('admin')->user()->name}}</a>
-        </div>
-      </div> --}}
 
 
       <!-- Sidebar Menu -->
@@ -29,13 +20,21 @@
         </li>
         <li class="nav-item ">
             <select class="form-control">
-                <option value="1">--Select--</option>
+                <option value="1">---Select---</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
                 <option value="4">4</option>
             </select>
+            <script src="{{ asset('Backend/plugins/jquery/jquery.min.js') }}"></script>
+            <script src="{{ asset('Backend/plugins/select2/js/select2.full.min.js') }}"></script>
+            <script>
+
+                $(document).ready(function(){
+                    $('select').select2();
+                });
+            </script>
         </li>
-           <li class="nav-item has-treeview">
+            <li class="nav-item has-treeview">
                 <a href="#" class="nav-link">
                     <i class="nav-icon fas fa-users"></i>
                     <p>Customer <i class="right fas fa-angle-left"></i></p>
@@ -77,53 +76,6 @@
                             <p>Backup & Restore</p>
                         </a>
                     </li>
-                     <!-- Contact Management -->
-                    <li class="nav-item">
-                        <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Contact List</p></a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Add New Contact</p></a>
-                    </li>
-
-                    <!-- Sales & Opportunities -->
-                    <li class="nav-item">
-                        <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Sales Opportunities</p></a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Sales Pipeline</p></a>
-                    </li>
-
-                    <!-- Leads Management -->
-                    <li class="nav-item">
-                        <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Leads List</p></a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Add New Lead</p></a>
-                    </li>
-
-                    <!-- Communication & Activities -->
-                    <li class="nav-item">
-                        <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Activities</p></a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Emails & Campaigns</p></a>
-                    </li>
-
-                    <!-- Customer Support -->
-                    <li class="nav-item">
-                        <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Support Tickets</p></a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Customer Feedback</p></a>
-                    </li>
-
-                    <!-- Reporting & Analytics -->
-                    <li class="nav-item">
-                        <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Customer Reports</p></a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Sales Reports</p></a>
-                    </li>
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
@@ -132,15 +84,17 @@
                     </li>
                 </ul>
             </li>
-
+            @php
+              $active_prefix=['admin.pop'];
+            @endphp
             <li class="nav-item has-treeview">
-                <a href="#" class="nav-link">
+                <a href="#" class="nav-link  {{ Str::startsWith($currentRoute, $active_prefix) ? 'active' : '' }}">
                      <i class="nav-icon fas fa-map-marker-alt"></i>
                     <p>POP Area  <i class="right fas fa-angle-left"></i></p>
                 </a>
-                <ul class="nav nav-treeview">
-                    <li class="nav-item"><a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>View POP </p></a></li>
-                    <li class="nav-item"><a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Add New POP </p></a></li>
+                <ul class="nav nav-treeview" style="{{ Str::startsWith($currentRoute, $active_prefix) ? 'display: block;' : 'display: none;' }}">
+                    <li class="nav-item"><a href="{{ route('admin.pop.index') }}" class="nav-link  {{($route=='admin.pop.index') ?  'active':''}}"><i class="far fa-circle nav-icon"></i><p>View POP/Branch </p></a></li>
+                 
                     <li class="nav-item"><a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>POP Area</p></a></li>
                 </ul>
             </li>

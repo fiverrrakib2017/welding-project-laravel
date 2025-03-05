@@ -11,6 +11,7 @@ use App\Http\Controllers\Backend\Supplier\Supplier_invoiceController;
 use App\Http\Controllers\Backend\Supplier\Supplier_returnController;
 use App\Http\Controllers\Backend\Customer\InvoiceController;
 use App\Http\Controllers\Backend\Customer\TicketController;
+use App\Http\Controllers\Backend\Pop\PopController;
 use App\Http\Controllers\Backend\Product\BrandController;
 use App\Http\Controllers\Backend\Product\CategoryController;
 use App\Http\Controllers\Backend\Product\SubCateogryController;
@@ -57,7 +58,7 @@ Route::group(['middleware'=>'admin'],function(){
     Route::get('admin/logout',[AdminController::class,'logout'])->name('admin.logout');
     Route::post('/admin/get_dashboard_data',[AdminController::class,'get_data'])->name('admin.dashboard_get_all_data');
 
-    
+
      /** Tickets  Route **/
      Route::prefix('admin/ticket')->group(function(){
         /*Complain Type */
@@ -147,7 +148,7 @@ Route::group(['middleware'=>'admin'],function(){
     });
     /** Customer Route **/
     Route::prefix('admin/customer')->group(function() {
-        
+
     });
     /** Supplier Route **/
     Route::prefix('admin/supplier')->group(function(){
@@ -276,7 +277,19 @@ Route::group(['middleware'=>'admin'],function(){
         /* Stock Route */
         Route::get('/stock', [StockController::class, 'index'])->name('admin.product.stock.index');
     });
-
+    /*  POP/Branch Route */
+    Route::prefix('admin/pop-branch')->group(function() {
+         /* POP/BRANCH Route */
+         Route::controller(PopController::class)->group(function() {
+            Route::get('/list', 'index')->name('admin.pop.index');
+            Route::get('/all-data', 'get_all_data')->name('admin.pop.get_all_data');
+            Route::get('/edit/{id}', 'edit')->name('admin.pop.edit');
+            Route::get('/view/{id}', 'pop_view')->name('admin.pop.view');
+            Route::post('/delete', 'delete')->name('admin.pop.delete');
+            Route::post('/store', 'store')->name('admin.pop.store');
+            Route::post('/update/{id}', 'update')->name('admin.pop.update');
+        });
+    });
     Route::get('/optimize',function(){
         Artisan::call('optimize:clear');
         return 'Optimize Clear Completed';
