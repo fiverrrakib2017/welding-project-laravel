@@ -93,13 +93,14 @@
                     <p>POP Area  <i class="right fas fa-angle-left"></i></p>
                 </a>
                 <ul class="nav nav-treeview" style="{{ Str::startsWith($currentRoute, $active_prefix) ? 'display: block;' : 'display: none;' }}">
+
                     <li class="nav-item"><a href="{{ route('admin.pop.index') }}" class="nav-link  {{($route=='admin.pop.index') ?  'active':''}}"><i class="far fa-circle nav-icon"></i><p>View POP/Branch </p></a></li>
-                 
-                    <li class="nav-item"><a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>POP Area</p></a></li>
+
+                    <li class="nav-item"><a href="{{ route('admin.pop.area.index') }}" class="nav-link {{($route=='admin.pop.area.index') ?  'active':''}}"><i class="far fa-circle nav-icon"></i><p>POP Area</p></a></li>
                 </ul>
             </li>
 
-            <li class="nav-item has-treeview">
+            {{-- <li class="nav-item has-treeview">
                 <a href="#" class="nav-link">
                     <i class="nav-icon fas fa-network-wired"></i>
                     <p>OLT Management <i class="right fas fa-angle-left"></i></p>
@@ -166,7 +167,7 @@
                         <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>OLT Configuration Settings</p></a>
                     </li>
                 </ul>
-            </li>
+            </li> --}}
 
 
           <li class="nav-item">

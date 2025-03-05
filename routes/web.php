@@ -12,6 +12,7 @@ use App\Http\Controllers\Backend\Supplier\Supplier_returnController;
 use App\Http\Controllers\Backend\Customer\InvoiceController;
 use App\Http\Controllers\Backend\Customer\TicketController;
 use App\Http\Controllers\Backend\Pop\PopController;
+use App\Http\Controllers\Backend\Pop\Area\AreaController;
 use App\Http\Controllers\Backend\Product\BrandController;
 use App\Http\Controllers\Backend\Product\CategoryController;
 use App\Http\Controllers\Backend\Product\SubCateogryController;
@@ -289,6 +290,20 @@ Route::group(['middleware'=>'admin'],function(){
             Route::post('/store', 'store')->name('admin.pop.store');
             Route::post('/update/{id}', 'update')->name('admin.pop.update');
         });
+
+         /* POP/Area Route */
+        Route::prefix('area')->group(function() {
+            Route::controller(AreaController::class)->group(function() {
+                Route::get('/list', 'index')->name('admin.pop.area.index');
+                Route::get('/all-data', 'get_all_data')->name('admin.pop.area.get_all_data');
+                Route::get('/edit/{id}', 'edit')->name('admin.pop.area.edit');
+                Route::get('/view/{id}', 'pop_view')->name('admin.pop.area.view');
+                Route::post('/delete', 'delete')->name('admin.pop.area.delete');
+                Route::post('/store', 'store')->name('admin.pop.area.store');
+                Route::post('/update/{id}', 'update')->name('admin.pop.area.update');
+            });
+        });
+
     });
     Route::get('/optimize',function(){
         Artisan::call('optimize:clear');
