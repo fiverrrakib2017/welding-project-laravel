@@ -26,7 +26,30 @@
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody></tbody>
+                        <tbody>
+                            @foreach ($routers as $item)
+                            <tr>
+                                <td>{{ $item->id }}</td>
+                                <td>
+                                    {{ $item->name }} <br>
+                                    <small>Port: {{ $item->port }}</small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-success">Loading...</span>
+                                </td>
+                                <td>{{ $item->location }}</td>
+                                <td>{{ $item->ip_address }}</td>
+                                <td>{{ $item->password }}</td>
+                                <td>{{ $item->username }}</td>
+                                <td>{{ $item->remarks }}</td>
+                                <td>{{ $item->status }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary edit-btn" data-id="{{ $item->id }}"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-sm btn-danger delete-btn" data-id="{{ $item->id }}"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -116,100 +139,34 @@
   <script type="text/javascript">
     $(document).ready(function(){
     handleSubmit('#routerForm','#addModal');
-    var table=$("#datatable1").DataTable({
-    "processing":true,
-    "responsive": true,
-    "serverSide":true,
-    beforeSend: function () {},
-    complete: function(){},
-    ajax: "{{ route('admin.pop.get_all_data') }}",
-    language: {
-        searchPlaceholder: 'Search...',
-        sSearch: '',
-        lengthMenu: '_MENU_ items/page',
-    },
-    "columns":[
-          {
-            "data":"id"
-          },
-          {
-            "data":"name",
-          },
-          {
-            "data":"username"
-          },
-          {
-            "data":"phone"
-          },
-          {
-            "data":"status",
-            render: function (data, type, row) {
-              if (row.status == 1) {
-                return '<span class="badge badge-success">Active</span>';
-              } else {
-                return '<span class="badge badge-danger">Expired</span>';
-              }
-            }
-          },
 
-          {
-            data:null,
-            render: function (data, type, row) {
-
-              var viewUrl = "{{ route('admin.pop.view', ':id') }}".replace(':id', row.id);
-
-
-              return `<button  class="btn btn-primary btn-sm mr-3 edit-btn" data-id="${row.id}"><i class="fa fa-edit"></i></button>
-
-              <button class="btn btn-danger btn-sm mr-3 delete-btn"  data-id="${row.id}"><i class="fa fa-trash"></i></button>
-
-              <a href="${viewUrl}" class="btn btn-success btn-sm mr-3 "><i class="fa fa-eye"></i></a>
-
-
-              `;
-            }
-
-          },
-        ],
-    order:[
-        [0, "desc"]
-    ],
 
     });
-
-    });
-
-
-
-
-
-
-
 
     /** Handle Edit button click **/
     $('#datatable1 tbody').on('click', '.edit-btn', function () {
         var id = $(this).data('id');
-
-        // AJAX call to fetch supplier data
         $.ajax({
-            url: "{{ route('admin.pop.edit', ':id') }}".replace(':id', id),
+            url: "{{ route('admin.router.edit', ':id') }}".replace(':id', id),
             method: 'GET',
             success: function(response) {
                 if (response.success) {
-                    $('#popForm').attr('action', "{{ route('admin.pop.update', ':id') }}".replace(':id', id));
-                    $('#ModalLabel').html('<span class="mdi mdi-account-edit mdi-18px"></span> &nbsp;Edit POP/Branch');
-                    $('#popForm input[name="name"]').val(response.data.name);
-                    $('#popForm input[name="username"]').val(response.data.username);
-                    $('#popForm input[name="password"]').val(response.data.password);
-                    $('#popForm input[name="phone"]').val(response.data.phone);
-                    $('#popForm input[name="email"]').val(response.data.email);
-                    $('#popForm input[name="address"]').val(response.data.address);
-                    $('#popForm select[name="status"]').val(response.data.status);
-
+                    $('#routerForm').attr('action', "{{ route('admin.router.update', ':id') }}".replace(':id', id));
+                    $('#ModalLabel').html('<span class="mdi mdi-account-edit mdi-18px"></span> &nbsp;Edit Router');
+                    $('#routerForm input[name="name"]').val(response.data.name);
+                    $('#routerForm input[name="name"]').val(response.data.name);
+                    $('#routerForm input[name="ip_address"]').val(response.data.ip_address);
+                    $('#routerForm input[name="api_version"]').val(response.data.api_version);
+                    $('#routerForm input[name="username"]').val(response.data.username);
+                    $('#routerForm input[name="password"]').val(response.data.password);
+                    $('#routerForm input[name="port"]').val(response.data.port);
+                    $('#routerForm select[name="status"]').val(response.data.status);
+                    $('#routerForm input[name="location"]').val(response.data.location);
+                    $('#routerForm textarea[name="remarks"]').val(response.data.remarks);
                     // Show the modal
                     $('#addModal').modal('show');
                 } else {
-                    toastr.error('Failed to fetch Supplier data.');
+                    toastr.error('Failed to fetch data.');
                 }
             },
             error: function() {
@@ -221,7 +178,7 @@
     /** Handle Delete button click**/
     $('#datatable1 tbody').on('click', '.delete-btn', function () {
         var id = $(this).data('id');
-        var deleteUrl = "{{ route('admin.pop.delete', ':id') }}".replace(':id', id);
+        var deleteUrl = "{{ route('admin.router.delete', ':id') }}".replace(':id', id);
 
         $('#deleteForm').attr('action', deleteUrl);
         $('#deleteModal').find('input[name="id"]').val(id);

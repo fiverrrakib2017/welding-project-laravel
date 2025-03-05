@@ -313,6 +313,7 @@ Route::group(['middleware'=>'admin'],function(){
             Route::controller(RouterController::class)->group(function() {
                 Route::get('/list', 'index')->name('admin.router.index');
                 Route::get('/edit/{id}', 'edit')->name('admin.router.edit');
+                Route::post('/update/{id}', 'update')->name('admin.router.update');
                 Route::post('/delete', 'delete')->name('admin.router.delete');
                 Route::post('/store', 'store')->name('admin.router.store');
             });

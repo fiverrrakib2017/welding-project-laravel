@@ -11,32 +11,11 @@ class RouterController extends Controller
 {
     public function index()
     {
-        return view('Backend.Pages.Router.index');
+        $routers=Router::latest()->get();
+        return view('Backend.Pages.Router.index',compact('routers'));
     }
 
-    public function get_all_data(Request $request)
-    {
-        $search = $request->search['value'];
-        $columnsForOrderBy = ['id', 'name','username','phone', 'status'];
-        $orderByColumn = $request->order[0]['column'];
-        $orderDirectection = $request->order[0]['dir'];
 
-        $object = Pop_branch::when($search, function ($query) use ($search) {
-            $query->where('name', 'like', "%$search%");
-            $query->where('username', 'like', "%$search%");
-            $query->where('phone', 'like', "%$search%");
-        })->orderBy($columnsForOrderBy[$orderByColumn], $orderDirectection);
-
-        $total = $object->count();
-        $item = $object->skip($request->start)->take($request->length)->get();
-
-        return response()->json([
-            'draw' => $request->draw,
-            'recordsTotal' => $total,
-            'recordsFiltered' => $total,
-            'data' => $item,
-        ]);
-    }
     public function store(Request $request)
     {
         /* Validate the form data*/
@@ -53,7 +32,6 @@ class RouterController extends Controller
         $object->api_version = $request->api_version;
         $object->location = $request->location;
         $object->remarks = $request->remarks;
-        // $object->status = $request->status ?? 1;
 
         /* Save to the database table*/
         $object->save();
@@ -66,7 +44,7 @@ class RouterController extends Controller
 
     public function delete(Request $request)
     {
-        $object = Pop_branch::find($request->id);
+        $object = Router::find($request->id);
 
         if (empty($object)) {
             return response()->json(['error' => 'Not found.'], 404);
@@ -79,13 +57,34 @@ class RouterController extends Controller
     }
     public function edit($id)
     {
-        $data = Pop_branch::find($id);
+        $data = Router::find($id);
         if ($data) {
             return response()->json(['success' => true, 'data' => $data]);
             exit;
         } else {
             return response()->json(['success' => false, 'message' => 'Not found.']);
         }
+    }
+
+    public function update(Request $request, $id){
+        $this->validateForm($request);
+
+        $object = Router::findOrFail($id);
+        $object->name = $request->name;
+        $object->ip_address = $request->ip_address;
+        $object->username = $request->username;
+        $object->password = $request->password;
+        $object->port = $request->port;
+        $object->status = $request->status;
+        $object->api_version = $request->api_version;
+        $object->location = $request->location;
+        $object->remarks = $request->remarks;
+        $object->update();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Update successfully!',
+        ]);
     }
 
 
