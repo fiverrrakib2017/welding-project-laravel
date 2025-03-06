@@ -10,6 +10,7 @@ use App\Http\Controllers\Backend\Student\ExamRoutine_controller;
 use App\Http\Controllers\Backend\Supplier\Supplier_invoiceController;
 use App\Http\Controllers\Backend\Supplier\Supplier_returnController;
 use App\Http\Controllers\Backend\Customer\InvoiceController;
+use App\Http\Controllers\Backend\Customer\PackageController;
 use App\Http\Controllers\Backend\Customer\PoolController;
 use App\Http\Controllers\Backend\Customer\TicketController;
 use App\Http\Controllers\Backend\Pop\PopController;
@@ -161,6 +162,18 @@ Route::group(['middleware'=>'admin'],function(){
                 Route::post('/delete', 'delete')->name('admin.customer.ip_pool.delete');
                 Route::post('/store', 'store')->name('admin.customer.ip_pool.store');
                 Route::post('/update/{id}', 'update')->name('admin.customer.ip_pool.update');
+            });
+        });
+        /* Package Route */
+        Route::prefix('package')->group(function() {
+            Route::controller(PackageController::class)->group(function() {
+                Route::get('/list', 'index')->name('admin.customer.package.index');
+                Route::get('/all-data', 'get_all_data')->name('admin.customer.package.get_all_data');
+                Route::get('/edit/{id}', 'edit')->name('admin.customer.package.edit');
+                Route::get('/view/{id}', 'pop_view')->name('admin.customer.package.view');
+                Route::post('/delete', 'delete')->name('admin.customer.package.delete');
+                Route::post('/store', 'store')->name('admin.customer.package.store');
+                Route::post('/update/{id}', 'update')->name('admin.customer.package.update');
             });
         });
     });
