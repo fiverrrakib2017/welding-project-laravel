@@ -311,7 +311,7 @@ Route::group(['middleware'=>'admin'],function(){
             Route::get('/list', 'index')->name('admin.pop.index');
             Route::get('/all-data', 'get_all_data')->name('admin.pop.get_all_data');
             Route::get('/edit/{id}', 'edit')->name('admin.pop.edit');
-            Route::get('/view/{id}', 'pop_view')->name('admin.pop.view');
+            Route::get('/view/{id}', 'view')->name('admin.pop.view');
             Route::post('/delete', 'delete')->name('admin.pop.delete');
             Route::post('/store', 'store')->name('admin.pop.store');
             Route::post('/update/{id}', 'update')->name('admin.pop.update');

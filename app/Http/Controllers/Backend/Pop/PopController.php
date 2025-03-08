@@ -68,15 +68,6 @@ class PopController extends Controller
             return response()->json(['error' => 'Not found.'], 404);
         }
 
-        /* Image Find And Delete it From Local Machine */
-        // if (!empty($object->profile_image)) {
-        //     $imagePath = public_path('Backend/uploads/photos/' . $object->profile_image);
-
-        //     if (file_exists($imagePath)) {
-        //         unlink($imagePath);
-        //     }
-        // }
-
         /* Delete it From Database Table */
         $object->delete();
 
@@ -93,14 +84,8 @@ class PopController extends Controller
         }
     }
     public function view($id) {
-        return $id;
-        // $total_invoice=Supplier_Invoice::where('supplier_id',$id)->count();
-        // $total_paid_amount=Supplier_Invoice::where('supplier_id',$id)->sum('paid_amount');
-        // $total_due_amount=Supplier_Invoice::where('supplier_id',$id)->sum('due_amount');
-        // $invoices = Supplier_Invoice::where('supplier_id', $id)->get();
-        // $data = Supplier::find($id);
-        //  $supplier_transaction_history=Supplier_Transaction_History::where('supplier_id',$id)->get();
-        // return view('Backend.Pages.Supplier.Profile',compact('data','total_invoice','total_paid_amount','total_due_amount','invoices','supplier_transaction_history'));
+        $pop=Pop_branch::findOrFail($id);
+        return view('Backend.Pages.Pop.View',compact('pop'));
     }
 
     public function update(Request $request, $id)
