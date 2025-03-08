@@ -315,6 +315,13 @@ Route::group(['middleware'=>'admin'],function(){
             Route::post('/delete', 'delete')->name('admin.pop.delete');
             Route::post('/store', 'store')->name('admin.pop.store');
             Route::post('/update/{id}', 'update')->name('admin.pop.update');
+
+            Route::post('/change/status/{id}','pop_change_status')->name('admin.pop.change_status');
+
+            /*****Branch Package *******/
+            Route::post('/package/store', 'branch_package_store')->name('admin.pop.brnach.package.store');
+            Route::get('/package/view/{id}', 'branch_package_edit')->name('admin.pop.branch.package.edit');
+            Route::post('/package/update/{id}', 'branch_package_update')->name('admin.pop.branch.package.update');
         });
 
          /* POP/Area Route */

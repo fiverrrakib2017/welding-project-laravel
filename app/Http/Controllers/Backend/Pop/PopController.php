@@ -1,6 +1,8 @@
 <?php
 namespace App\Http\Controllers\Backend\Pop;
 use App\Http\Controllers\Controller;
+use App\Models\Branch_package;
+use App\Models\Package;
 use App\Models\Pop_branch;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -56,6 +58,104 @@ class PopController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Added successfully!'
+        ]);
+    }
+    public function branch_package_store(Request $request)
+    {
+        /*Validate the form data*/
+        $rules=[
+
+            'package_id' => 'required|integer',
+            'pop_id' => 'required|integer',
+            'purchase_price' => 'required',
+            'sales_price' => 'required',
+        ];
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        /* Create a new Supplier*/
+        $object = new Branch_package();
+        $object->name = Package::find(intval($request->package_id))->name;
+        $object->package_id = $request->package_id;
+        $object->pop_id = $request->pop_id;
+        $object->purchase_price = $request->purchase_price;
+        $object->sales_price = $request->sales_price;
+
+
+        /* Save to the database table*/
+        $object->save();
+        return response()->json([
+            'success' => true,
+            'message' => 'Added successfully!'
+        ]);
+    }
+
+    public function branch_package_edit($id){
+        $data = Branch_package::find($id);
+        if ($data) {
+            return response()->json(['success' => true, 'data' => $data]);
+            exit;
+        } else {
+            return response()->json(['success' => false, 'message' => 'Not found.']);
+        }
+    }
+    public function pop_change_status($id){
+        $object =Pop_branch::find($id);
+        if (!$object) {
+            return response()->json([
+                'success' => false,
+                'message' => 'POP/Branch not found!'
+            ], 404);
+        }
+        $object->status = $object->status == 1 ? 0 : 1;
+
+
+        /* Update to the database table*/
+        $object->update();
+        return response()->json([
+            'success' => true,
+            'message' => 'Status changed successfully!',
+            'new_status' => $object->status
+        ]);
+    }
+
+
+
+    public function branch_package_update(Request $request,$id)
+    {
+        /*Validate the form data*/
+        $rules=[
+
+            'package_id' => 'required|integer',
+            'purchase_price' => 'required',
+            'sales_price' => 'required',
+        ];
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $object =Branch_package::find($id);
+        $object->package_id = $request->package_id;
+        $object->purchase_price = $request->purchase_price;
+        $object->sales_price = $request->sales_price;
+
+
+        /* Update to the database table*/
+        $object->update();
+        return response()->json([
+            'success' => true,
+            'message' => 'Package Update successfully!'
         ]);
     }
 

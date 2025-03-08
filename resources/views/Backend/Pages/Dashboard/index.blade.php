@@ -208,7 +208,7 @@
     $(document).ready(function(){
         console.log("Dashboard Loaded Successfully");
     });
-    
+
     var ctx = document.getElementById('revenueChart').getContext('2d');
     var revenueChart = new Chart(ctx, {
         type: 'bar',
@@ -292,7 +292,7 @@
                 order.forEach(id => {
                     if (elements[id]) {
                         container.append(elements[id]);
-                        delete elements[id]; 
+                        delete elements[id];
                     }
                 });
                 Object.values(elements).forEach(el => container.append(el));
@@ -310,10 +310,13 @@
 
          function resetOrder() {
             localStorage.removeItem("dashboardOrder");
-            location.reload(); 
+            location.reload();
         }
-        $("#resetOrderBtn").click(function(){ 
-            resetOrder(); 
+        $(document).on("click", "#resetOrderBtn", function () {
+            let btn = $(this);
+            let originalHtml = btn.html();
+            btn.html('<i class="fas fa-spinner fa-spin"></i> Processing...').prop("disabled", true);
+            resetOrder();
         });
     /************************** Card Move Another Place*****************************************/
 </script>
