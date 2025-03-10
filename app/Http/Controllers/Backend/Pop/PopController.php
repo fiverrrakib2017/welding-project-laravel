@@ -6,6 +6,7 @@ use App\Models\Branch_transaction;
 use App\Models\Package;
 use App\Models\Pop_area;
 use App\Models\Pop_branch;
+use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
@@ -231,7 +232,7 @@ class PopController extends Controller
         $due_paid=Branch_transaction::where('pop_id',$id)->where('transaction_type','due_paid')->sum('amount');
         $get_total_due=Branch_transaction::where('pop_id',$id)->where('transaction_type','credit')->sum('amount');
 
-        $total_area=Pop_area::where('pop_id',$id)->count();
+
 
         $total_paid = Branch_transaction::where('pop_id', $id)
         ->where('transaction_type', '!=', 'credit')
@@ -239,7 +240,11 @@ class PopController extends Controller
 
          $total_due = $get_total_due - $due_paid;
 
-        return view('Backend.Pages.Pop.View',compact('pop','due_paid','total_paid','total_due','total_area'));
+         $total_area=Pop_area::where('pop_id',$id)->count();
+         $tickets=Ticket::where('pop_id',$id)->count();
+         $ticket_completed=Ticket::where('pop_id',$id)->where('status','1')->count();
+         $ticket_pending=Ticket::where('pop_id',$id)->where('status','0')->count();
+        return view('Backend.Pages.Pop.View',compact('pop','due_paid','total_paid','total_due','total_area','tickets','ticket_completed','ticket_pending'));
     }
 
     public function update(Request $request, $id)

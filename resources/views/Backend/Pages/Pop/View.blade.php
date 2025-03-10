@@ -106,21 +106,21 @@
                 [
                     'id' => 11,
                     'title' => 'Total Tickets',
-                    'value' => 0,
+                    'value' => $tickets,
                     'bg' => 'success',
                     'icon' => 'fas fa-solid fa-ticket-alt',
                 ],
                 [
                     'id' => 12,
-                    'title' => 'Resolved Tickets',
-                    'value' => 0,
+                    'title' => 'Completed Tickets',
+                    'value' => $ticket_completed,
                     'bg' => 'success',
                     'icon' => 'fas fa-solid fa-check-circle',
                 ],
                 [
                     'id' => 13,
                     'title' => 'Pending Tickets',
-                    'value' => 0,
+                    'value' => $ticket_pending,
                     'bg' => 'danger',
                     'icon' => 'fas fa-solid fa-exclamation-triangle',
                 ],
@@ -151,7 +151,7 @@
                     <ul class="nav nav-pills">
                         <li class="nav-item"><a class="nav-link active" href="#activity" data-toggle="tab">Users ( 3369
                                 )</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#invoice" data-toggle="tab">Tickets</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#tickets" data-toggle="tab">Tickets</a></li>
                         <li class="nav-item"><a class="nav-link" href="#timeline" data-toggle="tab">Recharge History</a>
                         </li>
                         <li class="nav-item"><a class="nav-link" href="#branch_package" data-toggle="tab">Package</a></li>
@@ -183,23 +183,10 @@
                                 </table>
                             </div>
                         </div>
-                        <!-- Invoice -->
-                        <div class="tab-pane" id="invoice">
-                            <div class="table-responsive">
-                                <table id="invoice_datatable" class="table table-bordered dt-responsive nowrap"
-                                    style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                                    <thead>
-                                        <tr>
-                                            <th>Invoice id</th>
-                                            <th>Sub Total</th>
-                                            <th>Discount</th>
-                                            <th>Grand Total</th>
-                                            <th>Create Date</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id=""> </tbody>
-                                </table>
+                        <!-- Tickets -->
+                        <div class="tab-pane" id="tickets">
+                            <div class="table table-responsive">
+                                @include('Backend.Component.Tickets.Tickets')
                             </div>
                         </div>
                         <!-- Timeline -->
