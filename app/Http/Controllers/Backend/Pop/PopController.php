@@ -4,6 +4,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Branch_package;
 use App\Models\Branch_transaction;
 use App\Models\Package;
+use App\Models\Pop_area;
 use App\Models\Pop_branch;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -127,6 +128,16 @@ class PopController extends Controller
             'message' => 'Added successfully!'
         ]);
     }
+    public function branch_recharge_undo($id){
+        $object = Branch_transaction::find($id);
+        if ($object) {
+            $object->delete();
+            return response()->json(['success' => true, 'message' => 'Successfully!']);
+            exit;
+        } else {
+            return response()->json(['success' => false, 'message' => 'Not found.']);
+        }
+    }
 
     public function branch_package_edit($id){
         $data = Branch_package::find($id);
@@ -220,13 +231,15 @@ class PopController extends Controller
         $due_paid=Branch_transaction::where('pop_id',$id)->where('transaction_type','due_paid')->sum('amount');
         $get_total_due=Branch_transaction::where('pop_id',$id)->where('transaction_type','credit')->sum('amount');
 
+        $total_area=Pop_area::where('pop_id',$id)->count();
+
         $total_paid = Branch_transaction::where('pop_id', $id)
         ->where('transaction_type', '!=', 'credit')
         ->sum('amount');
 
          $total_due = $get_total_due - $due_paid;
 
-        return view('Backend.Pages.Pop.View',compact('pop','due_paid','total_paid','total_due'));
+        return view('Backend.Pages.Pop.View',compact('pop','due_paid','total_paid','total_due','total_area'));
     }
 
     public function update(Request $request, $id)

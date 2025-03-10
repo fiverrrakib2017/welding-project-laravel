@@ -99,7 +99,7 @@
                 [
                     'id' => 10,
                     'title' => 'Area',
-                    'value' => 0,
+                    'value' => $total_area,
                     'bg' => 'success',
                     'icon' => 'fas fa-solid fa-map-marker-alt',
                 ],
@@ -157,6 +157,8 @@
                         <li class="nav-item"><a class="nav-link" href="#branch_package" data-toggle="tab">Package</a></li>
 
                         <li class="nav-item"><a class="nav-link" href="#transaction_statment" data-toggle="tab">Transaction Statment</a>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="#area_list" data-toggle="tab">Branch Area</a>
                         </li>
                     </ul>
                 </div><!-- /.card-header -->
@@ -255,7 +257,122 @@
                         </div>
                         <!--transaction Statment -->
                         <div class="tab-pane" id="transaction_statment">
+                            <div class="row">
+                                @php
+                                    $branch_pacakges = App\Models\Branch_transaction::where('pop_id', $pop->id)->get();
+                                @endphp
+                                @if (!empty($branch_pacakges))
+                                    <div class="table-responsive">
+                                        <table id="branch_recharge_datatable" class="table table-bordered dt-responsive nowrap"
+                                            style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                            <thead>
+                                                <tr>
+                                                    <th>No.</th>
+                                                    <th>Date</th>
+                                                    <th>Amount</th>
+                                                    <th>Transaction Type</th>
+                                                    <th>Note</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="">
+                                                @php
+                                                    $branch_recharge = App\Models\Branch_transaction::where(
+                                                        'pop_id',
+                                                        $pop->id,
+                                                    )->get();
+                                                    $number=1;
+                                                @endphp
+                                                @foreach ($branch_recharge as $item)
+                                                    <tr>
+                                                        <td>{{ $number++ }}</td>
+                                                        <td>
+                                                            {{ date('d F Y', strtotime($item->created_at)) }}
+                                                        </td>
+                                                        <td>{{ $item->amount }}</td>
+                                                        <td>
+                                                            @if ($item->transaction_type == 'cash')
+                                                                <span class="badge bg-success">Cash</span>
+                                                            @elseif($item->transaction_type == 'credit')
+                                                                <span class="badge bg-danger">Credit</span>
+                                                            @elseif($item->transaction_type == 'bkash')
+                                                                <span class="badge bg-success">Bkash</span>
+                                                            @elseif($item->transaction_type == 'nagad')
+                                                                <span class="badge bg-primary">Nagad</span>
+                                                            @elseif($item->transaction_type == 'bank')
+                                                                <span class="badge bg-success">Bank</span>
+                                                            @elseif($item->transaction_type == 'due_paid')
+                                                                <span class="badge bg-success">Due Paid</span>
+                                                            @elseif($item->transaction_type == 'other')
+                                                                <span class="badge bg-success">Other</span>
+                                                            @else
+                                                                <span class="badge bg-danger">N/A</span>
+                                                            @endif
+                                                        </td>
+                                                        <td>{{ $item->note }}</td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-danger branch_recharge_undo_btn" data-id="{{ $item->id }}"><i class="fas fa-undo"></i></button>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                @else
+                                    <h4 class="text-center text-danger">Not Found</h4>
+                                @endif
 
+
+
+                            </div>
+                        </div>
+                        <!-- Branch Area List -->
+                        <div class="tab-pane" id="area_list">
+                            <div class="row">
+                                @php
+                                    $branch_areas = App\Models\Pop_area::where('pop_id', $pop->id)->get();
+                                @endphp
+                                @if (!empty($branch_areas))
+                                    <div class="table-responsive">
+                                        <table id="branch_area_datatable" class="table table-bordered dt-responsive nowrap"
+                                            style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                            <thead>
+                                                <tr>
+                                                    <th>No.</th>
+                                                    <th>Area Name </th>
+                                                    <th>Billing Cycle</th>
+                                                    {{-- <th>Action</th> --}}
+                                                </tr>
+                                            </thead>
+                                            <tbody id="">
+                                                @php
+                                                    $branch_areas = App\Models\Pop_area::where(
+                                                        'pop_id',
+                                                        $pop->id,
+                                                    )->get();
+                                                    $number=1;
+                                                @endphp
+                                                @foreach ($branch_areas as $item)
+                                                    <tr>
+                                                        <td>{{ $number++ }}</td>
+                                                        <td>{{ $item->name }}</td>
+
+                                                        <td>{{ $item->billing_cycle }}</td>
+                                                        {{-- <td>
+                                                            <button type="button" class=" btn btn-success branch_area_edit_btn" data-id="{{ $item->id }}"><i class="fas fa-edit"></i></button>
+                                                        </td> --}}
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                @else
+                                    <h4 class="text-center text-danger">Not Found</h4>
+                                @endif
+
+
+
+                            </div>
                         </div>
                     </div>
                     <!-- /.tab-content -->
@@ -366,6 +483,8 @@
             $("#recent_transaction").DataTable();
             $("#recent_tickets").DataTable();
             $("#branch_package_datatable").DataTable();
+            $("#branch_recharge_datatable").DataTable();
+            $("#branch_area_datatable").DataTable();
         });
 
         /** Handle Edit button click **/
@@ -425,6 +544,32 @@
                     toastr.error('An error occurred. Please try again.');
                 }
             });
+        });
+        /** Handle Branch Undo Recharge button click **/
+        $(document).on('click', '.branch_recharge_undo_btn', function() {
+            if(confirm('Are you sure you want to undo this action?')){
+                var id = $(this).data('id');
+                var button = $(this);
+                var row = button.closest('tr');
+                var originalContent = button.html();
+                button.html('<i class="fas fa-spinner fa-spin"></i> Undoing...').prop('disabled', true);
+                $.ajax({
+                    url: "{{ route('admin.pop.brnach.recharge.undo', ':id') }}".replace(':id', id),
+                    method: 'GET',
+                    success: function(response) {
+                        if (response.success) {
+                            row.fadeOut(300, function() {
+                                $(this).remove();
+                                toastr.success('Successfully Undo!');
+                            });
+
+                        }
+                    },
+                    error: function() {
+                        toastr.error('An error occurred. Please try again.');
+                    }
+                });
+            }
         });
 
         $(document).on("click", ".change-status", function () {

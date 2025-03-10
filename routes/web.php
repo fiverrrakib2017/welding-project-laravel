@@ -325,6 +325,7 @@ Route::group(['middleware'=>'admin'],function(){
 
             /*****Branch Recharge *******/
             Route::post('/recharge/store', 'branch_recharge_store')->name('admin.pop.brnach.recharge.store');
+            Route::get('/recharge/undo/{id}', 'branch_recharge_undo')->name('admin.pop.brnach.recharge.undo');
 
         });
 
