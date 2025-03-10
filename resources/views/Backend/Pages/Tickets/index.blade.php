@@ -19,8 +19,10 @@
                                 <th>Status</th>
                                 <th>Created</th>
                                 <th>Priority</th>
-                                <th>Student Name</th>
+                                <th>Customer Name</th>
                                 <th>Phone Number</th>
+                                <th>POP/Branch</th>
+                                <th>Area Name</th>
                                 <th>Issues</th>
                                 <th>Assigned To</th>
                                 <th>Ticket For</th>
@@ -118,10 +120,16 @@
 
           },
           {
-            "data":"student.name"
+            "data":"customer.fullname"
           },
           {
-            "data":"student.phone"
+            "data":"customer.phone"
+          },
+          {
+            "data":"pop.name"
+          },
+          {
+            "data":"area.name"
           },
           {
             "data":"complain_type.name"
@@ -195,21 +203,21 @@
                 if (response.success) {
                     $('#ticketForm').attr('action', "{{ route('admin.tickets.update', ':id') }}".replace(':id', id));
                     $('#ticketModalLabel').html('<span class="mdi mdi-account-edit mdi-18px"></span> &nbsp;Edit Ticket');
-                    $('#ticketForm select[name="student_id"]').val(response.data.student_id);
-                    $('#ticketForm select[name="ticket_for"]').val(response.data.ticket_for);
-                    $('#ticketForm select[name="ticket_assign_id"]').val(response.data.ticket_assign_id);
-                    $('#ticketForm select[name="ticket_complain_id"]').val(response.data.ticket_complain_id);
-                    $('#ticketForm select[name="priority_id"]').val(response.data.priority_id);
-                    $('#ticketForm input[name="subject"]').val(response.data.subject);
-                    $('#ticketForm textarea[name="description"]').val(response.data.description);
+                    $('#ticketForm select[name="customer_id"]').val(response.data.customer_id).trigger('change');
+                    $('#ticketForm select[name="ticket_for"]').val(response.data.ticket_for).trigger('change');
+                    $('#ticketForm select[name="ticket_assign_id"]').val(response.data.ticket_assign_id).trigger('change');
+                    $('#ticketForm select[name="ticket_complain_id"]').val(response.data.ticket_complain_id).trigger('change');
+                    $('#ticketForm select[name="priority_id"]').val(response.data.priority_id).trigger('change');
+                    $('#ticketForm select[name="pop_id"]').val(response.data.pop_id).trigger('change');
+                    $('#ticketForm select[name="area_id"]').val(response.data.area_id).trigger('change');
                     $('#ticketForm input[name="note"]').val(response.data.note);
-                    $('#ticketForm select[name="status_id"]').val(response.data.status);
-                    $('#ticketForm select[name="percentage"]').val(response.data.percentage);
+                    $('#ticketForm select[name="status_id"]').val(response.data.status).trigger('change');
+                    $('#ticketForm select[name="percentage"]').val(response.data.percentage).trigger('change');
 
                     // Show the modal
                     $('#ticketModal').modal('show');
                 } else {
-                    toastr.error('Failed to fetch Supplier data.');
+                    toastr.error('Failed to fetch  data.');
                 }
             },
             error: function() {

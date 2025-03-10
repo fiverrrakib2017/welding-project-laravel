@@ -14,18 +14,18 @@
                     @csrf
                     <div class="row">
                         <div class="col-md-6 mb-2">
-                            <label>Student Name</label>
-                            <select name="student_id" class="form-select" type="text" style="width: 100%;" required>
+                            <label>Customer Name</label>
+                            <select name="customer_id" class="form-select" type="text" style="width: 100%;" required>
                                 <option value="">---Select---</option>
                                 @php
-                                    $students = \App\Models\Student::latest()->get();
+                                    $customers = \App\Models\Customer::latest()->get();
                                 @endphp
-                                @if($students->isNotEmpty())
-                                    @foreach($students as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                @if($customers->isNotEmpty())
+                                    @foreach($customers as $item)
+                                        <option value="{{ $item->id }}">{{ $item->fullname }}</option>
                                     @endforeach
                                 @else
-                                    <option value="">No student available</option>
+                                    <option value="">No customer available</option>
                                 @endif
                             </select>
 
@@ -36,6 +36,42 @@
                             <select name="ticket_for" class="form-select" type="text" style="width: 100%;" required>
                                 <option value="">---Select---</option>
                                 <option value="1">Default </option>
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <label>POP/Branch</label>
+                            <select name="pop_id" class="form-select" type="text" style="width: 100%;" required>
+                                <option value="">---Select---</option>
+                                @php
+                                    $customers = \App\Models\Pop_branch::latest()->get();
+                                @endphp
+                                @if($customers->isNotEmpty())
+                                    @foreach($customers as $item)
+                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                    @endforeach
+                                @else
+                                @endif
+                            </select>
+
+                        </div>
+
+                        <div class="col-md-6 mb-2">
+                            <label>Area</label>
+                            <select name="area_id" class="form-select" type="text" style="width: 100%;" required>
+                                <option value="">---Select---</option>
+                                @php
+                                    $datas = \App\Models\Pop_area::latest()->get();
+                                @endphp
+                                @if($datas->isNotEmpty())
+                                    @foreach($datas as $item)
+                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                    @endforeach
+                                @else
+                                  
+                                @endif
                             </select>
 
                         </div>
@@ -91,18 +127,6 @@
                                 <option value="5">High</option>
                                 <option value="6">Very High</option>
                             </select>
-
-                        </div>
-                        <div class="col-md-6 mb-2">
-                            <label>Subject</label>
-                            <input name="subject" class="form-control" type="text" placeholder="Enter Subject" required/>
-
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-2">
-                            <label>Description</label>
-                            <textarea name="description" class="form-control" type="text" placeholder="Enter Description" required></textarea>
 
                         </div>
                         <div class="col-md-6 mb-2">

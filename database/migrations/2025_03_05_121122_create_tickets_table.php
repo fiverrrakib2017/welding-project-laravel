@@ -17,9 +17,9 @@ return new class extends Migration
             $table->integer('ticket_for');
             $table->unsignedBigInteger('ticket_assign_id');
             $table->unsignedBigInteger('ticket_complain_id');
+            $table->unsignedBigInteger('pop_id');
+            $table->unsignedBigInteger('area_id');
             $table->integer('priority_id');
-            $table->text('subject');
-            $table->text('description');
             $table->text('note')->nullable();
             $table->string('percentage');
             $table->integer('status');
@@ -28,6 +28,8 @@ return new class extends Migration
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
             $table->foreign('ticket_assign_id')->references('id')->on('ticket_assigns')->onDelete('cascade');
             $table->foreign('ticket_complain_id')->references('id')->on('ticket_complain_types')->onDelete('cascade');
+            $table->foreign('pop_id')->references('id')->on('pop_branches')->onDelete('cascade');
+            $table->foreign('area_id')->references('id')->on('pop_areas')->onDelete('cascade');
         });
     }
 
