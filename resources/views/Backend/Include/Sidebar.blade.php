@@ -20,11 +20,17 @@
         </li>
 
         <li class="nav-item ">
-            <select class="form-control">
+            <select class="form-control" name="sidebar_customer_id">
                 <option value="1">---Select---</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
+                @php
+                    $customers = \App\Models\Customer::latest()->get();
+                @endphp
+                @if($customers->isNotEmpty())
+                    @foreach($customers as $item)
+                        <option value="{{ $item->id }}"> [{{ $item->id }}] - {{ $item->username }} || {{ $item->fullname }}, ({{ $item->phone }})</option>
+                    @endforeach
+                @else
+                @endif
             </select>
             <script src="{{ asset('Backend/plugins/jquery/jquery.min.js') }}"></script>
             <script src="{{ asset('Backend/plugins/select2/js/select2.full.min.js') }}"></script>
@@ -32,6 +38,14 @@
 
                 $(document).ready(function(){
                     $('select').select2();
+                    $("select[name='sidebar_customer_id']").change(function(){
+                        var customer_id = $(this).val();
+                        if(customer_id){
+                            window.location.href = "{{ route('admin.dashboard') }}?customer_id="+customer_id;
+                        }else{
+                            window.location.href = "{{ route('admin.dashboard') }}";
+                        }
+                    });
                 });
             </script>
         </li>
