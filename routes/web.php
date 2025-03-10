@@ -322,6 +322,10 @@ Route::group(['middleware'=>'admin'],function(){
             Route::post('/package/store', 'branch_package_store')->name('admin.pop.brnach.package.store');
             Route::get('/package/view/{id}', 'branch_package_edit')->name('admin.pop.branch.package.edit');
             Route::post('/package/update/{id}', 'branch_package_update')->name('admin.pop.branch.package.update');
+
+            /*****Branch Recharge *******/
+            Route::post('/recharge/store', 'branch_recharge_store')->name('admin.pop.brnach.recharge.store');
+
         });
 
          /* POP/Area Route */

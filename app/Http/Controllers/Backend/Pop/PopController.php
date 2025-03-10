@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Backend\Pop;
 use App\Http\Controllers\Controller;
 use App\Models\Branch_package;
+use App\Models\Branch_transaction;
 use App\Models\Package;
 use App\Models\Pop_branch;
 use Illuminate\Http\Request;
@@ -86,6 +87,37 @@ class PopController extends Controller
         $object->pop_id = $request->pop_id;
         $object->purchase_price = $request->purchase_price;
         $object->sales_price = $request->sales_price;
+
+
+        /* Save to the database table*/
+        $object->save();
+        return response()->json([
+            'success' => true,
+            'message' => 'Added successfully!'
+        ]);
+    }
+    public function branch_recharge_store(Request $request)
+    {
+        /*Validate the form data*/
+        $rules=[
+            'pop_id' => 'required|integer',
+            'amount' => 'required',
+            'transaction_type' => 'required',
+        ];
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $object = new Branch_transaction();
+        $object->pop_id = $request->pop_id;
+        $object->amount = $request->amount;
+        $object->transaction_type = $request->transaction_type;
+        $object->note = $request->note;
 
 
         /* Save to the database table*/
@@ -185,7 +217,16 @@ class PopController extends Controller
     }
     public function view($id) {
         $pop=Pop_branch::findOrFail($id);
-        return view('Backend.Pages.Pop.View',compact('pop'));
+        $due_paid=Branch_transaction::where('pop_id',$id)->where('transaction_type','due_paid')->sum('amount');
+        $get_total_due=Branch_transaction::where('pop_id',$id)->where('transaction_type','credit')->sum('amount');
+
+        $total_paid = Branch_transaction::where('pop_id', $id)
+        ->where('transaction_type', '!=', 'credit')
+        ->sum('amount');
+
+         $total_due = $get_total_due - $due_paid;
+
+        return view('Backend.Pages.Pop.View',compact('pop','due_paid','total_paid','total_due'));
     }
 
     public function update(Request $request, $id)

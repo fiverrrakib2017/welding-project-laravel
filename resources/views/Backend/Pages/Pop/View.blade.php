@@ -78,21 +78,21 @@
                 [
                     'id' => 7,
                     'title' => 'Total Paid',
-                    'value' => 0,
+                    'value' => $total_paid,
                     'bg' => 'success',
                     'icon' => 'fas fa-solid fa-hand-holding-dollar',
                 ],
                 [
                     'id' => 8,
                     'title' => 'Total Due',
-                    'value' => '$0',
+                    'value' => $total_due,
                     'bg' => 'danger',
                     'icon' => 'fas fa-solid fa-dollar-sign',
                 ],
                 [
                     'id' => 9,
                     'title' => 'Due Paid',
-                    'value' => 0,
+                    'value' => $due_paid,
                     'bg' => 'success',
                     'icon' => 'fas fa-hand-holding-usd',
                 ],
@@ -359,6 +359,10 @@
             handleSubmit('#popForm', '#addModal');
             /*****Brnach Package Add****/
             handleSubmit('#BranchPackageForm', '#addBranchPackageModal');
+
+            /*****Branch Recharge ****/
+            handleSubmit('#popRechargeForm', '#PopRechargeModal');
+
             $("#recent_transaction").DataTable();
             $("#recent_tickets").DataTable();
             $("#branch_package_datatable").DataTable();

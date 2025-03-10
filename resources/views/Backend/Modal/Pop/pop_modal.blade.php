@@ -74,37 +74,34 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="{{ route('admin.pop.store') }}" id="popForm" method="POST"
+                <form action="{{ route('admin.pop.brnach.recharge.store') }}" id="popRechargeForm" method="POST"
                     enctype="multipart/form-data">
                     @csrf
                     <div class="form-group mb-2">
                         <label>Amount</label>
+                        <input type="text" name="pop_id" value="<?php echo $pop->id ?? ''?>" class="d-none">
                         <input name="amount" placeholder="Enter Amount" class="form-control" type="number"
                             required>
-                    </div>
-                    <div class="form-group mb-2">
-                        <label>Action</label>
-                        <select name="action"  class="form-control" type="text"
-                            required>
-                            <option value="">---Select---</option>
-                            <option value="Recharge">Recharge</option>
-                            <option value="Paid">Due Paid</option>
-                            <option value="Return">Return</option>
-                        </select>
                     </div>
 
                     <div class="form-group mb-2">
                         <label for="">Transaction Type</label>
-                        <select type="text" class="form-select" name="status" style="width: 100%;" required>
+                        <select type="text" class="form-select" name="transaction_type" style="width: 100%;" required>
                             <option value="">---Select---</option>
-                            <option value="1">Cash</option>
-                            <option value="0">Credit</option>
-                            <option value="2">Bkash</option>
-                            <option value="3">Nagad</option>
-                            <option value="4">Bank</option>
+                            <option value="cash">Cash</option>
+                            <option value="credit">Credit</option>
+                            <option value="bkash">Bkash</option>
+                            <option value="nagad">Nagad</option>
+                            <option value="bank">Bank</option>
+                            <option value="due_paid">Due Paid</option>
+                            <option value="other">Other</option>
                         </select>
                     </div>
-
+                    <div class="form-group mb-2">
+                        <label>Remarks</label>
+                        <input name="note" placeholder="Enter Remarks" class="form-control" type="text"
+                            >
+                    </div>
                     <div class="modal-footer ">
                         <button data-dismiss="modal" type="button" class="btn btn-danger">Cancel</button>
                         <button type="submit" class="btn btn-success">Save Changes</button>
