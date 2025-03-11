@@ -78,6 +78,37 @@ class CustomerController extends Controller
             'message' => 'Added successfully!',
         ]);
     }
+    public function update(Request $request,$id)
+    {
+        /* Validate the form data*/
+        $this->validateForm($request);
+
+        /* update  Customer*/
+        $customer = Customer::findOrFail($id);
+        $customer->fullname = $request->fullname;
+        $customer->phone = $request->phone;
+        $customer->nid = $request->nid;
+        $customer->address = $request->address;
+        $customer->con_charge = $request->con_charge ?? 0;
+        $customer->amount = $request->amount ?? 0;
+        $customer->username = $request->username;
+        $customer->password = $request->password;
+        $customer->package_id = $request->package_id;
+        $customer->pop_id = $request->pop_id;
+        $customer->area_id = $request->area_id;
+        $customer->router_id = $request->router_id;
+        $customer->status = $request->status;
+        $customer->expire_date = $request->expire_date;
+        $customer->remarks = $request->remarks;
+        $customer->liabilities = $request->liabilities;
+
+        /* Save to the database table*/
+        $customer->save();
+        return response()->json([
+            'success' => true,
+            'message' => 'Update successfully!',
+        ]);
+    }
 
     public function delete(Request $request)
     {
@@ -105,24 +136,10 @@ class CustomerController extends Controller
     public function view($id)
     {
         $data = Customer::with(['pop','area','package'])->find($id);
-     
+
         return view('Backend.Pages.Customer.Profile',compact('data'));
     }
 
-    public function update(Request $request, $id)
-    {
-        $this->validateForm($request);
-
-        $object = Package::findOrFail($id);
-        $object->pool_id = $request->pool_id;
-        $object->name = $request->name;
-        $object->update();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Update successfully!',
-        ]);
-    }
     private function validateForm($request)
     {
         /*Validate the form data*/

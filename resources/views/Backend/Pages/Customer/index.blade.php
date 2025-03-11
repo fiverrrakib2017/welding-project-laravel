@@ -55,7 +55,7 @@
     /*Add Modal Submit*/
     handleSubmit('#addCustomerForm','#addCustomerModal');
     /*update Modal Submit*/
-    //handleSubmit('#editForm','#editModal');
+    handleSubmit('#editCustomerForm','#editCustomerModal');
     var table=$("#datatable1").DataTable({
     "processing":true,
     "responsive": true,
@@ -185,15 +185,32 @@
     $('#datatable1 tbody').on('click', '.edit-btn', function () {
         var id = $(this).data('id');
         $.ajax({
-            url: "{{ route('admin.customer.package.edit', ':id') }}".replace(':id', id),
+            url: "{{ route('admin.customer.edit', ':id') }}".replace(':id', id),
             method: 'GET',
             success: function(response) {
                 if (response.success) {
-                    $('#editForm').attr('action', "{{ route('admin.customer.package.update', ':id') }}".replace(':id', id));
-                    $('#editModal select[name="pool_id"]').val(response.data.pool_id).trigger('change');
-                    $('#editModal input[name="name"]').val(response.data.name);
+                    $('#editCustomerForm').attr('action', "{{ route('admin.customer.update', ':id') }}".replace(':id', id));
+                    $('#editCustomerModal input[name="fullname"]').val(response.data.fullname);
+                    $('#editCustomerModal input[name="username"]').val(response.data.username);
+                    $('#editCustomerModal input[name="password"]').val(response.data.password);
+                    $('#editCustomerModal input[name="phone"]').val(response.data.phone);
+                    $('#editCustomerModal input[name="nid"]').val(response.data.nid);
+                    $('#editCustomerModal input[name="con_charge"]').val(response.data.con_charge);
+                    $('#editCustomerModal input[name="amount"]').val(response.data.amount);
+                    $('#editCustomerModal input[name="address"]').val(response.data.address);
+                    $('#editCustomerModal input[name="remarks"]').val(response.data.remarks);
+
+                    $('#editCustomerModal select[name="pop_id"]').val(response.data.pop_id).select2();
+                    $('#editCustomerModal select[name="router_id"]').val(response.data.router_id).select2();
+                    $('#editCustomerModal select[name="area_id"]').val(response.data.area_id).select2();
+                    $('#editCustomerModal select[name="package_id"]').val(response.data.package_id).select2();
+                    $('#editCustomerModal select[name="liabilities"]').val(response.data.liabilities).select2();
+                    $('#editCustomerModal select[name="status"]').val(response.data.status).trigger('change');
+
+
+
                     // Show the modal
-                    $('#editModal').modal('show');
+                    $('#editCustomerModal').modal('show');
                 } else {
                     toastr.error('Failed to fetch data.');
                 }

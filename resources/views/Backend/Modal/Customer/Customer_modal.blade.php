@@ -156,6 +156,168 @@
         </div>
     </div>
 </div>
+<!-- Update Customer Modal -->
+<div class="modal fade" id="editCustomerModal" tabindex="-1" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="">Edit Customer</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editCustomerForm" action="{{ route('admin.customer.store') }}" method="POST">
+                    @csrf
+
+                    <!-- Personal Information -->
+                    <fieldset class="border p-3 mb-4">
+                        <legend class="w-auto px-2 text-primary">Personal Information</legend>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Full Name <span class="text-danger">*</span></label>
+                                    <input type="text" name="fullname" class="form-control" placeholder="Enter Fullname" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Phone <span class="text-danger">*</span></label>
+                                    <input type="text" name="phone" class="form-control" placeholder="Enter Phone" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>NID</label>
+                                    <input type="text" name="nid" class="form-control" placeholder="Enter NID">
+                                </div>
+
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Username <span class="text-danger">*</span></label>
+                                    <input type="text" name="username" class="form-control" placeholder="Enter Username" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Password <span class="text-danger">*</span></label>
+                                    <input type="password" name="password" class="form-control" placeholder="Enter Password" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Address</label>
+                                    <input name="address" class="form-control" placeholder="Enter Address">
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Connection Details -->
+                    <fieldset class="border p-3 mb-4">
+                        <legend class="w-auto px-2 text-primary">Connection Details</legend>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>POP Branch</label>
+                                    <select name="pop_id" id="pop_id" class="form-control" required>
+                                        <option value="">Select POP Branch</option>
+                                        @php
+                                            $get_pop_branch=App\Models\Pop_branch::latest()->get();
+                                        @endphp
+                                        @foreach ($get_pop_branch as $item)
+                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Area</label>
+                                    <select name="area_id" id="area_id" class="form-control" required>
+                                        <option value="">Select Area</option>
+                                        @php
+                                            $datas=App\Models\Pop_area::latest()->get();
+                                        @endphp
+                                        @foreach ($datas as $item)
+                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Package</label>
+                                    <select name="package_id" id="package_id" class="form-control" required>
+                                        <option value="">Select Package</option>
+                                        @php
+                                            $datas=App\Models\Branch_package::latest()->get();
+                                        @endphp
+                                        @foreach ($datas as $item)
+                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Router</label>
+                                    <select name="router_id" class="form-control" required>
+                                        <option value="">Select Router</option>
+                                        @php
+                                            $datas=App\Models\Router::latest()->get();
+                                        @endphp
+                                        @foreach ($datas as $item)
+                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Connection Charge</label>
+                                    <input type="number" name="con_charge" class="form-control" value="500" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Amount</label>
+                                    <input type="number" name="amount" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!--Additional Information -->
+                    <fieldset class="border p-3 mb-4">
+                        <legend class="w-auto px-2 text-primary">Additional Information</legend>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Liabilities</label>
+                                    <select name="liabilities" class="form-control" required>
+                                        <option >---Select---</option>
+                                        <option value="YES">YES</option>
+                                        <option value="NO">NO</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Status</label>
+                                    <select name="status" class="form-control" required>
+                                        <option >---Select---</option>
+                                        <option value="active">Active</option>
+                                        <option value="online">Online</option>
+                                        <option value="offline">Offline</option>
+                                        <option value="blocked">Blocked</option>
+                                        <option value="expired">Expired</option>
+                                        <option value="disabled">Disabled</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Remarks</label>
+                                    <textarea name="remarks" class="form-control" placeholder="কাস্টমার এর সম্পর্কে যদি কোণ নোট রাখতে হয় তাহলে এইখানে লিখে রাখুন , পরবর্তীতে আপনি সেটা কাস্টমার এর প্রোফাইল এ দেখতে পারবেন" style="height: 123px;"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success">Save Customer</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 <style>
     .border {
 
@@ -210,6 +372,43 @@
                 });
             }else{
                 $('#addCustomerModal input[name="amount"]').val('0');
+            }
+
+        });
+
+
+
+
+        /*****************************Edit Customer Script************************************/
+        /** Handle pop branch button click **/
+        $(document).on('change', '#editCustomerModal select[name="pop_id"]', function () {
+            var pop_id = $(this).val();
+            if(pop_id){
+                var $area_url="{{ route('admin.pop.area.get_pop_wise_area', ':id') }}".replace(':id', pop_id);
+                var $package_url="{{ route('admin.pop.branch.get_pop_wise_package', ':id') }}".replace(':id', pop_id);
+                load_dropdown($area_url,'#editCustomerModal select[name="area_id"]');
+                load_dropdown($package_url,'#editCustomerModal select[name="package_id"]');
+            }else{
+                $('#editCustomerModal select[name="area_id"]').html('<option value="">Select Area</option>');
+                $('#editCustomerModal select[name="package_id"]').html('<option value="">Select Package</option>');
+            }
+
+        });
+        /** Handle Amount when package button click **/
+        $(document).on('change', '#editCustomerModal select[name="package_id"]', function () {
+            var package_id = $(this).val();
+            var $amount_url = "{{ route('admin.pop.branch.get_pop_wise_package_price', ':id') }}".replace(':id', package_id);
+            if(package_id){
+                $.ajax({
+                    url: $amount_url,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        $('#editCustomerModal input[name="amount"]').val(response.data.purchase_price);
+                    }
+                });
+            }else{
+                $('#editCustomerModal input[name="amount"]').val('0');
             }
 
         });
