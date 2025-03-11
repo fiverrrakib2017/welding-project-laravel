@@ -51,7 +51,7 @@
         </li>
         <br>
             @php
-                $active_prefix=['admin.customer.ip_pool', 'admin.customer.package'];
+                $active_prefix=['admin.customer.ip_pool', 'admin.customer.package','admin.customer'];
             @endphp
             <li class="nav-item has-treeview">
                 <a href="#" class="nav-link {{ Str::startsWith($currentRoute, $active_prefix) ? 'active' : '' }}">
@@ -59,7 +59,7 @@
                     <p>Customer <i class="right fas fa-angle-left"></i></p>
                 </a>
                 <ul class="nav nav-treeview" style="{{ Str::startsWith($currentRoute, $active_prefix) ? 'display: block;' : 'display: none;' }}">
-                    <li class="nav-item"><a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Customer List</p></a></li>
+                    <li class="nav-item"><a href="{{ route('admin.customer.index') }}" class="nav-link {{($route=='admin.customer.index') ?  'active':''}}"><i class="far fa-circle nav-icon"></i><p>Customer List</p></a></li>
 
                     <li class="nav-item"><a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Add Customer</p></a></li>
 

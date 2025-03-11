@@ -1,32 +1,29 @@
 <?php
-namespace App\Http\Controllers\Backend\Pop\Area;
+namespace App\Http\Controllers\Backend\Customer;
 use App\Http\Controllers\Controller;
+use App\Models\Ip_pools;
+use App\Models\Package;
 use App\Models\Pop_area;
 use App\Models\Pop_branch;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 
-class AreaController extends Controller
+class CustomerController extends Controller
 {
     public function index()
     {
-        return view('Backend.Pages.Pop.Area.index');
+        return view('Backend.Pages.Customer.index');
     }
     public function get_all_data(Request $request)
     {
         $search = $request->search['value'];
-        $columnsForOrderBy = ['id', 'pop_id', 'name', 'billing_cycle'];
+        $columnsForOrderBy = ['id', 'name'];
         $orderByColumn = $request->order[0]['column'];
         $orderDirectection = $request->order[0]['dir'];
 
-        $query = Pop_area::with(['pop'])->when($search, function ($query) use ($search) {
-            $query
-                ->where('name', 'like', "%$search%")
-                ->orWhere('billing_cycle', 'like', "%$search%")
-                ->orWhereHas('pop', function ($query) use ($search) {
-                    $query->where('name', 'like', "%$search%");
-                });
+        $query = Package::when($search, function ($query) use ($search) {
+            $query ->where('name', 'like', "%$search%");
         });
 
         $total = $query->count();
@@ -47,11 +44,10 @@ class AreaController extends Controller
         /* Validate the form data*/
         $this->validateForm($request);
 
-        /* Create a new Supplier*/
-        $object = new Pop_area();
-        $object->pop_id = $request->pop_id;
+        /* Create a new Package*/
+        $object = new Package();
+        $object->pool_id = $request->pool_id;
         $object->name = $request->name;
-        $object->billing_cycle = $request->billing_cycle;
 
         /* Save to the database table*/
         $object->save();
@@ -63,7 +59,7 @@ class AreaController extends Controller
 
     public function delete(Request $request)
     {
-        $object = Pop_area::find($request->id);
+        $object = Package::find($request->id);
 
         if (empty($object)) {
             return response()->json(['error' => 'Not found.'], 404);
@@ -76,43 +72,22 @@ class AreaController extends Controller
     }
     public function edit($id)
     {
-        $data = Pop_area::find($id);
+        $data = Package::find($id);
         if ($data) {
             return response()->json(['success' => true, 'data' => $data]);
             exit();
         } else {
             return response()->json(['success' => false, 'message' => 'Not found.']);
         }
-    }
-    public function get_pop_wise_area($pop_id){
-        $data = Pop_area::Where('pop_id',$pop_id)->get();
-        if ($data) {
-            return response()->json(['success' => true, 'data' => $data]);
-            exit();
-        } else {
-            return response()->json(['success' => false, 'message' => 'Not found.']);
-        }
-    }
-    public function view($id)
-    {
-        return $id;
-        // $total_invoice=Supplier_Invoice::where('supplier_id',$id)->count();
-        // $total_paid_amount=Supplier_Invoice::where('supplier_id',$id)->sum('paid_amount');
-        // $total_due_amount=Supplier_Invoice::where('supplier_id',$id)->sum('due_amount');
-        // $invoices = Supplier_Invoice::where('supplier_id', $id)->get();
-        // $data = Supplier::find($id);
-        //  $supplier_transaction_history=Supplier_Transaction_History::where('supplier_id',$id)->get();
-        // return view('Backend.Pages.Supplier.Profile',compact('data','total_invoice','total_paid_amount','total_due_amount','invoices','supplier_transaction_history'));
     }
 
     public function update(Request $request, $id)
     {
         $this->validateForm($request);
 
-        $object = Pop_area::findOrFail($id);
-        $object->pop_id = $request->pop_id;
+        $object = Package::findOrFail($id);
+        $object->pool_id = $request->pool_id;
         $object->name = $request->name;
-        $object->billing_cycle = $request->billing_cycle;
         $object->update();
 
         return response()->json([
@@ -124,9 +99,8 @@ class AreaController extends Controller
     {
         /*Validate the form data*/
         $rules = [
-            'pop_id' => 'required|string',
+            'pool_id' => 'required|string',
             'name' => 'required|string',
-            'billing_cycle' => 'required|string',
         ];
         $validator = Validator::make($request->all(), $rules);
 

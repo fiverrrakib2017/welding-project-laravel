@@ -152,6 +152,15 @@ Route::group(['middleware'=>'admin'],function(){
     });
     /** Customer Route **/
     Route::prefix('admin/customer')->group(function() {
+        Route::controller(CustomerController::class)->group(function() {
+            Route::get('/list', 'index')->name('admin.customer.index');
+            Route::get('/all-data', 'get_all_data')->name('admin.customer.get_all_data');
+            Route::get('/edit/{id}', 'edit')->name('admin.customer.edit');
+            Route::get('/view/{id}', 'pop_view')->name('admin.customer.view');
+            Route::post('/delete', 'delete')->name('admin.customer.delete');
+            Route::post('/store', 'store')->name('admin.customer.store');
+            Route::post('/update/{id}', 'update')->name('admin.customer.update');
+        });
         /* IP POOL Route */
         Route::prefix('ip-pool')->group(function() {
             Route::controller(PoolController::class)->group(function() {
@@ -322,6 +331,9 @@ Route::group(['middleware'=>'admin'],function(){
             Route::post('/package/store', 'branch_package_store')->name('admin.pop.brnach.package.store');
             Route::get('/package/view/{id}', 'branch_package_edit')->name('admin.pop.branch.package.edit');
             Route::post('/package/update/{id}', 'branch_package_update')->name('admin.pop.branch.package.update');
+            /*GET POP/BRANCH Area */
+            Route::get('/package/{id}','get_pop_wise_package')->name('admin.pop.branch.get_pop_wise_package');
+            Route::get('/package/price/{id}','get_pop_wise_package_price')->name('admin.pop.branch.get_pop_wise_package_price');
 
             /*****Branch Recharge *******/
             Route::post('/recharge/store', 'branch_recharge_store')->name('admin.pop.brnach.recharge.store');
@@ -339,6 +351,9 @@ Route::group(['middleware'=>'admin'],function(){
                 Route::post('/delete', 'delete')->name('admin.pop.area.delete');
                 Route::post('/store', 'store')->name('admin.pop.area.store');
                 Route::post('/update/{id}', 'update')->name('admin.pop.area.update');
+
+                /*GET POP/BRANCH Area */
+                Route::get('/pop-brnach/{id}','get_pop_wise_area')->name('admin.pop.area.get_pop_wise_area');
             });
         });
 

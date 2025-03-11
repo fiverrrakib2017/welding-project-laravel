@@ -80,7 +80,7 @@
                     'title' => 'Total Paid',
                     'value' => $total_paid,
                     'bg' => 'success',
-                    'icon' => 'fas fa-solid fa-hand-holding-dollar',
+                    'icon' => 'fas fa-solid fa-dollar-sign',
                 ],
                 [
                     'id' => 8,

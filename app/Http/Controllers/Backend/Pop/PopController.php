@@ -149,6 +149,26 @@ class PopController extends Controller
             return response()->json(['success' => false, 'message' => 'Not found.']);
         }
     }
+    /*GET Brach Package With Search POP ID*/
+    public function get_pop_wise_package($id){
+        $data = Branch_package::where('pop_id',$id)->latest()->get();
+        if ($data) {
+            return response()->json(['success' => true, 'data' => $data]);
+            exit;
+        } else {
+            return response()->json(['success' => false, 'message' => 'Not found.']);
+        }
+    }
+    /*GET Brach Package Price With Search POP ID*/
+    public function get_pop_wise_package_price($id){
+        $data = Branch_package::find($id);
+        if ($data) {
+            return response()->json(['success' => true, 'data' => $data]);
+            exit;
+        } else {
+            return response()->json(['success' => false, 'message' => 'Not found.']);
+        }
+    }
     public function pop_change_status($id){
         $object =Pop_branch::find($id);
         if (!$object) {
