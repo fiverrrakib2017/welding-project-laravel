@@ -84,7 +84,8 @@
         {
         "data": "fullname",
         "render": function(data, type, row) {
-            // Set the icon based on the status
+            var viewUrl = '{{ route("admin.customer.view", ":id") }}'.replace(':id', row.id);
+            /*Set the icon based on the status*/
             var icon = '';
             var color = '';
 
@@ -96,7 +97,7 @@
                 icon = '<i class="fa fa-question-circle" style="font-size: 18px; color: gray; margin-right: 8px;"></i>';
             }
 
-            return '<a href="profile.php" style="display: flex; align-items: center; text-decoration: none; color: #333;">' +
+            return '<a href="' + viewUrl + '" style="display: flex; align-items: center; text-decoration: none; color: #333;">' +
                 icon +
                 '<span style="font-size: 16px; font-weight: bold;">' + row.fullname + '</span>' +
                 '</a>';
