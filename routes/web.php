@@ -157,7 +157,7 @@ Route::group(['middleware'=>'admin'],function(){
             Route::get('/list', 'index')->name('admin.customer.index');
             Route::get('/all-data', 'get_all_data')->name('admin.customer.get_all_data');
             Route::get('/edit/{id}', 'edit')->name('admin.customer.edit');
-            Route::get('/view/{id}', 'pop_view')->name('admin.customer.view');
+            Route::get('/view/{id}', 'view')->name('admin.customer.view');
             Route::post('/delete', 'delete')->name('admin.customer.delete');
             Route::post('/store', 'store')->name('admin.customer.store');
             Route::post('/update/{id}', 'update')->name('admin.customer.update');

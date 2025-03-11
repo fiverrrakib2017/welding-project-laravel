@@ -28,5 +28,8 @@
 <script  src="{{ asset('Backend/assets/js/__handle_submit.js') }}"></script>
 <script  src="{{ asset('Backend/assets/js/delete_data.js') }}"></script>
 <script  src="{{ asset('Backend/assets/js/custom_select.js') }}"></script>
-  
+<script type="text/javascript">
+    handleSubmit('#ticketForm','#ticketModal');
+</script>
+
 @endsection

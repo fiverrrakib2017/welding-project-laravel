@@ -102,6 +102,12 @@ class CustomerController extends Controller
             return response()->json(['success' => false, 'message' => 'Not found.']);
         }
     }
+    public function view($id)
+    {
+        $data = Customer::with(['pop','area','package'])->find($id);
+     
+        return view('Backend.Pages.Customer.Profile',compact('data'));
+    }
 
     public function update(Request $request, $id)
     {

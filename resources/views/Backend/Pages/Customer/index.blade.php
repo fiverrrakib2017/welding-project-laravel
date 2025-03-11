@@ -152,17 +152,23 @@
           {
             data:null,
             render: function (data, type, row) {
+            var viewUrl = '{{ route("admin.customer.view", ":id") }}'.replace(':id', row.id);
 
-              return `<button  class="btn btn-primary btn-sm mr-3 edit-btn" data-id="${row.id}"><i class="fa fa-edit"></i></button>
+            return `
+                <button class="btn btn-primary btn-sm mr-3 edit-btn" data-id="${row.id}">
+                    <i class="fa fa-edit"></i>
+                </button>
 
-              <button class="btn btn-danger btn-sm mr-3 delete-btn"  data-id="${row.id}"><i class="fa fa-trash"></i></button>
+                <button class="btn btn-danger btn-sm mr-3 delete-btn" data-id="${row.id}">
+                    <i class="fa fa-trash"></i>
+                </button>
 
-              <a class="btn-sm btn btn-success mr-3 "><i class="fa fa-eye"></i></a>
+                <a href="${viewUrl}" class="btn-sm btn btn-success mr-3">
+                    <i class="fa fa-eye"></i>
+                </a>
+            `;
+        }
 
-
-
-              `;
-            }
 
           },
         ],

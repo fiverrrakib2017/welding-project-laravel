@@ -24,7 +24,7 @@ style="border-collapse: collapse; border-spacing: 0; width: 100%;">
 <script src="{{ asset('Backend/plugins/jquery/jquery.min.js') }}"></script>
 <script>
     $(document).ready(function() {
-        handleSubmit('#ticketForm','#ticketModal');
+      
 
         var table = $("#datatable1").DataTable({
             "processing": true,
