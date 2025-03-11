@@ -22,7 +22,7 @@
                                 @endphp
                                 @if($customers->isNotEmpty())
                                     @foreach($customers as $item)
-                                        <option value="{{ $item->id }}">{{ $item->fullname }}</option>
+                                        <option value="{{ $item->id }}"> [{{ $item->id }}] - {{ $item->username }} || {{ $item->fullname }}, ({{ $item->phone }})</option>
                                     @endforeach
                                 @else
                                     <option value="">No customer available</option>
@@ -70,7 +70,7 @@
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
                                     @endforeach
                                 @else
-                                  
+
                                 @endif
                             </select>
 

@@ -13,10 +13,14 @@ class CustomerController extends Controller
     {
         return view('Backend.Pages.Customer.index');
     }
+    public function create()
+    {
+        return view('Backend.Pages.Customer.create');
+    }
 
     public function get_all_data(Request $request){
         $search = $request->search['value'];
-        $columnsForOrderBy = ['id', 'created_at'];
+        $columnsForOrderBy = ['id','id','fullname','package','amount','created_at','expire_date','username','phone','pop_id','area_id','created_at','created_at'];
         $orderByColumn = $request->order[0]['column'];
         $orderDirection = $request->order[0]['dir'];
 
@@ -77,7 +81,7 @@ class CustomerController extends Controller
 
     public function delete(Request $request)
     {
-        $object = Package::find($request->id);
+        $object = Customer::find($request->id);
 
         if (empty($object)) {
             return response()->json(['error' => 'Not found.'], 404);
@@ -90,7 +94,7 @@ class CustomerController extends Controller
     }
     public function edit($id)
     {
-        $data = Package::find($id);
+        $data = Customer::find($id);
         if ($data) {
             return response()->json(['success' => true, 'data' => $data]);
             exit();

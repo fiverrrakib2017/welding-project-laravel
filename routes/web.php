@@ -153,6 +153,7 @@ Route::group(['middleware'=>'admin'],function(){
     /** Customer Route **/
     Route::prefix('admin/customer')->group(function() {
         Route::controller(CustomerController::class)->group(function() {
+            Route::get('/create', 'create')->name('admin.customer.create');
             Route::get('/list', 'index')->name('admin.customer.index');
             Route::get('/all-data', 'get_all_data')->name('admin.customer.get_all_data');
             Route::get('/edit/{id}', 'edit')->name('admin.customer.edit');

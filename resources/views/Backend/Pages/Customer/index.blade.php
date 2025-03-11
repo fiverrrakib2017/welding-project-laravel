@@ -16,8 +16,9 @@
                         <thead>
                             <tr>
                                 <th>
-                                    <input type="checkbox" id="" name="" class="custom-control-input">
+                                    <input type="checkbox" class="custom-control-input" id="selectAllCheckbox" name="selectAll">
                                 </th>
+
                                 <th>ID</th>
                                 <th>Name</th>
                                 <th>Package</th>
@@ -54,7 +55,7 @@
     /*Add Modal Submit*/
     handleSubmit('#addCustomerForm','#addCustomerModal');
     /*update Modal Submit*/
-    handleSubmit('#editForm','#editModal');
+    //handleSubmit('#editForm','#editModal');
     var table=$("#datatable1").DataTable({
     "processing":true,
     "responsive": true,
@@ -199,7 +200,7 @@
     /** Handle Delete button click**/
     $('#datatable1 tbody').on('click', '.delete-btn', function () {
         var id = $(this).data('id');
-        var deleteUrl = "{{ route('admin.customer.package.delete', ':id') }}".replace(':id', id);
+        var deleteUrl = "{{ route('admin.customer.delete', ':id') }}".replace(':id', id);
 
         $('#deleteForm').attr('action', deleteUrl);
         $('#deleteModal').find('input[name="id"]').val(id);

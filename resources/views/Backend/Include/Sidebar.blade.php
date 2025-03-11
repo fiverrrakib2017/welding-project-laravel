@@ -61,7 +61,7 @@
                 <ul class="nav nav-treeview" style="{{ Str::startsWith($currentRoute, $active_prefix) ? 'display: block;' : 'display: none;' }}">
                     <li class="nav-item"><a href="{{ route('admin.customer.index') }}" class="nav-link {{($route=='admin.customer.index') ?  'active':''}}"><i class="far fa-circle nav-icon"></i><p>Customer List</p></a></li>
 
-                    <li class="nav-item"><a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Add Customer</p></a></li>
+                    <li class="nav-item"><a href="{{ route('admin.customer.create') }}" class="nav-link {{($route=='admin.customer.create') ?  'active':''}}"><i class="far fa-circle nav-icon"></i><p>Add Customer</p></a></li>
 
                     <li class="nav-item"><a href="{{ route('admin.customer.ip_pool.index') }}" class="nav-link {{($route=='admin.customer.ip_pool.index') ?  'active':''}}"><i class="far fa-circle nav-icon"></i><p>IP Pool</p></a></li>
 
