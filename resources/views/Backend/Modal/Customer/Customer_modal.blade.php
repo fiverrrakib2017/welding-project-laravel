@@ -11,7 +11,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="addCustomerForm" action="" method="POST">
+                <form id="addCustomerForm" action="{{ route('admin.customer.store') }}" method="POST">
                     @csrf
 
                     <!-- Personal Information -->

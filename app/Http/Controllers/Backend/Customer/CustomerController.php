@@ -1,10 +1,8 @@
 <?php
 namespace App\Http\Controllers\Backend\Customer;
 use App\Http\Controllers\Controller;
-use App\Models\Ip_pools;
+use App\Models\Customer;
 use App\Models\Package;
-use App\Models\Pop_area;
-use App\Models\Pop_branch;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
@@ -15,28 +13,34 @@ class CustomerController extends Controller
     {
         return view('Backend.Pages.Customer.index');
     }
-    public function get_all_data(Request $request)
-    {
+
+    public function get_all_data(Request $request){
         $search = $request->search['value'];
-        $columnsForOrderBy = ['id', 'name'];
+        $columnsForOrderBy = ['id', 'created_at'];
         $orderByColumn = $request->order[0]['column'];
-        $orderDirectection = $request->order[0]['dir'];
+        $orderDirection = $request->order[0]['dir'];
 
-        $query = Package::when($search, function ($query) use ($search) {
-            $query ->where('name', 'like', "%$search%");
-        });
+        $query = Customer::with(['pop','area','package'])->when($search, function ($query) use ($search) {
+            $query->where('phone', 'like', "%$search%")
+                   ->orWhere('username', 'like', "%$search%")
+                  ->orWhereHas('pop', function ($query) use ($search) {
+                      $query->where('fullname', 'like', "%$search%");
+                  })
+                  ->orWhereHas('area', function ($query) use ($search) {
+                      $query->where('name', 'like', "%$search%");
+                  })
+                  ->orWhereHas('package', function ($query) use ($search) {
+                      $query->where('name', 'like', "%$search%");
+                  });
+        }) ->orderBy($columnsForOrderBy[$orderByColumn], $orderDirection)
+        ->paginate($request->length);
 
-        $total = $query->count();
-
-        $query = $query->orderBy($columnsForOrderBy[$orderByColumn], $orderDirectection);
-
-        $items = $query->skip($request->start)->take($request->length)->get();
 
         return response()->json([
             'draw' => $request->draw,
-            'recordsTotal' => $total,
-            'recordsFiltered' => $total,
-            'data' => $items,
+            'recordsTotal' => $query->total(),
+            'recordsFiltered' => $query->total(),
+            'data' => $query->items(),
         ]);
     }
     public function store(Request $request)
@@ -44,13 +48,27 @@ class CustomerController extends Controller
         /* Validate the form data*/
         $this->validateForm($request);
 
-        /* Create a new Package*/
-        $object = new Package();
-        $object->pool_id = $request->pool_id;
-        $object->name = $request->name;
+        /* Create a new Customer*/
+        $customer = new Customer();
+        $customer->fullname = $request->fullname;
+        $customer->phone = $request->phone;
+        $customer->nid = $request->nid;
+        $customer->address = $request->address;
+        $customer->con_charge = $request->con_charge ?? 0;
+        $customer->amount = $request->amount ?? 0;
+        $customer->username = $request->username;
+        $customer->password = $request->password;
+        $customer->package_id = $request->package_id;
+        $customer->pop_id = $request->pop_id;
+        $customer->area_id = $request->area_id;
+        $customer->router_id = $request->router_id;
+        $customer->status = $request->status;
+        $customer->expire_date = $request->expire_date;
+        $customer->remarks = $request->remarks;
+        $customer->liabilities = $request->liabilities;
 
         /* Save to the database table*/
-        $object->save();
+        $customer->save();
         return response()->json([
             'success' => true,
             'message' => 'Added successfully!',
@@ -99,8 +117,18 @@ class CustomerController extends Controller
     {
         /*Validate the form data*/
         $rules = [
-            'pool_id' => 'required|string',
-            'name' => 'required|string',
+           'fullname' => 'required|string|max:100',
+            'phone' => 'required|string|max:15|unique:customers,phone',
+            'nid' => 'nullable|string|max:20|unique:customers,nid',
+            'address' => 'nullable|string',
+            'username' => 'required|string|max:100|unique:customers,username',
+            'password' => 'required|string|min:6',
+            'package_id' => 'required|exists:branch_packages,id',
+            'pop_id' => 'required|exists:pop_branches,id',
+            'area_id' => 'required|exists:pop_areas,id',
+            'router_id' => 'required|exists:routers,id',
+            'status' => 'required|in:active,online,offline,blocked,expired,disabled',
+            'liabilities' => 'required|in:YES,NO',
         ];
         $validator = Validator::make($request->all(), $rules);
 
