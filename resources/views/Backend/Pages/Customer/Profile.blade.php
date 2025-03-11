@@ -33,7 +33,7 @@
         </div>
       <div class="row">
         <div class="col-md-4">
-            <div class="card card-primary card-outline shadow-sm">
+            <div class="card card-danger card-outline shadow-sm">
                 <div class="card-body box-profile">
                     <div class="text-center">
                         <img src="{{ asset($data->photo ?? 'uploads/photos/avatar.png') }}"
