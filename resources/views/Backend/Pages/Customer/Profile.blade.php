@@ -15,7 +15,7 @@
         <div class="row mb-3">
               <!-- Buttons -->
     <div class="col-md-12 d-flex flex-wrap gap-2">
-        <button class="btn btn-success m-1"><i class="fas fa-bolt"></i> Recharge Now</button>
+        <button class="btn btn-success m-1"  data-toggle="modal" data-target="#CustomerRechargeModal"><i class="fas fa-bolt"></i> Recharge Now</button>
         <button class="btn btn-dark m-1"><i class="fas fa-ticket-alt"></i> Add Ticket</button>
         <button class="btn btn-warning m-1"><i class="fas fa-undo-alt"></i> Ree-Connect</button>
 
@@ -45,6 +45,26 @@
                     <p class="text-muted text-center">
                         <i class="fas fa-user-tag"></i> User ID: {{ $data->id ?? 'N/A' }}
                     </p>
+                    @php
+                    $expireDate = $data->expire_date;
+                    $today_date = date('Y-m-d');
+
+                    $isExpired = $expireDate && (strtotime($today_date) > strtotime($expireDate));
+
+                    $formattedDate = $expireDate ? date('d M Y', strtotime($expireDate)) : 'N/A';
+                @endphp
+
+                <p class="text-muted text-center">
+                    <i class="fas fa-calendar-alt"></i>
+                    <strong>Expire Date:</strong>
+                    <span class="{{ $isExpired ? 'text-danger' : 'text-success' }}">
+                        {{ $isExpired ? 'Expired' : $formattedDate }}
+                    </span>
+                </p>
+
+
+
+
                     <p class="text-muted text-center">
                         @php
                             $icon = '';
@@ -84,7 +104,7 @@
                         @endphp
                         <i class="{{ $icon }}"></i> <span class="badge badge-{{ $badgeColor }}">{{ ucfirst($statusText) }}</span>
                     </p>
-
+                    <hr>
                     <!-- Additional Information Section -->
                     <div class="mt-3">
                         <div class="row">
@@ -219,10 +239,10 @@
             <div class="row">
                 @php
                     $dashboardCards = [
-                        ['id' => 1, 'title' => 'Recharged', 'value' => 0, 'bg' => 'success', 'icon' => 'fa-arrow-up'],
-                        ['id' => 2, 'title' => 'Total Paid', 'value' => 0, 'bg' => 'info', 'icon' => 'fa-credit-card'],
-                        ['id' => 3, 'title' => 'Total Due', 'value' => '0', 'bg' => 'danger', 'icon' => 'fa-hand-holding-usd'],
-                        ['id' => 4, 'title' => 'Due Paid', 'value' => 0, 'bg' => 'warning', 'icon' => 'fa-check-circle'],
+                        ['id' => 1, 'title' => 'Recharged', 'value' => $total_recharged, 'bg' => 'success', 'icon' => 'fa-arrow-up'],
+                        ['id' => 2, 'title' => 'Total Paid', 'value' => $totalPaid, 'bg' => 'info', 'icon' => 'fa-credit-card'],
+                        ['id' => 3, 'title' => 'Total Due', 'value' => $totalDue, 'bg' => 'danger', 'icon' => 'fa-hand-holding-usd'],
+                        ['id' => 4, 'title' => 'Due Paid', 'value' => $duePaid, 'bg' => 'warning', 'icon' => 'fa-check-circle'],
                     ];
                 @endphp
                 @foreach($dashboardCards as $card)
@@ -286,7 +306,7 @@
       </div>
     </div>
   </section>
-
+  @include('Backend.Modal.Customer.Recharge.Recharge_modal')
 @endsection
 
 @section('script')

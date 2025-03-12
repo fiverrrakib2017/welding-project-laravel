@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Backend\Customer;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
+use App\Models\Customer_recharge;
 use App\Models\Package;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -137,7 +138,72 @@ class CustomerController extends Controller
     {
         $data = Customer::with(['pop','area','package'])->find($id);
 
-        return view('Backend.Pages.Customer.Profile',compact('data'));
+        $total_recharged = Customer_recharge::where('customer_id', $id)
+        ->where('transaction_type', '!=', 'due_paid')
+        ->sum('amount')?? 0;
+
+        $totalPaid = Customer_recharge::where('customer_id', $id)
+        ->where('transaction_type', '!=', 'credit')
+        ->sum('amount')?? 0;
+
+        $get_total_due = Customer_recharge::where('customer_id', $id)->where('transaction_type', 'credit')->sum('amount') ?? 0;
+        $duePaid = Customer_recharge::where('customer_id', $id)->where('transaction_type', 'due_paid')->sum('amount') ?? 0;
+
+        $totalDue=$get_total_due-$duePaid;
+        return view('Backend.Pages.Customer.Profile',compact('data','totalDue','totalPaid', 'duePaid','total_recharged'));
+    }
+    public function customer_recharge(Request $request){
+         /*Validate the form data*/
+         $rules = [
+            'customer_id' => 'required',
+            'pop_id' => 'required',
+            'area_id' => 'required',
+            'payable_amount' => 'required|numeric',
+            'recharge_month' => 'required|array',
+            'transaction_type' => 'required',
+         ];
+         $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return response()->json(
+                [
+                    'success' => false,
+                    'errors' => $validator->errors(),
+                ],
+                422,
+            );
+        }
+
+        try {
+            /*Store recharge data*/
+            $object = new Customer_recharge();
+            $object->user_id = auth()->guard('admin')->user()->id;
+            $object->customer_id = $request->customer_id;
+            $object->pop_id = $request->pop_id;
+            $object->area_id = $request->area_id;
+            $object->recharge_month = implode(',', $request->recharge_month);
+            $object->transaction_type = $request->transaction_type;
+            $object->amount = $request->payable_amount;
+            $object->note = $request->note;
+
+            if ($object->save()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Recharge successfully.'
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Recharge failed. Please try again.'
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Recharge failed! Error: ' . $e->getMessage()
+            ], 500);
+        }
+
     }
 
     private function validateForm($request)

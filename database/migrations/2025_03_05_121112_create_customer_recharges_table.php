@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('pop_id');
             $table->unsignedBigInteger('area_id');
             $table->integer('amount');
-            $table->string('recharge_month', 7); // YYYY-MM format
+            $table->text('recharge_month');
             $table->text('note')->nullable();
             $table->enum('transaction_type', ['cash', 'credit', 'bkash', 'nagad', 'due_paid', 'other']);
             $table->timestamps();

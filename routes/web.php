@@ -161,6 +161,9 @@ Route::group(['middleware'=>'admin'],function(){
             Route::post('/delete', 'delete')->name('admin.customer.delete');
             Route::post('/store', 'store')->name('admin.customer.store');
             Route::post('/update/{id}', 'update')->name('admin.customer.update');
+
+            /***** Customer Recharge *******/
+            Route::post('/recharge/store', 'customer_recharge')->name('admin.customer.recharge.store');
         });
         /* IP POOL Route */
         Route::prefix('ip-pool')->group(function() {
