@@ -501,15 +501,7 @@
             });
         });
 
-        /** Handle Delete button click**/
-        $('#datatable1 tbody').on('click', '.delete-btn', function () {
-            var id = $(this).data('id');
-            var deleteUrl = "{{ route('admin.customer.delete', ':id') }}".replace(':id', id);
-
-            $('#deleteForm').attr('action', deleteUrl);
-            $('#deleteModal').find('input[name="id"]').val(id);
-            $('#deleteModal').modal('show');
-        });
+        
 
     });
 </script>
