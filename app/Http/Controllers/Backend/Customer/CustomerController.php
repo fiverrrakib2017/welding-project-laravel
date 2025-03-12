@@ -205,6 +205,16 @@ class CustomerController extends Controller
         }
 
     }
+    public function customer_recharge_undo($id){
+        $object = Customer_recharge::find($id);
+        if ($object) {
+            $object->delete();
+            return response()->json(['success' => true, 'message' => 'Successfully!']);
+            exit;
+        } else {
+            return response()->json(['success' => false, 'message' => 'Not found.']);
+        }
+    }
 
     private function validateForm($request)
     {

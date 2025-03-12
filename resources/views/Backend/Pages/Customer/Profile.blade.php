@@ -318,7 +318,7 @@
 
                                      <td>{{ number_format($item->amount, 2) }} BDT</td>
                                      <td>
-                                         <button class="btn btn-danger btn-sm delete-btn" data-id="{{ $item->id }}"><i class="fas fa-undo"></i></button>
+                                         <button class="btn btn-danger btn-sm customer_recharge_undo_btn" data-id="{{ $item->id }}"><i class="fas fa-undo"></i></button>
                                      </td>
                                  </tr>
                                  @endforeach
@@ -380,6 +380,33 @@
             });
         });
         /************** Customer Enable And Disabled End**************************/
+        
+        /** Handle Customer Undo Recharge button click **/
+        $(document).on('click', '.customer_recharge_undo_btn', function() {
+            if(confirm('Are you sure you want to undo this action?')){
+                var id = $(this).data('id');
+                var button = $(this);
+                var row = button.closest('tr');
+                var originalContent = button.html();
+                button.html('<i class="fas fa-spinner fa-spin"></i> Undoing...').prop('disabled', true);
+                $.ajax({
+                    url: "{{ route('admin.customer.recharge.undo', ':id') }}".replace(':id', id),
+                    method: 'GET',
+                    success: function(response) {
+                        if (response.success) {
+                            row.fadeOut(300, function() {
+                                $(this).remove();
+                                toastr.success('Successfully Undo!');
+                            });
+
+                        }
+                    },
+                    error: function() {
+                        toastr.error('An error occurred. Please try again.');
+                    }
+                });
+            }
+        });
     });
 
 

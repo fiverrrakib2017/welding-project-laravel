@@ -164,6 +164,7 @@ Route::group(['middleware'=>'admin'],function(){
 
             /***** Customer Recharge *******/
             Route::post('/recharge/store', 'customer_recharge')->name('admin.customer.recharge.store');
+            Route::get('/recharge/undo/{id}', 'customer_recharge_undo')->name('admin.customer.recharge.undo');
         });
         /* IP POOL Route */
         Route::prefix('ip-pool')->group(function() {
