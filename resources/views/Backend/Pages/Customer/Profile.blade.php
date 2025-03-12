@@ -16,7 +16,7 @@
               <!-- Buttons -->
     <div class="col-md-12 d-flex flex-wrap gap-2">
         <button class="btn btn-success m-1"  data-toggle="modal" data-target="#CustomerRechargeModal"><i class="fas fa-bolt"></i> Recharge Now</button>
-        <button class="btn btn-dark m-1"><i class="fas fa-ticket-alt"></i> Add Ticket</button>
+        <button class="btn btn-dark m-1" data-toggle="modal" data-target="#ticketModal"><i class="fas fa-ticket-alt"></i> Add Ticket</button>
         <button class="btn btn-warning m-1"><i class="fas fa-undo-alt"></i> Ree-Connect</button>
 
         <!--------Customer Disable And Enable Button--------->
@@ -28,7 +28,7 @@
         @endif
 
 
-        <button class="btn btn-sm btn-primary m-1"><i class="fas fa-edit"></i> Edit Profile</button>
+        <button type="button" class="btn btn-sm btn-primary m-1 customer_edit_btn" data-id="{{ $data->id }}"><i class="fas fa-edit"></i> Edit Profile</button>
     </div>
         </div>
       <div class="row">
@@ -337,6 +337,8 @@
     </div>
   </section>
   @include('Backend.Modal.Customer.Recharge.Recharge_modal')
+  @include('Backend.Modal.Tickets.ticket_modal',['customer_id' => $data->id])
+  @include('Backend.Modal.Customer.customer_modal')
 @endsection
 
 @section('script')
@@ -377,7 +379,6 @@
             });
         });
         /************** Customer Enable And Disabled End**************************/
-
     });
 
 

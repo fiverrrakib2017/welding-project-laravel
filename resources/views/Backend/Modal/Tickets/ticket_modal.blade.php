@@ -1,3 +1,7 @@
+@php
+    $customer_id = $customer_id ?? null;
+@endphp
+
 <div class="modal fade bs-example-modal-lg" id="ticketModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content col-md-12">
@@ -22,7 +26,8 @@
                                 @endphp
                                 @if($customers->isNotEmpty())
                                     @foreach($customers as $item)
-                                        <option value="{{ $item->id }}"> [{{ $item->id }}] - {{ $item->username }} || {{ $item->fullname }}, ({{ $item->phone }})</option>
+                                    $selectd=if($item->)
+                                        <option value="{{ $item->id }}"   @if($item->id == $customer_id) selected @endif> [{{ $item->id }}] - {{ $item->username }} || {{ $item->fullname }}, ({{ $item->phone }})</option>
                                     @endforeach
                                 @else
                                     <option value="">No customer available</option>

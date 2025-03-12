@@ -47,15 +47,13 @@
 @endsection
 
 @section('script')
-<script  src="{{ asset('Backend/assets/js/__handle_submit.js') }}"></script>
+
 <script  src="{{ asset('Backend/assets/js/delete_data.js') }}"></script>
 
   <script type="text/javascript">
     $(document).ready(function(){
-    /*Add Modal Submit*/
-    handleSubmit('#addCustomerForm','#addCustomerModal');
-    /*update Modal Submit*/
-    handleSubmit('#editCustomerForm','#editCustomerModal');
+
+
     var table=$("#datatable1").DataTable({
     "processing":true,
     "responsive": true,
@@ -156,7 +154,7 @@
             var viewUrl = '{{ route("admin.customer.view", ":id") }}'.replace(':id', row.id);
 
             return `
-                <button class="btn btn-primary btn-sm mr-3 edit-btn" data-id="${row.id}">
+                <button class="btn btn-primary btn-sm mr-3 customer_edit_btn" data-id="${row.id}">
                     <i class="fa fa-edit"></i>
                 </button>
 
@@ -181,55 +179,7 @@
 
     });
 
-    /** Handle Edit button click **/
-    $('#datatable1 tbody').on('click', '.edit-btn', function () {
-        var id = $(this).data('id');
-        $.ajax({
-            url: "{{ route('admin.customer.edit', ':id') }}".replace(':id', id),
-            method: 'GET',
-            success: function(response) {
-                if (response.success) {
-                    $('#editCustomerForm').attr('action', "{{ route('admin.customer.update', ':id') }}".replace(':id', id));
-                    $('#editCustomerModal input[name="fullname"]').val(response.data.fullname);
-                    $('#editCustomerModal input[name="username"]').val(response.data.username);
-                    $('#editCustomerModal input[name="password"]').val(response.data.password);
-                    $('#editCustomerModal input[name="phone"]').val(response.data.phone);
-                    $('#editCustomerModal input[name="nid"]').val(response.data.nid);
-                    $('#editCustomerModal input[name="con_charge"]').val(response.data.con_charge);
-                    $('#editCustomerModal input[name="amount"]').val(response.data.amount);
-                    $('#editCustomerModal input[name="address"]').val(response.data.address);
-                    $('#editCustomerModal input[name="remarks"]').val(response.data.remarks);
 
-                    $('#editCustomerModal select[name="pop_id"]').val(response.data.pop_id).select2();
-                    $('#editCustomerModal select[name="router_id"]').val(response.data.router_id).select2();
-                    $('#editCustomerModal select[name="area_id"]').val(response.data.area_id).select2();
-                    $('#editCustomerModal select[name="package_id"]').val(response.data.package_id).select2();
-                    $('#editCustomerModal select[name="liabilities"]').val(response.data.liabilities).select2();
-                    $('#editCustomerModal select[name="status"]').val(response.data.status).trigger('change');
-
-
-
-                    // Show the modal
-                    $('#editCustomerModal').modal('show');
-                } else {
-                    toastr.error('Failed to fetch data.');
-                }
-            },
-            error: function() {
-                toastr.error('An error occurred. Please try again.');
-            }
-        });
-    });
-
-    /** Handle Delete button click**/
-    $('#datatable1 tbody').on('click', '.delete-btn', function () {
-        var id = $(this).data('id');
-        var deleteUrl = "{{ route('admin.customer.delete', ':id') }}".replace(':id', id);
-
-        $('#deleteForm').attr('action', deleteUrl);
-        $('#deleteModal').find('input[name="id"]').val(id);
-        $('#deleteModal').modal('show');
-    });
 
 
 
