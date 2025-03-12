@@ -279,20 +279,50 @@
                 <!-- Invoice -->
                 <div class="tab-pane" id="recharge">
                     <div class="table-responsive">
-                        <table id="invoice_datatable"
+                        <table id="recharge_datatable"
                             class="table table-bordered dt-responsive nowrap"
                             style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                             <thead>
                                 <tr>
-                                    <th>Invoice id</th>
-                                    <th>Sub Total</th>
-                                    <th>Discount</th>
-                                    <th>Grand Total</th>
-                                    <th>Create Date</th>
+                                    <th>Date</th>
+                                    <th>Months</th>
+                                    <th>Type</th>
+                                    <th>Remarks</th>
+                                    <th>Paid until</th>
+                                    <th>Amount</th>
                                     <th></th>
                                 </tr>
                             </thead>
-                            <tbody id=""> </tbody>
+                            <tbody>
+                                @php
+                                    $total_recharge_data=App\Models\Customer_recharge::where('customer_id',$data->id)->get();
+                                @endphp
+                                 @foreach ($total_recharge_data as $item)
+                                 <tr>
+                                     <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d M Y') }}</td>
+                                     <td>{{ $item->recharge_month }}</td>
+                                     <td>
+                                        @if ($item->transaction_type == 'cash')
+                                            <span class="badge bg-success">{{ ucfirst($item->transaction_type) }}</span>
+                                        @elseif($item->transaction_type == 'credit')
+                                        <span class="badge bg-danger">{{ ucfirst($item->transaction_type) }}</span>
+                                        @elseif($item->transaction_type == 'due_paid')
+                                        <span class="badge bg-success">{{ ucfirst($item->transaction_type) }}</span>
+                                        @else
+                                            <span class="badge bg-danger">{{ ucfirst($item->transaction_type) }}</span>
+                                        @endif
+                                    </td>
+
+                                     <td>{{ ucfirst($item->note) }}</td>
+                                     <td>{{ ucfirst($item->paid_until) }}</td>
+
+                                     <td>{{ number_format($item->amount, 2) }} BDT</td>
+                                     <td>
+                                         <button class="btn btn-danger btn-sm delete-btn" data-id="{{ $item->id }}"><i class="fas fa-undo"></i></button>
+                                     </td>
+                                 </tr>
+                                 @endforeach
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -315,6 +345,7 @@
 <script src="{{ asset('Backend/assets/js/delete_data.js') }}"></script>
 <script type="text/javascript">
     $(document).ready(function(){
+        $("#recharge_datatable").DataTable();
         /************** Customer Enable And Disabled Start**************************/
         $(document).on("click", ".change-status", function () {
             let id = $(this).data("id");
