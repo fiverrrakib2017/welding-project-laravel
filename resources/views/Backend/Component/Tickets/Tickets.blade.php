@@ -21,10 +21,11 @@ style="border-collapse: collapse; border-spacing: 0; width: 100%;">
     </thead>
     <tbody></tbody>
 </table>
+<script  src="{{ asset('Backend/assets/js/delete_data.js') }}"></script>
 <script src="{{ asset('Backend/plugins/jquery/jquery.min.js') }}"></script>
 <script>
     $(document).ready(function() {
-      
+
 
         var table = $("#datatable1").DataTable({
             "processing": true,
@@ -142,9 +143,9 @@ style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                 {
                     data: null,
                     render: function(data, type, row) {
-                        return `<button  class="btn btn-primary btn-sm mr-3 edit-btn" data-id="${row.id}"><i class="fa fa-edit"></i></button>
+                        return `<button  class="btn btn-primary btn-sm mr-3 tickets_edit_btn" data-id="${row.id}"><i class="fa fa-edit"></i></button>
 
-                <button class="btn btn-danger btn-sm mr-3 delete-btn"  data-id="${row.id}"><i class="fa fa-trash"></i></button>`;
+                <button class="btn btn-danger btn-sm mr-3 tickets_delete_btn"  data-id="${row.id}"><i class="fa fa-trash"></i></button>`;
                     }
 
                 },
@@ -155,61 +156,7 @@ style="border-collapse: collapse; border-spacing: 0; width: 100%;">
 
         });
 
-        /** Handle Edit button click **/
-        $('#datatable1 tbody').on('click', '.edit-btn', function() {
-            var id = $(this).data('id');
-            $.ajax({
-                url: "{{ route('admin.tickets.edit', ':id') }}".replace(':id', id),
-                method: 'GET',
-                success: function(response) {
-                    if (response.success) {
-                        $('#ticketForm').attr('action',
-                            "{{ route('admin.tickets.update', ':id') }}".replace(':id',
-                                id));
-                        $('#ticketModalLabel').html(
-                            '<span class="mdi mdi-account-edit mdi-18px"></span> &nbsp;Edit Ticket'
-                            );
-                        $('#ticketForm select[name="customer_id"]').val(response.data
-                            .customer_id).trigger('change');
-                        $('#ticketForm select[name="ticket_for"]').val(response.data
-                            .ticket_for).trigger('change');
-                        $('#ticketForm select[name="ticket_assign_id"]').val(response.data
-                            .ticket_assign_id).trigger('change');
-                        $('#ticketForm select[name="ticket_complain_id"]').val(response.data
-                            .ticket_complain_id).trigger('change');
-                        $('#ticketForm select[name="priority_id"]').val(response.data
-                            .priority_id).trigger('change');
-                        $('#ticketForm select[name="pop_id"]').val(response.data.pop_id)
-                            .trigger('change');
-                        $('#ticketForm select[name="area_id"]').val(response.data.area_id)
-                            .trigger('change');
-                        $('#ticketForm input[name="note"]').val(response.data.note);
-                        $('#ticketForm select[name="status_id"]').val(response.data.status)
-                            .trigger('change');
-                        $('#ticketForm select[name="percentage"]').val(response.data
-                            .percentage).trigger('change');
 
-                        // Show the modal
-                        $('#ticketModal').modal('show');
-                    } else {
-                        toastr.error('Failed to fetch  data.');
-                    }
-                },
-                error: function() {
-                    toastr.error('An error occurred. Please try again.');
-                }
-            });
-        });
-
-        /** Handle Delete button click**/
-        $('#datatable1 tbody').on('click', '.delete-btn', function() {
-            var id = $(this).data('id');
-            var deleteUrl = "{{ route('admin.tickets.delete', ':id') }}".replace(':id', id);
-
-            $('#deleteForm').attr('action', deleteUrl);
-            $('#deleteModal').find('input[name="id"]').val(id);
-            $('#deleteModal').modal('show');
-        });
 
     });
 </script>

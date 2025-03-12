@@ -1,5 +1,7 @@
 @php
     $customer_id = $customer_id ?? null;
+    $pop_id = $pop_id ?? null;
+    $area_id = $area_id ?? null;
 @endphp
 
 <div class="modal fade bs-example-modal-lg" id="ticketModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -26,7 +28,6 @@
                                 @endphp
                                 @if($customers->isNotEmpty())
                                     @foreach($customers as $item)
-                                    $selectd=if($item->)
                                         <option value="{{ $item->id }}"   @if($item->id == $customer_id) selected @endif> [{{ $item->id }}] - {{ $item->username }} || {{ $item->fullname }}, ({{ $item->phone }})</option>
                                     @endforeach
                                 @else
@@ -55,7 +56,7 @@
                                 @endphp
                                 @if($customers->isNotEmpty())
                                     @foreach($customers as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        <option value="{{ $item->id }}"  @if($item->id == $pop_id) selected @endif>{{ $item->name }}</option>
                                     @endforeach
                                 @else
                                 @endif
@@ -72,7 +73,7 @@
                                 @endphp
                                 @if($datas->isNotEmpty())
                                     @foreach($datas as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        <option value="{{ $item->id }}" @if($item->id == $area_id) selected @endif>{{ $item->name }}</option>
                                     @endforeach
                                 @else
 
@@ -181,3 +182,67 @@
         </div>
     </div>
 </div>
+<script src="{{ asset('Backend/plugins/jquery/jquery.min.js') }}"></script>
+<script  src="{{ asset('Backend/assets/js/__handle_submit.js') }}"></script>
+<script  src="{{ asset('Backend/assets/js/delete_data.js') }}"></script>
+<script  src="{{ asset('Backend/assets/js/custom_select.js') }}"></script>
+<script type="text/javascript">
+    handleSubmit('#ticketForm','#ticketModal');
+    $(document).ready(function(){
+        /** Handle Edit button click **/
+        $(document).on('click', '.tickets_edit_btn', function() {
+            var id = $(this).data('id');
+            $.ajax({
+                url: "{{ route('admin.tickets.edit', ':id') }}".replace(':id', id),
+                method: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        $('#ticketForm').attr('action',
+                            "{{ route('admin.tickets.update', ':id') }}".replace(':id',
+                                id));
+                        $('#ticketModalLabel').html(
+                            '<span class="mdi mdi-account-edit mdi-18px"></span> &nbsp;Edit Ticket'
+                            );
+                        $('#ticketForm select[name="customer_id"]').val(response.data
+                            .customer_id).trigger('change');
+                        $('#ticketForm select[name="ticket_for"]').val(response.data
+                            .ticket_for).trigger('change');
+                        $('#ticketForm select[name="ticket_assign_id"]').val(response.data
+                            .ticket_assign_id).trigger('change');
+                        $('#ticketForm select[name="ticket_complain_id"]').val(response.data
+                            .ticket_complain_id).trigger('change');
+                        $('#ticketForm select[name="priority_id"]').val(response.data
+                            .priority_id).trigger('change');
+                        $('#ticketForm select[name="pop_id"]').val(response.data.pop_id)
+                            .trigger('change');
+                        $('#ticketForm select[name="area_id"]').val(response.data.area_id)
+                            .trigger('change');
+                        $('#ticketForm input[name="note"]').val(response.data.note);
+                        $('#ticketForm select[name="status_id"]').val(response.data.status)
+                            .trigger('change');
+                        $('#ticketForm select[name="percentage"]').val(response.data
+                            .percentage).trigger('change');
+
+                        // Show the modal
+                        $('#ticketModal').modal('show');
+                    } else {
+                        toastr.error('Failed to fetch  data.');
+                    }
+                },
+                error: function() {
+                    toastr.error('An error occurred. Please try again.');
+                }
+            });
+        });
+
+        /** Handle Delete button click**/
+        $(document).on('click', '.tickets_delete_btn', function() {
+            var id = $(this).data('id');
+            var deleteUrl = "{{ route('admin.tickets.delete', ':id') }}".replace(':id', id);
+
+            $('#deleteForm').attr('action', deleteUrl);
+            $('#deleteModal').find('input[name="id"]').val(id);
+            $('#deleteModal').modal('show');
+        });
+    });
+</script>

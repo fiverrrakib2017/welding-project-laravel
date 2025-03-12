@@ -264,7 +264,7 @@
             <div class="card-header p-2">
               <ul class="nav nav-pills">
                 <li class="nav-item"><a class="nav-link active" href="#tickets" data-toggle="tab">Tickets</a></li>
-                <li class="nav-item"><a class="nav-link" href="#recharge" data-toggle="tab">Recharge</a></li>
+                <li class="nav-item"><a class="nav-link" href="#recharge" data-toggle="tab">Recharge History</a></li>
 
               </ul>
             </div><!-- /.card-header -->
@@ -337,8 +337,9 @@
     </div>
   </section>
   @include('Backend.Modal.Customer.Recharge.Recharge_modal')
-  @include('Backend.Modal.Tickets.ticket_modal',['customer_id' => $data->id])
+  @include('Backend.Modal.Tickets.ticket_modal',['customer_id' => $data->id, 'pop_id'=>$data->pop_id,'area_id'=>$data->area_id])
   @include('Backend.Modal.Customer.customer_modal')
+  @include('Backend.Modal.delete_modal')
 @endsection
 
 @section('script')
