@@ -41,9 +41,7 @@
                     $("select[name='sidebar_customer_id']").change(function(){
                         var customer_id = $(this).val();
                         if(customer_id){
-                            window.location.href = "{{ route('admin.dashboard') }}?customer_id="+customer_id;
-                        }else{
-                            window.location.href = "{{ route('admin.dashboard') }}";
+                            window.location.href = "{{ route('admin.customer.view', ':id') }}".replace(':id', customer_id);
                         }
                     });
                 });
