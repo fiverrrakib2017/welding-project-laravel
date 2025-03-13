@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Backend\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\Customer_Invoice;
+use App\Models\Pop_area;
 use App\Models\Product;
 use App\Models\Product_Order;
 use Illuminate\Support\Facades\DB;
 use App\Models\Supplier;
-use App\Models\Supplier_Invoice;
+use App\Models\Customer_recharge;
+use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -65,7 +67,7 @@ class AdminController extends Controller
             'total_supplier' => intval($total_supplier),
             'total_products' => intval($total_products),
             'net_profit' => intval($net_profit),
-            'total_customer_order' => intval($total_customer_invoice), 
+            'total_customer_order' => intval($total_customer_invoice),
             'total_quantity' => intval(Product::sum('qty')),
         ];
 
@@ -86,8 +88,8 @@ class AdminController extends Controller
         return [
             'product_id' => $item->product_id,
             'total_qty' => $item->total_qty,
-            'product_title' => $product ? $product->title : 'Unknown', 
-            'product_image' => $product_image ? $product_image->image : 'default_image.jpg', 
+            'product_title' => $product ? $product->title : 'Unknown',
+            'product_image' => $product_image ? $product_image->image : 'default_image.jpg',
         ];
     });
 
@@ -109,7 +111,29 @@ class AdminController extends Controller
     }
     public function dashboard()
     {
-        return view('Backend.Pages.Dashboard.index');
+        $total_area=Pop_area::latest()->count();
+        $tickets=Ticket::latest()->count();
+        $ticket_completed=Ticket::where('status','1')->count();
+        $ticket_pending=Ticket::where('status','0')->count();
+
+        /*Customer Details*/
+        $online_customer=Customer::where('status','online')->count();
+        $active_customer=Customer::where('status','active')->count();
+        $expire_customer=Customer::where('status','expire')->count();
+        $offline_customer=Customer::where('status','offline')->count();
+        $disable_customer=Customer::where('status','disabled')->count();
+          /*Customer Recharge Details*/
+        $total_recharged = Customer_recharge::where('transaction_type', '!=', 'due_paid')
+        ->sum('amount')?? 0;
+
+        $totalPaid = Customer_recharge::where('transaction_type', '!=', 'credit')
+        ->sum('amount')?? 0;
+
+        $get_total_due = Customer_recharge::where('transaction_type', 'credit')->sum('amount') ?? 0;
+        $duePaid = Customer_recharge::where('transaction_type', 'due_paid')->sum('amount') ?? 0;
+
+        $totalDue=$get_total_due-$duePaid;
+        return view('Backend.Pages.Dashboard.index',compact('total_area','tickets','ticket_completed','ticket_pending','online_customer','active_customer','expire_customer','offline_customer','disable_customer','total_recharged','totalPaid','totalDue','duePaid'));
     }
 
     public function logout(){

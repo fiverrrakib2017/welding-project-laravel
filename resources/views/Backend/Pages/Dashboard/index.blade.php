@@ -47,14 +47,13 @@
       <!-- Buttons -->
     <div class="col-md-12 d-flex flex-wrap gap-2">
         <button class="btn btn-primary m-1"><i class="fas fa-user-clock"></i> New Request</button>
-        <button class="btn btn-secondary m-1"><i class="fas fa-user-plus"></i> Add Customer</button>
-        <button class="btn btn-success m-1"><i class="fas fa-bolt"></i> Recharge Now</button>
+        <button class="btn btn-success m-1"><i class="fas fa-user-plus"></i> Add Customer</button>
         <button class="btn btn-danger m-1"><i class="fas fa-ticket-alt"></i> Add Ticket</button>
         <button class="btn btn-warning m-1"><i class="fas fa-envelope"></i> SMS Notification</button>
         <button class="btn btn-info m-1"><i class="fas fa-chart-line"></i> Reports</button>
-        <button class="btn btn-dark m-1"><i class="fas fa-user-shield"></i> Admin Panel</button>
+        {{-- <button class="btn btn-dark m-1"><i class="fas fa-user-shield"></i> Admin Panel</button>
          <button class="btn btn-secondary m-1"><i class="fas fa-cogs"></i> Settings</button>
-        <button class="btn btn-primary m-1"><i class="fas fa-user-cog"></i> User Management</button>
+        <button class="btn btn-primary m-1"><i class="fas fa-user-cog"></i> User Management</button> --}}
           <button id="resetOrderBtn" class="btn btn-danger m-1"><i class="fas fa-undo"></i> Reset Card</button>
     </div>
 </div>
@@ -64,22 +63,44 @@
   <div class="row" id="dashboardCards">
      @php
         $dashboardCards = [
-            ['id' => 1,'title' => 'Online', 'value' => 0, 'bg' => 'success', 'icon' => 'fa-user-check'],
-            ['id' => 2,'title' => 'Offline', 'value' => 0, 'bg' => 'info', 'icon' => 'fa-user-times'],
-            ['id' => 3,'title' => 'Active Customers', 'value' => 0, 'bg' => 'primary', 'icon' => 'fa-users'],
-            ['id' => 4,'title' => 'Expired', 'value' => 0, 'bg' => 'danger', 'icon' => 'fa-user-clock'],
-            ['id' => 5,'title' => 'Disabled', 'value' => 0, 'bg' => 'warning', 'icon' => 'fa-user-lock'],
+            ['id' => 1,'title' => 'Online', 'value' => $online_customer, 'bg' => 'success', 'icon' => 'fa-user-check'],
+            ['id' => 2,'title' => 'Offline', 'value' => $offline_customer, 'bg' => 'info', 'icon' => 'fa-user-times'],
+            ['id' => 3,'title' => 'Active Customers', 'value' => $active_customer, 'bg' => 'primary', 'icon' => 'fa-users'],
+            ['id' => 4,'title' => 'Expired', 'value' => $expire_customer, 'bg' => 'danger', 'icon' => 'fa-user-clock'],
+            ['id' => 5,'title' => 'Disabled', 'value' => $disable_customer, 'bg' => 'warning', 'icon' => 'fa-user-lock'],
             ['id' => 6,'title' => 'Requests', 'value' => 0, 'bg' => 'dark', 'icon' => 'fa-user-edit'],
-            ['id' => 7,'title' => 'Total Revenue', 'value' => '$0', 'bg' => 'success', 'icon' => 'fa-dollar-sign'],
-            ['id' => 8,'title' => 'Pending Payments', 'value' => '$0', 'bg' => 'danger', 'icon' => 'fa-exclamation-circle'],
-            ['id' => 9,'title' => 'Total Bandwidth Used', 'value' => '0GB', 'bg' => 'info', 'icon' => 'fa-network-wired'],
-            ['id' => 10,'title' => 'Active Connections', 'value' => 0, 'bg' => 'primary', 'icon' => 'fa-plug'],
-            ['id' => 11,'title' => 'New Connection Requests', 'value' => 0, 'bg' => 'warning', 'icon' => 'fa-user-plus'],
-            ['id' => 12,'title' => 'Due Amounts', 'value' => '$0', 'bg' => 'danger', 'icon' => 'fa-hand-holding-usd'],
-            ['id' => 13,'title' => 'Resolved Tickets', 'value' => 0, 'bg' => 'success', 'icon' => 'fa-check-circle'],
-            ['id' => 14,'title' => 'New Registrations', 'value' => 0, 'bg' => 'primary', 'icon' => 'fa-user-plus'],
-             ['id' => 15,'title' => 'Complaints', 'value' => 0, 'bg' => 'danger', 'icon' => 'fa-exclamation-triangle'],
-            ['id' => 16,'title' =>'Support Requests', 'value' => 0, 'bg' => 'info', 'icon' => 'fa-headset'],
+
+
+
+            [
+                    'id' => 7,
+                    'title' => 'Area',
+                    'value' => $total_area,
+                    'bg' => 'success',
+                    'icon' => 'fas fa-solid fa-map-marker-alt',
+                ],
+                [
+                    'id' => 8,
+                    'title' => 'Total Tickets',
+                    'value' => $tickets,
+                    'bg' => 'success',
+                    'icon' => 'fas fa-solid fa-ticket-alt',
+                ],
+                [
+                    'id' => 9,
+                    'title' => 'Completed Tickets',
+                    'value' => $ticket_completed,
+                    'bg' => 'success',
+                    'icon' => 'fas fa-solid fa-check-circle',
+                ],
+                [
+                    'id' => 10,
+                    'title' => 'Pending Tickets',
+                    'value' => $ticket_pending,
+                    'bg' => 'danger',
+                    'icon' => 'fas fa-solid fa-exclamation-triangle',
+                ],
+
 
 
         ];
@@ -108,14 +129,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="card">
-             <div class="card-header bg-primary text-white">Active vs Inactive Customers</div>
-              <div class="card-body">
-                <canvas id="customerChart"></canvas>
-              </div>
-        </div>
-    </div>
+    @include('Backend.Component.Chart.Online_offline_chart')
 </div>
 
 
@@ -131,7 +145,7 @@
 
     <div class="col-md-6">
         <div class="card">
-            <div class="card-header bg-primary text-white">Payment Status Chart</div>
+            <div class="card-header bg-primary text-white">Customer Payment Status Chart</div>
             <div class="card-body">
                 <canvas id="paymentChart"></canvas>
             </div>
@@ -196,6 +210,11 @@
 </div>
 
 
+{{-- @php
+
+    $customer_due_payment=App\Models\Customer_recharge::where('transaction_type','credit')->get();
+    $customer_paid_payment=App\Models\Customer_recharge::where('transaction_type','credit')->get();
+@endphp --}}
 
 
 
@@ -204,10 +223,15 @@
 @section('script')
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
-  <script>
-    $(document).ready(function(){
-        console.log("Dashboard Loaded Successfully");
-    });
+  <script type="text/javascript">
+    /*GET Recevied Controller Data with json formate for script file*/
+    var onlineCustomer = <?php echo json_encode($online_customer); ?>;
+    var offlineCustomer = <?php echo json_encode($offline_customer); ?>;
+    /*Customer Recharge Details*/
+    var total_recharged = <?php echo json_encode($total_recharged); ?>;
+    var totalPaid = <?php echo json_encode($totalPaid); ?>;
+    var totalDue = <?php echo json_encode($totalDue); ?>;
+    var duePaid = <?php echo json_encode($duePaid); ?>;
 
     var ctx = document.getElementById('revenueChart').getContext('2d');
     var revenueChart = new Chart(ctx, {
@@ -226,19 +250,20 @@
     });
 
 
+    /*************************** Online vs Offline Customers ***************************************/
     var ctx2 = document.getElementById('customerChart').getContext('2d');
     new Chart(ctx2, {
         type: 'pie',
         data: {
-            labels: ['Active', 'Inactive'],
+            labels: ['Online', 'Offline'],
             datasets: [{
-                data: [80, 20],
+                data: [onlineCustomer, offlineCustomer],
                 backgroundColor: ['#28a745', '#dc3545']
             }]
         },
         options: { responsive: true }
     });
-
+    /*************************** Bandwidth Usage Chart ***************************************/
     var ctx3 = document.getElementById('bandwidthChart').getContext('2d');
     new Chart(ctx3, {
         type: 'line',
@@ -253,14 +278,16 @@
         options: { responsive: true }
     });
 
+    /*************************** Customer Payment Status Chart ***************************************/
+
     var ctx4 = document.getElementById('paymentChart').getContext('2d');
     new Chart(ctx4, {
         type: 'doughnut',
         data: {
-            labels: ['Paid', 'Pending', 'Overdue'],
+            labels: ['Recharged', 'Total Paid', 'Total Due','Due Paid'],
             datasets: [{
-                data: [70, 20, 10],
-                backgroundColor: ['#28a745', '#ffc107', '#dc3545']
+                data: [total_recharged, totalPaid, totalDue, duePaid],
+                backgroundColor: ['#28a745', '#ffc107', '#dc3545','#17a2b8']
             }]
         },
         options: { responsive: true }
