@@ -105,87 +105,56 @@
                         <i class="{{ $icon }}"></i> <span class="badge badge-{{ $badgeColor }}">{{ ucfirst($statusText) }}</span>
                     </p>
                     <hr>
-                    <!-- Additional Information Section -->
+                    <!-- Additional Information -->
                     <div class="mt-3">
-                        <div class="row">
+                        <div class="row text-center">
                             <div class="col-6">
-                                <p class="text-mute text-center">
-                                    <i class="fas fa-clock"></i> <strong>Up Time:</strong>
-                                    <span class="text-danger">00:04:13 Hrs</span>
-                                </p>
+                                <p><i class="fas fa-clock text-warning"></i> <strong>Up Time:</strong> <span class="text-danger">00:04:13 Hrs</span></p>
                             </div>
                             <div class="col-6">
-                                <p class="text-mute text-center">
-                                    <i class="fas fa-chart-line"></i> <strong>Monthly Uses:</strong>
-                                    <span class="text-success">7.802 <small>MB</small></span>
-                                </p>
+                                <p><i class="fas fa-chart-line text-success"></i> <strong>Monthly Usage:</strong> <span class="text-primary">7.802 MB</span></p>
                             </div>
                         </div>
 
-                        <!-- Upload and Download Speed Section -->
-                        <div class="row mt-3">
+                        <div class="row text-center mt-2">
                             <div class="col-6">
-                                <p class="text-mute text-center">
-                                    <i class="fas fa-arrow-up"></i> <strong>Upload Speed:</strong>
-                                    <span  class="text-success">7.802 <small>Mbps</small></span>
-                                </p>
+                                <p><i class="fas fa-arrow-up text-success"></i> <strong>Upload Speed:</strong> <span class="text-primary">7.802 Mbps</span></p>
                             </div>
                             <div class="col-6">
-                                <p class="text-mute text-center">
-                                    <i class="fas fa-arrow-down"></i> <strong>Download Speed:</strong>
-                                    <span>{{ $data->download_speed ?? 'N/A' }} <small>Mbps</small></span> <!-- Adjust this with actual download speed data -->
-                                </p>
+                                <p><i class="fas fa-arrow-down text-danger"></i> <strong>Download Speed:</strong> <span>{{ $data->download_speed ?? 'N/A' }} Mbps</span></p>
                             </div>
                         </div>
 
-                        <!-- Interface, MAC Address, Remote IP, Router Information -->
-                        <div class="row mt-3">
+                        <div class="row text-center mt-2">
                             <div class="col-6">
-                                <p class="text-nute text-center">
-                                    <i class="fas fa-plug"></i> <strong>Interface:</strong>
-                                    <span>{{ $data->interface ?? 'N/A' }}</span>
-                                </p>
+                                <p><i class="fas fa-plug text-info"></i> <strong>Interface:</strong> <span>{{ $data->interface ?? 'N/A' }}</span></p>
                             </div>
                             <div class="col-6">
-                                <p class="text-nute text-center">
-                                    <i class="fas fa-address-card"></i> <strong>MAC Address:</strong>
-                                    <span>{{ $data->mac_address ?? 'N/A' }}</span>
-                                </p>
+                                <p><i class="fas fa-address-card text-warning"></i> <strong>MAC Address:</strong> <span>{{ $data->mac_address ?? 'N/A' }}</span></p>
                             </div>
                         </div>
 
-                        <!-- Remote IP and Router Used -->
-                        <div class="row mt-3">
+                        <div class="row text-center mt-2">
                             <div class="col-6">
-                                <p class="text-nute text-center">
-                                    <i class="fas fa-laptop-code"></i> <strong>Remote IP:</strong>
-                                    <span>{{ $data->remote_ip ?? 'N/A' }}</span>
-                                </p>
+                                <p><i class="fas fa-laptop-code text-secondary"></i> <strong>Remote IP:</strong> <span>{{ $data->remote_ip ?? 'N/A' }}</span></p>
                             </div>
                             <div class="col-6">
-                                <p class="text-nute text-center">
-                                    <i class="fas fa-route"></i> <strong>Router Used:</strong>
-                                    <span>{{ $data->router_used ?? 'N/A' }}</span>
-                                </p>
+                                <p><i class="fas fa-route text-success"></i> <strong>Router Used:</strong> <span>{{ $data->router_used ?? 'N/A' }}</span></p>
                             </div>
                         </div>
                     </div>
 
-
-
-
-
                     <ul class="list-group list-group-flush mt-3">
                         <li class="list-group-item">
-                            <i class="fas fa-user-alt text-success"></i> <strong>Username:</strong>
+                            <i class="fas fa-user-alt text-primary"></i> <strong>Username:</strong>
                             <span class="float-right">{{ $data->username ?? 'N/A' }}</span>
                         </li>
                         <li class="list-group-item">
-                            <i class="fas fa-phone-alt text-primary"></i> <strong>Phone:</strong>
+                            <i class="fas fa-phone-alt text-success"></i> <strong>Phone:</strong>
                             <span class="float-right">{{ $data->phone ?? 'N/A' }}</span>
                         </li>
                         <li class="list-group-item">
-                            <i class="fas fa-map-marker-alt text-success"></i> <strong>Address:</strong>
+                            <i class="fas fa-map-marker-alt text-info"></i> <strong>Address:</strong>
                             <span class="float-right">{{ $data->address ?? 'N/A' }}</span>
                         </li>
                         <li class="list-group-item">
@@ -193,7 +162,7 @@
                             <span class="float-right">{{ $data->pop->name ?? 'N/A' }}</span>
                         </li>
                         <li class="list-group-item">
-                            <i class="fas fa-map text-info"></i> <strong>Area:</strong>
+                            <i class="fas fa-map text-danger"></i> <strong>Area:</strong>
                             <span class="float-right">{{ $data->area->name ?? 'N/A' }}</span>
                         </li>
                         <li class="list-group-item">
@@ -201,28 +170,13 @@
                             <span class="float-right">{{ $data->package->name ?? 'N/A' }}</span>
                         </li>
                         <li class="list-group-item">
-                            <i class="fas fa-dollar-sign text-danger"></i> <strong>Monthly Charge:</strong>
+                            <i class="fas fa-dollar-sign text-primary"></i> <strong>Monthly Charge:</strong>
                             <span class="float-right">{{ number_format($data->amount, 2) }} ৳</span>
                         </li>
                         <li class="list-group-item">
                             <i class="fas fa-hand-holding-usd text-success"></i> <strong>Connection Charge:</strong>
                             <span class="float-right">{{ number_format($data->con_charge, 2) }} ৳</span>
                         </li>
-                        <li class="list-group-item">
-                            <i class="fas fa-exclamation-circle text-danger"></i> <strong>Status:</strong>
-                            <span class="float-right badge badge-{{
-                                ($data->status == 'online') ? 'success' :
-                                (($data->status == 'offline') ? 'secondary' :
-                                (($data->status == 'active') ? 'primary' :
-                                (($data->status == 'blocked') ? 'danger' :
-                                (($data->status == 'expired') ? 'warning' :
-                                (($data->status == 'disabled') ? 'dark' : 'secondary')))))
-                            }}">
-                                {{ ucfirst($data->status ?? 'N/A') }}
-                            </span>
-                        </li>
-
-
                     </ul>
                 </div>
             </div>
@@ -230,10 +184,13 @@
 
 
 
-        <div class="col-md-8">
-            <div class="row">
 
-            </div>
+
+
+
+
+
+        <div class="col-md-8">
 
 
             <div class="row">
@@ -273,7 +230,7 @@
                 <!-- Tickets -->
                 <div class="active tab-pane" id="tickets">
                     <div class="table-responsive">
-                        @include('Backend.Component.Tickets.Tickets')
+                        @include('Backend.Component.Tickets.Tickets',['customer_id' => $data->id])
                     </div>
                 </div>
                 <!-- Invoice -->
@@ -380,7 +337,7 @@
             });
         });
         /************** Customer Enable And Disabled End**************************/
-        
+
         /** Handle Customer Undo Recharge button click **/
         $(document).on('click', '.customer_recharge_undo_btn', function() {
             if(confirm('Are you sure you want to undo this action?')){

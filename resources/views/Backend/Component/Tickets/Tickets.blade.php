@@ -1,3 +1,5 @@
+
+
 <table id="datatable1" class="table table-bordered dt-responsive nowrap"
 style="border-collapse: collapse; border-spacing: 0; width: 100%;">
     <thead>
@@ -25,7 +27,7 @@ style="border-collapse: collapse; border-spacing: 0; width: 100%;">
 <script src="{{ asset('Backend/plugins/jquery/jquery.min.js') }}"></script>
 <script>
     $(document).ready(function() {
-
+        var customer_id = "{{ $customer_id ?? '34' }}";
 
         var table = $("#datatable1").DataTable({
             "processing": true,
@@ -34,6 +36,8 @@ style="border-collapse: collapse; border-spacing: 0; width: 100%;">
             beforeSend: function() {},
             complete: function() {},
             ajax: "{{ route('admin.tickets.get_all_data') }}",
+            type: "GET",
+            
             language: {
                 searchPlaceholder: 'Search...',
                 sSearch: '',
