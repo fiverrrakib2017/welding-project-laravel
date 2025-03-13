@@ -46,9 +46,9 @@
     </div>
       <!-- Buttons -->
     <div class="col-md-12 d-flex flex-wrap gap-2">
-        <button class="btn btn-primary m-1"><i class="fas fa-user-clock"></i> New Request</button>
-        <button class="btn btn-success m-1"><i class="fas fa-user-plus"></i> Add Customer</button>
-        <button class="btn btn-danger m-1"><i class="fas fa-ticket-alt"></i> Add Ticket</button>
+        {{-- <button class="btn btn-primary m-1"><i class="fas fa-user-clock"></i> New Request</button> --}}
+        <button class="btn btn-success m-1" data-toggle="modal" data-target="#addCustomerModal" type="button"><i class="fas fa-user-plus"></i> Add Customer</button>
+        <button type="button" data-toggle="modal" data-target="#ticketModal" class="btn btn-dark m-1"><i class="fas fa-ticket-alt"></i> Add Ticket</button>
         <button class="btn btn-warning m-1"><i class="fas fa-envelope"></i> SMS Notification</button>
         <button class="btn btn-info m-1"><i class="fas fa-chart-line"></i> Reports</button>
         {{-- <button class="btn btn-dark m-1"><i class="fas fa-user-shield"></i> Admin Panel</button>
@@ -142,20 +142,12 @@
             </div>
         </div>
     </div>
-
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header bg-primary text-white">Customer Payment Status Chart</div>
-            <div class="card-body">
-                <canvas id="paymentChart"></canvas>
-            </div>
-        </div>
-    </div>
+    @include('Backend.Component.Chart.Customer_payment_chart')
 </div>
 
 
 
-  <div class="row mt-4">
+  {{-- <div class="row mt-4">
     <div class="col-md-6">
         <div class="card">
             <div class="card-header bg-info text-white">Recent Transactions</div>
@@ -207,17 +199,10 @@
             </div>
         </div>
     </div>
-</div>
+</div> --}}
 
-
-{{-- @php
-
-    $customer_due_payment=App\Models\Customer_recharge::where('transaction_type','credit')->get();
-    $customer_paid_payment=App\Models\Customer_recharge::where('transaction_type','credit')->get();
-@endphp --}}
-
-
-
+@include('Backend.Modal.Customer.customer_modal')
+@include('Backend.Modal.Tickets.ticket_modal')
 @endsection
 
 @section('script')

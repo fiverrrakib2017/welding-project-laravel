@@ -124,13 +124,24 @@ class AdminController extends Controller
         $disable_customer=Customer::where('status','disabled')->count();
           /*Customer Recharge Details*/
         $total_recharged = Customer_recharge::where('transaction_type', '!=', 'due_paid')
+        ->whereMonth('created_at', Carbon::now()->month)
+        ->whereYear('created_at', Carbon::now()->year)
         ->sum('amount')?? 0;
 
         $totalPaid = Customer_recharge::where('transaction_type', '!=', 'credit')
+        ->whereMonth('created_at', Carbon::now()->month)
+        ->whereYear('created_at', Carbon::now()->year)
         ->sum('amount')?? 0;
 
-        $get_total_due = Customer_recharge::where('transaction_type', 'credit')->sum('amount') ?? 0;
-        $duePaid = Customer_recharge::where('transaction_type', 'due_paid')->sum('amount') ?? 0;
+        $get_total_due = Customer_recharge::where('transaction_type', 'credit')
+        ->whereMonth('created_at', Carbon::now()->month)
+        ->whereYear('created_at', Carbon::now()->year)
+        ->sum('amount') ?? 0;
+
+        $duePaid = Customer_recharge::where('transaction_type', 'due_paid')
+        ->whereMonth('created_at', Carbon::now()->month)
+        ->whereYear('created_at', Carbon::now()->year)
+        ->sum('amount') ?? 0;
 
         $totalDue=$get_total_due-$duePaid;
         return view('Backend.Pages.Dashboard.index',compact('total_area','tickets','ticket_completed','ticket_pending','online_customer','active_customer','expire_customer','offline_customer','disable_customer','total_recharged','totalPaid','totalDue','duePaid'));
