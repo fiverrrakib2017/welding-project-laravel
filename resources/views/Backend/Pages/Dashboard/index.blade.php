@@ -32,6 +32,34 @@
         font-size: 18px;
         color: #ffffff;
     }
+    /*Drop Down BUtton css*/
+    .custom-dropdown-menu {
+        min-width: 220px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+        border: none;
+    }
+
+    .custom-dropdown-menu .dropdown-item {
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        font-weight: 500;
+        transition: background 0.1s ease-in-out;
+        border-bottom: 3px dotted rgb(195 195 195);
+    }
+
+    .custom-dropdown-menu .dropdown-item i {
+        margin-right: 10px;
+        font-size: 16px;
+
+    }
+
+    .custom-dropdown-menu .dropdown-item:hover {
+        background: #d1d2d3;
+        color: rgb(0, 0, 0);
+    }
 </style>
 @endsection
 @section('content')
@@ -48,9 +76,20 @@
     <div class="col-md-12 d-flex flex-wrap gap-2">
         {{-- <button class="btn btn-primary m-1"><i class="fas fa-user-clock"></i> New Request</button> --}}
         <button class="btn btn-success m-1" data-toggle="modal" data-target="#addCustomerModal" type="button"><i class="fas fa-user-plus"></i> Add Customer</button>
-        <button type="button" data-toggle="modal" data-target="#ticketModal" class="btn btn-dark m-1"><i class="fas fa-ticket-alt"></i> Add Ticket</button>
+        <button type="button" data-toggle="modal" data-target="#ticketModal" class="btn btn-info m-1"><i class="fas fa-ticket-alt"></i> Add Ticket</button>
         <button class="btn btn-warning m-1"><i class="fas fa-envelope"></i> SMS Notification</button>
-        <button class="btn btn-info m-1"><i class="fas fa-chart-line"></i> Reports</button>
+        <button class="btn btn-dark m-1 dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-chart-line"></i> Reports</button>
+        <div class="dropdown-menu custom-dropdown-menu">
+            <a class="dropdown-item" href="/sales-report">
+                <i class="fas fa-file-invoice-dollar text-primary"></i> Sales Report
+            </a>
+            <a class="dropdown-item" href="/customer-report">
+                <i class="fas fa-users text-success"></i> Customer Report
+            </a>
+            <a class="dropdown-item" href="/transaction-report">
+                <i class="fas fa-exchange-alt text-danger"></i> Transaction Report
+            </a>
+        </div>
         {{-- <button class="btn btn-dark m-1"><i class="fas fa-user-shield"></i> Admin Panel</button>
          <button class="btn btn-secondary m-1"><i class="fas fa-cogs"></i> Settings</button>
         <button class="btn btn-primary m-1"><i class="fas fa-user-cog"></i> User Management</button> --}}
