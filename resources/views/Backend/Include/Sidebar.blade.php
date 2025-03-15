@@ -69,15 +69,15 @@
                             <p>Package </p>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
                             <p>Billing & Payments</p>
                         </a>
-                    </li>
+                    </li> --}}
                      <!-- Payment Management -->
                     <li class="nav-item">
-                        <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Payment History</p></a>
+                        <a href="{{ route('admin.customer.payment.history') }}" class="nav-link {{($route=='admin.customer.payment.history') ?  'active':''}}"><i class="far fa-circle nav-icon"></i><p>Payment History</p></a>
                     </li>
                     <li class="nav-item">
                         <a href="#" class="nav-link">
@@ -209,17 +209,17 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-envelope"></i>
-                <p>SMS <i class="right fas fa-angle-left"></i></p>
-            </a>
-            <ul class="nav nav-treeview">
-                <li class="nav-item"><a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Send SMS</p></a></li>
-                <li class="nav-item"><a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>SMS Logs</p></a></li>
-                <li class="nav-item"><a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>SMS Configuration</p></a></li>
-            </ul>
-        </li>
+            <li class="nav-item has-treeview">
+                <a href="#" class="nav-link">
+                    <i class="nav-icon fas fa-envelope"></i>
+                    <p>SMS <i class="right fas fa-angle-left"></i></p>
+                </a>
+                <ul class="nav nav-treeview">
+                    <li class="nav-item"><a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Send SMS</p></a></li>
+                    <li class="nav-item"><a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>SMS Logs</p></a></li>
+                    <li class="nav-item"><a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>SMS Configuration</p></a></li>
+                </ul>
+            </li>
 
         <li class="nav-item has-treeview">
             <a href="#" class="nav-link">

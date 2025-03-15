@@ -215,6 +215,66 @@ class CustomerController extends Controller
             return response()->json(['success' => false, 'message' => 'Not found.']);
         }
     }
+    public function customer_payment_history(){
+        return view('Backend.Pages.Customer.Payment.payment_history');
+    }
+    public function customer_payment_history_get_all_data(Request $request)
+{
+    $search = $request->search['value'] ?? null;
+    $columnsForOrderBy = ['id', 'created_at', 'id', 'recharge_month', 'transaction_type', 'paid_until', 'amount'];
+    $orderByColumn = $request->order[0]['column'] ?? 0;
+    $orderDirection = $request->order[0]['dir'] ?? 'desc';
+
+    $start = $request->start ?? 0;
+    $length = $request->length ?? 10;
+
+    $query = Customer_recharge::with(['customer', 'customer.pop', 'customer.area', 'customer.package'])
+        ->when($search, function ($query) use ($search) {
+            $query->where('created_at', 'like', "%$search%")
+                ->orWhere('recharge_month', 'like', "%$search%")
+                ->orWhereHas('customer', function ($query) use ($search) {
+                    $query->where('fullname', 'like', "%$search%");
+                })
+                ->orWhereHas('customer', function ($query) use ($search) {
+                    $query->where('username', 'like', "%$search%");
+                });
+        });
+    if ($request->from_date) {
+        $query->whereDate('created_at', '>=', $request->from_date);
+    }
+
+    if ($request->to_date) {
+        $query->whereDate('created_at', '<=', $request->to_date);
+    }
+
+    if ($request->status_filter) {
+        $query->where('transaction_type', $request->status_filter);
+    }
+
+    if ($request->bill_collect) {
+        $query->where('user_id', $request->bill_collect);
+    }
+    $totalRecords = $query->count();
+    //  $totalAmount = $query->where('transaction_type', '!=', '0')->sum('amount');
+    $totalAmount = $query->sum('amount');
+    $data = $query->orderBy($columnsForOrderBy[$orderByColumn], $orderDirection)
+        ->skip($start)
+        ->take($length)
+        ->get();
+
+    return response()->json([
+        'draw' => $request->draw,
+        'recordsTotal' => $totalRecords,
+        'recordsFiltered' => $totalRecords,
+        'data' => $data,
+        'totalAmount' => $totalAmount,
+    ]);
+}
+
+
+
+
+
 
     private function validateForm($request)
     {
