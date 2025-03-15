@@ -85,24 +85,24 @@
                             <p>Customer Logs</p>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
                             <p>Reports</p>
                         </a>
-                    </li>
+                    </li> --}}
                      <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
                             <p>Backup & Restore</p>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
                             <p>Settings</p>
                         </a>
-                    </li>
+                    </li> --}}
                 </ul>
             </li>
             @php

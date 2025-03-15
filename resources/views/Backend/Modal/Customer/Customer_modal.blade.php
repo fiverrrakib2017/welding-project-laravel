@@ -1,3 +1,8 @@
+
+@php
+    $pop_id = $pop_id ?? null;
+    $area_id = $area_id ?? null;
+@endphp
 <!-- Add Customer Modal -->
 <div class="modal fade" id="addCustomerModal" tabindex="-1" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -65,7 +70,7 @@
                                             $get_pop_branch = App\Models\Pop_branch::latest()->get();
                                         @endphp
                                         @foreach ($get_pop_branch as $item)
-                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                            <option value="{{ $item->id }}"  @if($item->id == $pop_id) selected @endif>{{ $item->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -74,18 +79,28 @@
                                     <select name="area_id" id="area_id" class="form-control" required>
                                         <option value="">Select Area</option>
                                         @php
-                                            $datas = App\Models\Pop_area::latest()->get();
+                                            $datas = App\Models\Pop_area::when($pop_id, function ($query) use ($pop_id) {
+                                                return $query->where('pop_id', $pop_id);
+                                            })->latest()->get();
                                         @endphp
                                         @foreach ($datas as $item)
                                             <option value="{{ $item->id }}">{{ $item->name }}</option>
                                         @endforeach
                                     </select>
+
                                 </div>
                                 <div class="form-group">
                                     <label>Package</label>
                                     <select name="package_id" id="package_id" class="form-control" required>
                                         <option value="">Select Package</option>
+                                        @php
+                                            $datas = isset($pop_id) ? App\Models\Branch_package::latest()->get() : collect();
+                                        @endphp
+                                        @foreach ($datas as $item)
+                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        @endforeach
                                     </select>
+
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -338,9 +353,7 @@
         border: 2px #c9c9c9 dotted !important;
     }
 
-    #package_id {
-        color: blue;
-    }
+
 </style>
 <script  src="{{ asset('Backend/assets/js/__handle_submit.js') }}"></script>
 <script src="{{ asset('Backend/plugins/jquery/jquery.min.js') }}"></script>
@@ -501,7 +514,7 @@
             });
         });
 
-        
+
 
     });
 </script>

@@ -7,7 +7,7 @@
     <div class="row mb-3">
         <!-- Buttons -->
         <div class="col-md-12 d-flex flex-wrap gap-2">
-            <button class="btn btn-success m-1"><i class="fas fa-user-plus"></i> Add Customer</button>
+            <button class="btn btn-success m-1" data-toggle="modal" data-target="#addCustomerModal" ><i class="fas fa-user-plus"></i> Add Customer</button>
 
             <button class="btn btn-secondary m-1" data-toggle="modal" data-target="#addBranchPackageModal">
                 <i class="fas fa-box"></i> Add Package
@@ -149,11 +149,10 @@
             <div class="card shadow">
                 <div class="card-header p-2">
                     <ul class="nav nav-pills">
-                        <li class="nav-item"><a class="nav-link active" href="#activity" data-toggle="tab">Users ( 3369
+                        <li class="nav-item"><a class="nav-link active" href="#customers" data-toggle="tab">Total Customers ( 3369
                                 )</a></li>
                         <li class="nav-item"><a class="nav-link" href="#tickets" data-toggle="tab">Tickets</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#timeline" data-toggle="tab">Recharge History</a>
-                        </li>
+
                         <li class="nav-item"><a class="nav-link" href="#branch_package" data-toggle="tab">Package</a></li>
 
                         <li class="nav-item"><a class="nav-link" href="#transaction_statment" data-toggle="tab">Transaction Statment</a>
@@ -164,23 +163,10 @@
                 </div><!-- /.card-header -->
                 <div class="card-body">
                     <div class="tab-content">
-                        <!-- Activity -->
-                        <div class="active tab-pane" id="activity">
+                        <!-- Customer -->
+                        <div class="active tab-pane" id="customers">
                             <div class="table-responsive">
-                                <table id="activities_datatable" class="table table-bordered dt-responsive nowrap"
-                                    style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                                    <thead>
-                                        <tr>
-                                            <th>Id</th>
-                                            <th>Date</th>
-                                            <th>In Time</th>
-                                            <th>Out Time</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="">
-                                    </tbody>
-                                </table>
+                                @include('Backend.Component.Customer.Customer')
                             </div>
                         </div>
                         <!-- Tickets -->
@@ -189,10 +175,7 @@
                                 @include('Backend.Component.Tickets.Tickets')
                             </div>
                         </div>
-                        <!-- Timeline -->
-                        <div class="tab-pane" id="timeline">
 
-                        </div>
                         <!-- Package -->
                         <div class="tab-pane" id="branch_package">
                             <div class="row">
@@ -446,6 +429,7 @@
         </div>
     </div>
     @include('Backend.Modal.Pop.pop_modal')
+    @include('Backend.Modal.Customer.customer_modal',['pop_id'=>$pop->id])
     @include('Backend.Modal.Customer.Package.branch_package_modal')
     @include('Backend.Modal.delete_modal')
 

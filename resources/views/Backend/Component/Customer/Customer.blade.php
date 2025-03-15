@@ -1,4 +1,4 @@
-<table id="datatable1" class="table table-bordered dt-responsive nowrap"
+<table id="customer_datatable1" class="table table-bordered dt-responsive nowrap"
 style="border-collapse: collapse; border-spacing: 0; width: 100%;">
 <thead>
     <tr>
@@ -29,7 +29,7 @@ style="border-collapse: collapse; border-spacing: 0; width: 100%;">
     $(document).ready(function() {
 
 
-        var table = $("#datatable1").DataTable({
+        var customer_table = $("#customer_datatable1").DataTable({
             "processing": true,
             "responsive": true,
             "serverSide": true,
@@ -164,7 +164,7 @@ style="border-collapse: collapse; border-spacing: 0; width: 100%;">
         });
 
         /** Handle Delete button click**/
-        $('#datatable1 tbody').on('click', '.delete-btn', function() {
+        $('#customer_datatable1 tbody').on('click', '.delete-btn', function() {
             var id = $(this).data('id');
             var deleteUrl = "{{ route('admin.customer.delete', ':id') }}".replace(':id', id);
 

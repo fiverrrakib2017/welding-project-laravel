@@ -20,7 +20,4 @@
 
 @endsection
 
-@section('script')
 
-
-@endsection
