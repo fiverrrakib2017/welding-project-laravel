@@ -14,8 +14,10 @@ return new class extends Migration
         Schema::create('customer_logs', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('customer_id');
-            $table->enum('action_type', ['add', 'edit', 'package_change', 'suspend', 'reconnect', 'delete']);
+            $table->enum('action_type', ['add', 'edit', 'package_change', 'suspend', 'reconnect', 'delete', 'recharge']);
             $table->unsignedBigInteger('user_id');
+            $table->text('description')->nullable();
+            $table->string('ip_address')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('admins')->onDelete('cascade');

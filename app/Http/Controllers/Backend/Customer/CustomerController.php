@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Backend\Customer;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
+use App\Models\Customer_log;
 use App\Models\Customer_recharge;
 use App\Models\Package;
 use Illuminate\Http\Request;
@@ -219,57 +220,106 @@ class CustomerController extends Controller
         return view('Backend.Pages.Customer.Payment.payment_history');
     }
     public function customer_payment_history_get_all_data(Request $request)
-{
-    $search = $request->search['value'] ?? null;
-    $columnsForOrderBy = ['id', 'created_at', 'id', 'recharge_month', 'transaction_type', 'paid_until', 'amount'];
-    $orderByColumn = $request->order[0]['column'] ?? 0;
-    $orderDirection = $request->order[0]['dir'] ?? 'desc';
+    {
+        $search = $request->search['value'] ?? null;
+        $columnsForOrderBy = ['id', 'created_at', 'id', 'recharge_month', 'transaction_type', 'paid_until', 'amount'];
+        $orderByColumn = $request->order[0]['column'] ?? 0;
+        $orderDirection = $request->order[0]['dir'] ?? 'desc';
 
-    $start = $request->start ?? 0;
-    $length = $request->length ?? 10;
+        $start = $request->start ?? 0;
+        $length = $request->length ?? 10;
 
-    $query = Customer_recharge::with(['customer', 'customer.pop', 'customer.area', 'customer.package'])
-        ->when($search, function ($query) use ($search) {
-            $query->where('created_at', 'like', "%$search%")
-                ->orWhere('recharge_month', 'like', "%$search%")
-                ->orWhereHas('customer', function ($query) use ($search) {
-                    $query->where('fullname', 'like', "%$search%");
-                })
-                ->orWhereHas('customer', function ($query) use ($search) {
-                    $query->where('username', 'like', "%$search%");
-                });
-        });
-    if ($request->from_date) {
-        $query->whereDate('created_at', '>=', $request->from_date);
+        $query = Customer_recharge::with(['customer', 'customer.pop', 'customer.area', 'customer.package'])
+            ->when($search, function ($query) use ($search) {
+                $query->where('created_at', 'like', "%$search%")
+                    ->orWhere('recharge_month', 'like', "%$search%")
+                    ->orWhereHas('customer', function ($query) use ($search) {
+                        $query->where('fullname', 'like', "%$search%");
+                    })
+                    ->orWhereHas('customer', function ($query) use ($search) {
+                        $query->where('username', 'like', "%$search%");
+                    });
+            });
+        if ($request->from_date) {
+            $query->whereDate('created_at', '>=', $request->from_date);
+        }
+
+        if ($request->to_date) {
+            $query->whereDate('created_at', '<=', $request->to_date);
+        }
+
+        if ($request->status_filter) {
+            $query->where('transaction_type', $request->status_filter);
+        }
+
+        if ($request->bill_collect) {
+            $query->where('user_id', $request->bill_collect);
+        }
+        $totalRecords = $query->count();
+        //  $totalAmount = $query->where('transaction_type', '!=', '0')->sum('amount');
+        $totalAmount = $query->sum('amount');
+        $data = $query->orderBy($columnsForOrderBy[$orderByColumn], $orderDirection)
+            ->skip($start)
+            ->take($length)
+            ->get();
+
+        return response()->json([
+            'draw' => $request->draw,
+            'recordsTotal' => $totalRecords,
+            'recordsFiltered' => $totalRecords,
+            'data' => $data,
+            'totalAmount' => $totalAmount,
+        ]);
     }
-
-    if ($request->to_date) {
-        $query->whereDate('created_at', '<=', $request->to_date);
+    public function customer_log(){
+        return view('Backend.Pages.Customer.Log.index');
     }
+    public function customer_log_get_all_data(Request $request)
+    {
+        $search = $request->search['value'] ?? null;
+        $columnsForOrderBy = ['id', 'created_at', 'id', 'recharge_month', 'transaction_type', 'paid_until', 'amount'];
+        $orderByColumn = $request->order[0]['column'] ?? 0;
+        $orderDirection = $request->order[0]['dir'] ?? 'desc';
 
-    if ($request->status_filter) {
-        $query->where('transaction_type', $request->status_filter);
+        $start = $request->start ?? 0;
+        $length = $request->length ?? 10;
+
+        $query = Customer_log::with(['customer','user'])
+            ->when($search, function ($query) use ($search) {
+                $query->where('created_at', 'like', "%$search%")
+                    ->orWhere('description', 'like', "%$search%")
+                    ->orWhereHas('customer', function ($query) use ($search) {
+                        $query->where('fullname', 'like', "%$search%");
+                    })
+                    ->orWhereHas('customer', function ($query) use ($search) {
+                        $query->where('username', 'like', "%$search%");
+                    })
+                    ->orWhereHas('user', function ($query) use ($search) {
+                        $query->where('name', 'like', "%$search%");
+                    });
+            });
+        if ($request->from_date) {
+            $query->whereDate('created_at', '>=', $request->from_date);
+        }
+
+        if ($request->to_date) {
+            $query->whereDate('created_at', '<=', $request->to_date);
+        }
+
+        $totalRecords = $query->count();
+
+        $data = $query->orderBy($columnsForOrderBy[$orderByColumn], $orderDirection)
+            ->skip($start)
+            ->take($length)
+            ->get();
+
+        return response()->json([
+            'draw' => $request->draw,
+            'recordsTotal' => $totalRecords,
+            'recordsFiltered' => $totalRecords,
+            'data' => $data,
+        ]);
     }
-
-    if ($request->bill_collect) {
-        $query->where('user_id', $request->bill_collect);
-    }
-    $totalRecords = $query->count();
-    //  $totalAmount = $query->where('transaction_type', '!=', '0')->sum('amount');
-    $totalAmount = $query->sum('amount');
-    $data = $query->orderBy($columnsForOrderBy[$orderByColumn], $orderDirection)
-        ->skip($start)
-        ->take($length)
-        ->get();
-
-    return response()->json([
-        'draw' => $request->draw,
-        'recordsTotal' => $totalRecords,
-        'recordsFiltered' => $totalRecords,
-        'data' => $data,
-        'totalAmount' => $totalAmount,
-    ]);
-}
 
 
 

@@ -80,7 +80,7 @@
                         <a href="{{ route('admin.customer.payment.history') }}" class="nav-link {{($route=='admin.customer.payment.history') ?  'active':''}}"><i class="far fa-circle nav-icon"></i><p>Payment History</p></a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a href="{{ route('admin.customer.log.index') }}" class="nav-link {{($route=='admin.customer.log.index') ?  'active':''}}">
                             <i class="far fa-circle nav-icon"></i>
                             <p>Customer Logs</p>
                         </a>
