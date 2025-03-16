@@ -3,6 +3,8 @@ namespace App\Http\Controllers\Backend\Pop;
 use App\Http\Controllers\Controller;
 use App\Models\Branch_package;
 use App\Models\Branch_transaction;
+use App\Models\Customer;
+use App\Models\Customer_recharge;
 use App\Models\Package;
 use App\Models\Pop_area;
 use App\Models\Pop_branch;
@@ -249,22 +251,38 @@ class PopController extends Controller
     }
     public function view($id) {
         $pop=Pop_branch::findOrFail($id);
+
         $due_paid=Branch_transaction::where('pop_id',$id)->where('transaction_type','due_paid')->sum('amount');
         $get_total_due=Branch_transaction::where('pop_id',$id)->where('transaction_type','credit')->sum('amount');
-
-
 
         $total_paid = Branch_transaction::where('pop_id', $id)
         ->where('transaction_type', '!=', 'credit')
         ->sum('amount');
 
          $total_due = $get_total_due - $due_paid;
+        /*Branch Transaction Current Balance*/
+         $customer_recharge_total = Customer_recharge::where('pop_id', $id)
+         ->where('transaction_type', '!=', 'due_paid')
+         ->sum('amount');
 
+        $branch_transaction_total = Branch_transaction::where('pop_id', $id)
+            ->where('transaction_type', '!=', 'due_paid')
+            ->sum('amount');
+
+        $current_balance = $branch_transaction_total - $customer_recharge_total;
+         /*Tickets Details*/
          $total_area=Pop_area::where('pop_id',$id)->count();
          $tickets=Ticket::where('pop_id',$id)->count();
          $ticket_completed=Ticket::where('pop_id',$id)->where('status','1')->count();
          $ticket_pending=Ticket::where('pop_id',$id)->where('status','0')->count();
-        return view('Backend.Pages.Pop.View',compact('pop','due_paid','total_paid','total_due','total_area','tickets','ticket_completed','ticket_pending'));
+
+        /*Customer Details*/
+        $online_customer=Customer::where('pop_id',$id)->where('status','online')->count();
+        $active_customer=Customer::where('pop_id',$id)->where('status','active')->count();
+        $expire_customer=Customer::where('pop_id',$id)->where('status','expire')->count();
+        $offline_customer=Customer::where('pop_id',$id)->where('status','offline')->count();
+        $disable_customer=Customer::where('pop_id',$id)->where('status','disabled')->count();
+        return view('Backend.Pages.Pop.View',compact('pop','due_paid','total_paid','total_due','total_area','tickets','ticket_completed','ticket_pending','online_customer','active_customer','expire_customer','offline_customer','disable_customer','current_balance'));
     }
 
     public function update(Request $request, $id)
