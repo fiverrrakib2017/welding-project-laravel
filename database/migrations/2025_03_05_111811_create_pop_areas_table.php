@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('pop_id');
             $table->string('name');
             $table->string('billing_cycle')->nullable();
+            $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
 
             $table->foreign('pop_id')->references('id')->on('pop_branches')->onDelete('cascade');

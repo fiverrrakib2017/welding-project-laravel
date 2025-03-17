@@ -1,8 +1,10 @@
 <?php
 namespace App\Http\Controllers\Backend\Pop\Area;
 use App\Http\Controllers\Controller;
+use App\Models\Customer;
 use App\Models\Pop_area;
 use App\Models\Pop_branch;
+use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
@@ -95,14 +97,41 @@ class AreaController extends Controller
     }
     public function view($id)
     {
-        return $id;
-        // $total_invoice=Supplier_Invoice::where('supplier_id',$id)->count();
-        // $total_paid_amount=Supplier_Invoice::where('supplier_id',$id)->sum('paid_amount');
-        // $total_due_amount=Supplier_Invoice::where('supplier_id',$id)->sum('due_amount');
-        // $invoices = Supplier_Invoice::where('supplier_id', $id)->get();
-        // $data = Supplier::find($id);
-        //  $supplier_transaction_history=Supplier_Transaction_History::where('supplier_id',$id)->get();
-        // return view('Backend.Pages.Supplier.Profile',compact('data','total_invoice','total_paid_amount','total_due_amount','invoices','supplier_transaction_history'));
+        $data=Pop_area::findOrFail($id);
+
+
+         /*Tickets Details*/
+         $total_area=Pop_area::where('pop_id',$id)->count();
+         $tickets=Ticket::where('pop_id',$id)->count();
+         $ticket_completed=Ticket::where('pop_id',$id)->where('status','1')->count();
+         $ticket_pending=Ticket::where('pop_id',$id)->where('status','0')->count();
+
+        /*Customer Details*/
+        $online_customer=Customer::where('area_id',$id)->where('status','online')->count();
+        $active_customer=Customer::where('area_id',$id)->where('status','active')->count();
+        $expire_customer=Customer::where('area_id',$id)->where('status','expire')->count();
+        $offline_customer=Customer::where('area_id',$id)->where('status','offline')->count();
+        $disable_customer=Customer::where('area_id',$id)->where('status','disabled')->count();
+        return view('Backend.Pages.Pop.Area.View',compact('data','total_area','tickets','ticket_completed','ticket_pending','online_customer','active_customer','expire_customer','offline_customer','disable_customer'));
+    }
+    public function area_change_status($id) {
+        $object = Pop_area::find($id);
+
+        if (!$object) {
+            return response()->json([
+                'success' => false,
+                'message' => 'POP/Area not found!'
+            ], 404);
+        }
+        $object->status = $object->status === 'active' ? 'inactive' : 'active';
+
+        $object->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status changed successfully!',
+            'new_status' => $object->status
+        ]);
     }
 
     public function update(Request $request, $id)

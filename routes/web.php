@@ -358,13 +358,15 @@ Route::group(['middleware'=>'admin'],function(){
                 Route::get('/list', 'index')->name('admin.pop.area.index');
                 Route::get('/all-data', 'get_all_data')->name('admin.pop.area.get_all_data');
                 Route::get('/edit/{id}', 'edit')->name('admin.pop.area.edit');
-                Route::get('/view/{id}', 'pop_view')->name('admin.pop.area.view');
+                Route::get('/view/{id}', 'view')->name('admin.pop.area.view');
                 Route::post('/delete', 'delete')->name('admin.pop.area.delete');
                 Route::post('/store', 'store')->name('admin.pop.area.store');
                 Route::post('/update/{id}', 'update')->name('admin.pop.area.update');
 
                 /*GET POP/BRANCH Area */
                 Route::get('/pop-brnach/{id}','get_pop_wise_area')->name('admin.pop.area.get_pop_wise_area');
+                /* Change Area Status */
+                Route::post('/change/status/{id}','area_change_status')->name('admin.pop.area.change_status');
             });
         });
 
