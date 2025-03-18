@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Backend\Customer;
 use App\Http\Controllers\Controller;
+use App\Models\Branch_transaction;
 use App\Models\Customer;
 use App\Models\Customer_log;
 use App\Models\Customer_recharge;
@@ -8,6 +9,7 @@ use App\Models\Package;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
+use function App\Helpers\check_pop_balance;
 
 class CustomerController extends Controller
 {
@@ -54,6 +56,15 @@ class CustomerController extends Controller
         /* Validate the form data*/
         $this->validateForm($request);
 
+        /*Check Pop Balance*/
+        $pop_balance = check_pop_balance($request->pop_id);
+
+        if ($pop_balance < $request->amount) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pop balance is not enough',
+            ]);
+        }
         /* Create a new Customer*/
         $customer = new Customer();
         $customer->fullname = $request->fullname;
@@ -69,15 +80,26 @@ class CustomerController extends Controller
         $customer->area_id = $request->area_id;
         $customer->router_id = $request->router_id;
         $customer->status = $request->status;
-        $customer->expire_date = $request->expire_date;
+        $customer->expire_date = date("Y-m-d", strtotime("+1 month"));
         $customer->remarks = $request->remarks;
         $customer->liabilities = $request->liabilities;
-
-        /* Save to the database table*/
         $customer->save();
+
+         /*Store recharge data*/
+         $object = new Customer_recharge();
+         $object->user_id = auth()->guard('admin')->user()->id;
+         $object->customer_id = $customer->id;
+         $object->pop_id = $request->pop_id;
+         $object->area_id = $request->area_id;
+         $object->recharge_month = implode(',', [date('F')]);
+         $object->transaction_type = 'cash';
+         $object->paid_until =  date("Y-m-d", strtotime("+1 month"));
+         $object->amount = $request->amount;
+         $object->note = 'Created';
+         $object->save();
         return response()->json([
             'success' => true,
-            'message' => 'Added successfully!',
+            'message' => 'Customer Created Successfully!',
         ]);
     }
     public function update(Request $request,$id)
@@ -100,7 +122,6 @@ class CustomerController extends Controller
         $customer->area_id = $request->area_id;
         $customer->router_id = $request->router_id;
         $customer->status = $request->status;
-        $customer->expire_date = $request->expire_date;
         $customer->remarks = $request->remarks;
         $customer->liabilities = $request->liabilities;
 
@@ -174,6 +195,16 @@ class CustomerController extends Controller
                 422,
             );
         }
+        /*Check Pop Balance*/
+        $pop_balance = check_pop_balance($request->pop_id);
+
+        if ($pop_balance < $request->payable_amount) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pop balance is not enough',
+            ]);
+            exit;
+        }
 
         try {
             /*Store recharge data*/
@@ -182,7 +213,23 @@ class CustomerController extends Controller
             $object->customer_id = $request->customer_id;
             $object->pop_id = $request->pop_id;
             $object->area_id = $request->area_id;
+
+
+            /*Update Customer Table Expire date*/
+            $customer = Customer::find($request->customer_id);
+            $months_count = count($request->recharge_month);
             $object->recharge_month = implode(',', $request->recharge_month);
+
+            $base_date = (strtotime($customer->expire_date) > time())
+                ? $customer->expire_date
+                : date('Y-m-d');
+
+            $new_expire_date = date("Y-m-d", strtotime("+$months_count months", strtotime($base_date)));
+
+            $customer->expire_date = $new_expire_date;
+            $customer->update();
+
+            $object->paid_until = $new_expire_date;
             $object->transaction_type = $request->transaction_type;
             $object->amount = $request->payable_amount;
             $object->note = $request->note;
@@ -208,6 +255,15 @@ class CustomerController extends Controller
     }
     public function customer_recharge_undo($id){
         $object = Customer_recharge::find($id);
+
+        /*Update Customer Table Expire date*/
+        $recharge_months = explode(',', $object->recharge_month);
+        $months_count = count($recharge_months);
+        $new_paid_until = date("Y-m-d", strtotime("-$months_count months", strtotime($object->paid_until)));
+        $customer = Customer::find($object->customer_id);
+        $customer->expire_date = $new_paid_until;
+        $customer->update();
+
         if ($object) {
             $object->delete();
             return response()->json(['success' => true, 'message' => 'Successfully!']);
