@@ -213,23 +213,23 @@ class CustomerController extends Controller
             $object->customer_id = $request->customer_id;
             $object->pop_id = $request->pop_id;
             $object->area_id = $request->area_id;
-
-
-            /*Update Customer Table Expire date*/
-            $customer = Customer::find($request->customer_id);
-            $months_count = count($request->recharge_month);
             $object->recharge_month = implode(',', $request->recharge_month);
 
-            $base_date = (strtotime($customer->expire_date) > time())
-                ? $customer->expire_date
-                : date('Y-m-d');
+            if($request->transaction_type !=='due_paid'){
+                /*Update Customer Table Expire date*/
+                $customer = Customer::find($request->customer_id);
+                $months_count = count($request->recharge_month);
+                $base_date = (strtotime($customer->expire_date) > time())
+                    ? $customer->expire_date
+                    : date('Y-m-d');
+                $new_expire_date = date("Y-m-d", strtotime("+$months_count months", strtotime($base_date)));
+                $customer->expire_date = $new_expire_date;
+                $customer->update();
+                $object->paid_until = $new_expire_date;
+            }
 
-            $new_expire_date = date("Y-m-d", strtotime("+$months_count months", strtotime($base_date)));
 
-            $customer->expire_date = $new_expire_date;
-            $customer->update();
 
-            $object->paid_until = $new_expire_date;
             $object->transaction_type = $request->transaction_type;
             $object->amount = $request->payable_amount;
             $object->note = $request->note;
