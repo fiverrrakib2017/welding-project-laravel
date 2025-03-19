@@ -144,6 +144,22 @@ class AreaController extends Controller
         $object->billing_cycle = $request->billing_cycle;
         $object->update();
 
+        /*Update Customer Billing Cycle*/
+        $customers=Customer::where('area_id',$id)->get();
+        foreach ($customers as $customer) {
+            $expireDate = $customer->expire_date;
+
+            if (!empty($expireDate) && strlen($expireDate) >= 7) {
+                $year = substr($expireDate, 0, 4);
+                $month = substr($expireDate, 5, 2);
+
+                /*new Expire Date*/
+                $new_expire_date = $year . '-' . $month . '-' . $request->billing_cycle;
+                $customer->expire_date = $new_expire_date;
+                $customer->save();
+            }
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Update successfully!',

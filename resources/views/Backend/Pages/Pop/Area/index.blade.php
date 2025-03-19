@@ -114,9 +114,9 @@
                 if (response.success) {
                     $('#popForm').attr('action', "{{ route('admin.pop.area.update', ':id') }}".replace(':id', id));
                     $('#ModalLabel').html('<span class="mdi mdi-account-edit mdi-18px"></span> &nbsp;Edit POP/Area');
-                    $('#popForm select[name="pop_id"]').val(response.data.pop_id);
+                    $('#popForm select[name="pop_id"]').val(response.data.pop_id).trigger('change');
                     $('#popForm input[name="name"]').val(response.data.name);
-                    $('#popForm select[name="billing_cycle"]').val(response.data.billing_cycle);
+                    $('#popForm select[name="billing_cycle"]').val(response.data.billing_cycle).trigger('change');
 
                     // Show the modal
                     $('#addModal').modal('show');
