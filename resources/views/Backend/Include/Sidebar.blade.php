@@ -20,7 +20,7 @@
         </li>
 
         <li class="nav-item ">
-            <select class="form-control" name="sidebar_customer_id">
+            <select class="form-control" name="sidebar_customer_id" style="width: 100%;">
                 <option value="1">---Select---</option>
                 @php
                     $customers = \App\Models\Customer::latest()->get();

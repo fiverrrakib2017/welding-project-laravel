@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use function App\Helpers\check_pop_balance;
+use function App\Helpers\fetch_customer_data;
 
 class CustomerController extends Controller
 {
@@ -27,66 +28,79 @@ class CustomerController extends Controller
     }
 
 
-    public function get_all_data(Request $request){
+    public function get_all_data(Request $request) {
         $search = $request->search['value'];
-        $columnsForOrderBy = ['id','id','fullname','package','amount','created_at','expire_date','username','phone','pop_id','area_id','created_at','created_at'];
-        $orderByColumn = $request->order[0]['column'];
-        $orderDirection = $request->order[0]['dir'];
+        $columnsForOrderBy = ['id', 'id', 'fullname', 'package', 'amount', 'created_at', 'expire_date', 'username', 'phone', 'pop_id', 'area_id', 'created_at', 'created_at'];
 
-        $query = Customer::with(['pop','area','package'])
-        ->where('is_delete', '!=', 1)
-        ->when($search, function ($query) use ($search) {
-            $query->where('phone', 'like', "%$search%")
-                   ->orWhere('username', 'like', "%$search%")
-                  ->orWhereHas('pop', function ($query) use ($search) {
-                      $query->where('fullname', 'like', "%$search%");
-                  })
-                  ->orWhereHas('area', function ($query) use ($search) {
-                      $query->where('name', 'like', "%$search%");
-                  })
-                  ->orWhereHas('package', function ($query) use ($search) {
-                      $query->where('name', 'like', "%$search%");
-                  });
-        }) ->orderBy($columnsForOrderBy[$orderByColumn], $orderDirection)
-        ->paginate($request->length);
+        $orderByColumn = $request->order[0]['column'] ?? 0;
+        $orderDirection = $request->order[0]['dir'] ?? 'desc';
 
+        $start = $request->start ?? 0;
+        $length = $request->length ?? 10;
+
+        $query = Customer::with(['pop', 'area', 'package'])
+            ->where('is_delete', '!=', 1)
+            ->when($search, function ($query) use ($search) {
+                $query->where('phone', 'like', "%$search%")
+                      ->orWhere('username', 'like', "%$search%")
+                      ->orWhereHas('pop', function ($query) use ($search) {
+                          $query->where('fullname', 'like', "%$search%");
+                      })
+                      ->orWhereHas('area', function ($query) use ($search) {
+                          $query->where('name', 'like', "%$search%");
+                      })
+                      ->orWhereHas('package', function ($query) use ($search) {
+                          $query->where('name', 'like', "%$search%");
+                      });
+            });
+
+        /*Pagination*/
+        $paginatedData = $query->orderBy($columnsForOrderBy[$orderByColumn], $orderDirection)
+            ->paginate($length, ['*'], 'page', ($start / $length) + 1);
 
         return response()->json([
-            'draw' => $request->draw,
-            'recordsTotal' => $query->total(),
-            'recordsFiltered' => $query->total(),
-            'data' => $query->items(),
+            'draw' => intval($request->draw),
+            'recordsTotal' => Customer::where('is_delete', '!=', 1)->count(),
+            'recordsFiltered' => $paginatedData->total(),
+            'data' => $paginatedData->items(),
         ]);
     }
+
     public function customer_restore_get_all_data(Request $request){
         $search = $request->search['value'];
-        $columnsForOrderBy = ['id','id','fullname','package','amount','created_at','expire_date','username','phone','pop_id','area_id','created_at','created_at'];
-        $orderByColumn = $request->order[0]['column'];
-        $orderDirection = $request->order[0]['dir'];
+        $columnsForOrderBy = ['id', 'id', 'fullname', 'package', 'amount', 'created_at', 'expire_date', 'username', 'phone', 'pop_id', 'area_id', 'created_at', 'created_at'];
 
-        $query = Customer::with(['pop','area','package'])
-        ->where('is_delete', '!=', 0)
-        ->when($search, function ($query) use ($search) {
-            $query->where('phone', 'like', "%$search%")
-                   ->orWhere('username', 'like', "%$search%")
-                  ->orWhereHas('pop', function ($query) use ($search) {
-                      $query->where('fullname', 'like', "%$search%");
-                  })
-                  ->orWhereHas('area', function ($query) use ($search) {
-                      $query->where('name', 'like', "%$search%");
-                  })
-                  ->orWhereHas('package', function ($query) use ($search) {
-                      $query->where('name', 'like', "%$search%");
-                  });
-        }) ->orderBy($columnsForOrderBy[$orderByColumn], $orderDirection)
-        ->paginate($request->length);
+        $orderByColumn = $request->order[0]['column'] ?? 0;
+        $orderDirection = $request->order[0]['dir'] ?? 'desc';
 
+        $start = $request->start ?? 0;
+        $length = $request->length ?? 10;
+
+        $query = Customer::with(['pop', 'area', 'package'])
+            ->where('is_delete', '!=', 0)
+            ->when($search, function ($query) use ($search) {
+                $query->where('phone', 'like', "%$search%")
+                      ->orWhere('username', 'like', "%$search%")
+                      ->orWhereHas('pop', function ($query) use ($search) {
+                          $query->where('fullname', 'like', "%$search%");
+                      })
+                      ->orWhereHas('area', function ($query) use ($search) {
+                          $query->where('name', 'like', "%$search%");
+                      })
+                      ->orWhereHas('package', function ($query) use ($search) {
+                          $query->where('name', 'like', "%$search%");
+                      });
+            });
+
+        /*Pagination*/
+        $paginatedData = $query->orderBy($columnsForOrderBy[$orderByColumn], $orderDirection)
+            ->paginate($length, ['*'], 'page', ($start / $length) + 1);
 
         return response()->json([
-            'draw' => $request->draw,
-            'recordsTotal' => $query->total(),
-            'recordsFiltered' => $query->total(),
-            'data' => $query->items(),
+            'draw' => intval($request->draw),
+            'recordsTotal' => Customer::where('is_delete', '!=', 1)->count(),
+            'recordsFiltered' => $paginatedData->total(),
+            'data' => $paginatedData->items(),
         ]);
     }
     public function store(Request $request)
@@ -365,7 +379,6 @@ class CustomerController extends Controller
             $query->where('user_id', $request->bill_collect);
         }
         $totalRecords = $query->count();
-        //  $totalAmount = $query->where('transaction_type', '!=', '0')->sum('amount');
         $totalAmount = $query->sum('amount');
         $data = $query->orderBy($columnsForOrderBy[$orderByColumn], $orderDirection)
             ->skip($start)
@@ -464,4 +477,5 @@ class CustomerController extends Controller
             );
         }
     }
+
 }

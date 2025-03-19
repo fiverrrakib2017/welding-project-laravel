@@ -1,6 +1,8 @@
 @extends('Backend.Layout.App')
 @section('title', 'Dashboard | Admin Panel')
 @section('style')
+
+{{-- <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css"> --}}
 @endsection
 @section('content')
     <div class="row">
@@ -26,6 +28,4 @@
 @endsection
 
 @section('script')
-
-
 @endsection

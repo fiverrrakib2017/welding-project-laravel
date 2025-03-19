@@ -1,26 +1,26 @@
+<div class="col-6 nav justify-content-end" id="export_buttonscc"></div>
 <table id="customer_datatable1" class="table table-bordered dt-responsive nowrap"
-style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-<thead>
-    <tr>
-        <th>
-            <input type="checkbox" class="custom-control-input" id="selectAllCheckbox"
-                name="selectAll">
-        </th>
+    style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+    <thead>
+        <tr>
+            <th>
+                <input type="checkbox" class="custom-control-input" id="selectAllCheckbox" name="selectAll">
+            </th>
 
-        <th>ID</th>
-        <th>Name</th>
-        <th>Package</th>
-        <th>Amount</th>
-        <th>Create Date</th>
-        <th>Expired Date</th>
-        <th>User Name</th>
-        <th>Mobile no.</th>
-        <th>POP/Branch</th>
-        <th>Area/Location</th>
-        <th></th>
-    </tr>
-</thead>
-<tbody></tbody>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Package</th>
+            <th>Amount</th>
+            <th>Create Date</th>
+            <th>Expired Date</th>
+            <th>User Name</th>
+            <th>Mobile no.</th>
+            <th>POP/Branch</th>
+            <th>Area/Location</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody></tbody>
 </table>
 
 <div id="deleteModal" class="modal fade">
@@ -36,7 +36,7 @@ style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                     <input type="hidden" name="id" value="">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
-                      </button>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <p>Do you really want to delete these records? This process cannot be undone.</p>
@@ -50,7 +50,7 @@ style="border-collapse: collapse; border-spacing: 0; width: 100%;">
     </div>
 </div>
 
-    <script type="text/javascript">
+<script type="text/javascript">
     $(document).ready(function() {
 
 
@@ -183,9 +183,22 @@ style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                 },
             ],
             order: [
-                [0, "desc"]
+                [1, "desc"]
             ],
-
+            dom: 'Bfrtip',
+            "dom": '<"row"<"col-md-6"l><"col-md-6"f>>' +
+           'rt' +
+           '<"row"<"col-md-6"i><"col-md-6"p>>' +
+           '<"row"<"col-md-12"B>>',
+            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            "pageLength": 10,
+            "buttons": [
+                { extend: 'copy', text: 'Copy', className: 'btn btn-secondary btn-sm ' },
+                { extend: 'csv', text: 'CSV', className: 'btn btn-secondary btn-sm ml-1' },
+                { extend: 'excel', text: 'Excel', className: 'btn btn-success btn-sm ml-1' },
+                { extend: 'pdf', text: 'PDF', className: 'btn btn-danger btn-sm ml-1' },
+                { extend: 'print', text: 'Print', className: 'btn btn-info btn-sm ml-1',title: "Customer Report - {{ date('Y-m-d') }}"  }
+            ],
         });
 
         /** Handle Delete button click**/
@@ -210,7 +223,7 @@ style="border-collapse: collapse; border-spacing: 0; width: 100%;">
             /*Change button text to loading state*/
             submitBtn.html(
                 `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span><span class="visually-hidden">Loading...</span>`
-                );
+            );
 
             var form = $(this);
             var url = form.attr('action');
@@ -239,4 +252,4 @@ style="border-collapse: collapse; border-spacing: 0; width: 100%;">
         });
 
     });
-    </script>
+</script>
