@@ -28,7 +28,9 @@ class CustomerController extends Controller
         $orderByColumn = $request->order[0]['column'];
         $orderDirection = $request->order[0]['dir'];
 
-        $query = Customer::with(['pop','area','package'])->when($search, function ($query) use ($search) {
+        $query = Customer::with(['pop','area','package'])
+        ->where('is_delete', '!=', 1)
+        ->when($search, function ($query) use ($search) {
             $query->where('phone', 'like', "%$search%")
                    ->orWhere('username', 'like', "%$search%")
                   ->orWhereHas('pop', function ($query) use ($search) {
@@ -142,7 +144,8 @@ class CustomerController extends Controller
         }
 
         /* Delete it From Database Table */
-        $object->delete();
+        $object->is_deleted = 1;
+        $object->save();
 
         return response()->json(['success' => true, 'message' => 'Deleted successfully.']);
     }

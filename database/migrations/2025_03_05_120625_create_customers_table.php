@@ -29,6 +29,7 @@ return new class extends Migration
             $table->date('expire_date')->nullable();
             $table->text('remarks')->nullable();
             $table->enum('liabilities', ['YES', 'NO'])->default('NO');
+            $table->integer('is_delete')->nullable();
             $table->timestamps();
 
             $table->foreign('package_id')->references('id')->on('branch_packages')->onDelete('cascade');
