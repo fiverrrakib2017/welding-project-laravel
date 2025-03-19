@@ -21,6 +21,11 @@ class CustomerController extends Controller
     {
         return view('Backend.Pages.Customer.create');
     }
+    public function customer_restore()
+    {
+        return view('Backend.Pages.Customer.Restore.index');
+    }
+
 
     public function get_all_data(Request $request){
         $search = $request->search['value'];
@@ -30,6 +35,37 @@ class CustomerController extends Controller
 
         $query = Customer::with(['pop','area','package'])
         ->where('is_delete', '!=', 1)
+        ->when($search, function ($query) use ($search) {
+            $query->where('phone', 'like', "%$search%")
+                   ->orWhere('username', 'like', "%$search%")
+                  ->orWhereHas('pop', function ($query) use ($search) {
+                      $query->where('fullname', 'like', "%$search%");
+                  })
+                  ->orWhereHas('area', function ($query) use ($search) {
+                      $query->where('name', 'like', "%$search%");
+                  })
+                  ->orWhereHas('package', function ($query) use ($search) {
+                      $query->where('name', 'like', "%$search%");
+                  });
+        }) ->orderBy($columnsForOrderBy[$orderByColumn], $orderDirection)
+        ->paginate($request->length);
+
+
+        return response()->json([
+            'draw' => $request->draw,
+            'recordsTotal' => $query->total(),
+            'recordsFiltered' => $query->total(),
+            'data' => $query->items(),
+        ]);
+    }
+    public function customer_restore_get_all_data(Request $request){
+        $search = $request->search['value'];
+        $columnsForOrderBy = ['id','id','fullname','package','amount','created_at','expire_date','username','phone','pop_id','area_id','created_at','created_at'];
+        $orderByColumn = $request->order[0]['column'];
+        $orderDirection = $request->order[0]['dir'];
+
+        $query = Customer::with(['pop','area','package'])
+        ->where('is_delete', '!=', 0)
         ->when($search, function ($query) use ($search) {
             $query->where('phone', 'like', "%$search%")
                    ->orWhere('username', 'like', "%$search%")
@@ -144,10 +180,24 @@ class CustomerController extends Controller
         }
 
         /* Delete it From Database Table */
-        $object->is_deleted = 1;
+        $object->is_delete = 1;
         $object->save();
 
         return response()->json(['success' => true, 'message' => 'Deleted successfully.']);
+    }
+    public function customer_restore_back(Request $request)
+    {
+        $object = Customer::find($request->id);
+
+        if (empty($object)) {
+            return response()->json(['error' => 'Not found.'], 404);
+        }
+
+        /* Delete it From Database Table */
+        $object->is_delete = 0;
+        $object->save();
+
+        return response()->json(['success' => true, 'message' => 'Restored successfully.']);
     }
     public function edit($id)
     {

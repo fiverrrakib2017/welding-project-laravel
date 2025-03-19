@@ -92,7 +92,7 @@
                         </a>
                     </li> --}}
                      <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a href="{{ route('admin.customer.restore.index') }}" class="nav-link {{($route=='admin.customer.restore.index') ?  'active':''}}">
                             <i class="far fa-circle nav-icon"></i>
                             <p>Backup & Restore</p>
                         </a>

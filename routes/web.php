@@ -171,6 +171,10 @@ Route::group(['middleware'=>'admin'],function(){
              /***** Customer Log *******/
             Route::get('/customer/log', 'customer_log')->name('admin.customer.log.index');
             Route::get('/customer/log/get_all_data', 'customer_log_get_all_data')->name('admin.customer.log.get_all_data');
+             /***** Customer Log *******/
+             Route::get('/customer/restore', 'customer_restore')->name('admin.customer.restore.index');
+             Route::get('/customer/restore/get_all_data', 'customer_restore_get_all_data')->name('admin.customer.restore.get_all_data');
+             Route::post('/customer/restore/back', 'customer_restore_back')->name('admin.customer.restore.back');
         });
         /* IP POOL Route */
         Route::prefix('ip-pool')->group(function() {

@@ -1,27 +1,24 @@
 <table id="customer_datatable1" class="table table-bordered dt-responsive nowrap"
-style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-<thead>
-    <tr>
-        <th>
-            <input type="checkbox" class="custom-control-input" id="selectAllCheckbox"
-                name="selectAll">
-        </th>
+    style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+    <thead>
+        <tr>
 
-        <th>ID</th>
-        <th>Name</th>
-        <th>Package</th>
-        <th>Amount</th>
-        <th>Create Date</th>
-        <th>Expired Date</th>
-        <th>User Name</th>
-        <th>Mobile no.</th>
-        <th>POP/Branch</th>
-        <th>Area/Location</th>
-        <th></th>
-    </tr>
-</thead>
-<tbody></tbody>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Package</th>
+            <th>Amount</th>
+            <th>Create Date</th>
+            <th>Expired Date</th>
+            <th>User Name</th>
+            <th>Mobile no.</th>
+            <th>POP/Branch</th>
+            <th>Area/Location</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody></tbody>
 </table>
+
 
 <div id="deleteModal" class="modal fade">
     <div class="modal-dialog modal-confirm">
@@ -30,54 +27,41 @@ style="border-collapse: collapse; border-spacing: 0; width: 100%;">
             <div class="modal-content">
                 <div class="modal-header flex-column">
                     <div class="icon-box">
-                        <i class="fas fa-trash"></i>
+                        <i class="fas fa-undo"></i>
                     </div>
                     <h4 class="modal-title w-100">Are you sure?</h4>
                     <input type="hidden" name="id" value="">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
-                      </button>
+                    </button>
                 </div>
                 <div class="modal-body">
-                    <p>Do you really want to delete these records? This process cannot be undone.</p>
+                    <p>Do you really want to Restore these records? This process cannot be undone.</p>
                 </div>
                 <div class="modal-footer justify-content-center">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="submit" class="btn btn-success"><i class="fas fa-undo"></i>&nbsp Restore</button>
                 </div>
             </div>
         </form>
     </div>
 </div>
 
-    <script type="text/javascript">
+<script type="text/javascript">
     $(document).ready(function() {
-
-
         var customer_table = $("#customer_datatable1").DataTable({
             "processing": true,
             "responsive": true,
             "serverSide": true,
             beforeSend: function() {},
             complete: function() {},
-            ajax: "{{ route('admin.customer.get_all_data') }}",
+            ajax: "{{ route('admin.customer.restore.get_all_data') }}",
             language: {
                 searchPlaceholder: 'Search...',
                 sSearch: '',
                 lengthMenu: '_MENU_ items/page',
             },
             "columns": [{
-                    "data": null,
-                    "render": function(data, type, row, meta) {
-                        return '<div class="custom-control custom-checkbox">' +
-                            '<input type="checkbox" class="custom-control-input" id="checkbox_' +
-                            meta.row + '" name="checkbox_' + meta.row + '">' +
-                            '<label class="custom-control-label" for="checkbox_' + meta.row +
-                            '"></label>' +
-                            '</div>';
-                    }
-                },
-                {
                     "data": "id"
                 },
                 {
@@ -166,17 +150,13 @@ style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                             row.id);
 
                         return `
-                            <button class="btn btn-primary btn-sm mr-3 customer_edit_btn" data-id="${row.id}">
-                                <i class="fa fa-edit"></i>
+
+
+                            <button class="btn btn-danger btn-sm mr-3 restore-btn" data-id="${row.id}">
+                                <i class="fa fa-undo"></i>
                             </button>
 
-                            <button class="btn btn-danger btn-sm mr-3 delete-btn" data-id="${row.id}">
-                                <i class="fa fa-trash"></i>
-                            </button>
-
-                            <a href="${viewUrl}" class="btn-sm btn btn-success mr-3">
-                                <i class="fa fa-eye"></i>
-                            </a> `;
+                            `;
                     }
 
 
@@ -189,15 +169,14 @@ style="border-collapse: collapse; border-spacing: 0; width: 100%;">
         });
 
         /** Handle Delete button click**/
-        $('#customer_datatable1 tbody').on('click', '.delete-btn', function() {
+        $('#customer_datatable1 tbody').on('click', '.restore-btn', function() {
             var id = $(this).data('id');
-            var deleteUrl = "{{ route('admin.customer.delete', ':id') }}".replace(':id', id);
+            var deleteUrl = "{{ route('admin.customer.restore.back', ':id') }}".replace(':id', id);
 
             $('#deleteForm').attr('action', deleteUrl);
             $('#deleteModal').find('input[name="id"]').val(id);
             $('#deleteModal').modal('show');
         });
-
         /** Handle form submission for delete **/
         $('#deleteModal form').submit(function(e) {
             e.preventDefault();
@@ -239,4 +218,4 @@ style="border-collapse: collapse; border-spacing: 0; width: 100%;">
         });
 
     });
-    </script>
+</script>
