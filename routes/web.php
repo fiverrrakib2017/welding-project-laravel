@@ -392,6 +392,16 @@ Route::group(['middleware'=>'admin'],function(){
                 Route::get('/get_all_data', 'sms_template_get_all_data')->name('admin.sms.template_get_all_data');
                 Route::post('/Store', 'sms_template_Store')->name('admin.sms.template_Store');
                 Route::post('/delete', 'sms_template_delete')->name('admin.sms.template_delete');
+                Route::get('/get/{id}', 'sms_template_get')->name('admin.sms.template_get');
+            });
+        });
+        /* Send SMS Template Route */
+        Route::prefix('send_message')->group(function() {
+            Route::controller(SmsController::class)->group(function() {
+                Route::get('/list', 'message_send_list')->name('admin.sms.message_send_list');
+                Route::get('/get_all_data', 'send_message_get_all_data')->name('admin.sms.send_message_get_all_data');
+                Route::post('/Store', 'send_message_store')->name('admin.sms.send_message_store');
+                Route::post('/delete', 'send_message_delete')->name('admin.sms.send_message_delete');
             });
         });
     });

@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('send_messages', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('pop_id');
             $table->unsignedBigInteger('customer_id');
             $table->text('message');
             $table->timestamp('sent_at')->nullable();
             $table->timestamps();
 
+            $table->foreign('pop_id')->references('id')->on('pop_branches')->onDelete('cascade');
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
         });
     }

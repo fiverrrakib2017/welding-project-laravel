@@ -50,11 +50,10 @@
                         });
                     </script>
                 </li>
-                <br>
                 @php
                     $active_prefix = ['admin.customer.ip_pool', 'admin.customer.package', 'admin.customer'];
                 @endphp
-                <li class="nav-item has-treeview">
+                <li class="nav-item has-treeview mt-2">
                     <a href="#"
                         class="nav-link {{ Str::startsWith($currentRoute, $active_prefix) ? 'active' : '' }}">
                         <i class="nav-icon fas fa-users"></i>
@@ -259,7 +258,7 @@
                 </li>
 
                 @php
-                    $active_prefix = ['admin.sms.config','admin.sms.template_list'];
+                    $active_prefix = ['admin.sms.config','admin.sms.template_list','admin.sms.message_send_list'];
                 @endphp
                 <li class="nav-item has-treeview">
                     <a href="#" class="nav-link{{ in_array($route, $active_prefix) ? ' active' : '' }}">
@@ -268,7 +267,7 @@
                     </a>
                     <ul class="nav nav-treeview"
                         style="{{ Str::startsWith($currentRoute, $active_prefix) ? 'display: block;' : 'display: none;' }}">
-                        <li class="nav-item"><a href="#" class="nav-link"><i
+                        <li class="nav-item"><a href="{{ route('admin.sms.message_send_list') }}" class="nav-link {{ $route == 'admin.sms.message_send_list' ? 'active' : '' }}"><i
                                     class="far fa-circle nav-icon"></i>
                                 <p>Send SMS</p>
                             </a></li>
