@@ -31,6 +31,7 @@ use App\Http\Controllers\Backend\Settings\Website\BannerController;
 use App\Http\Controllers\Backend\Settings\Website\GalleryController;
 use App\Http\Controllers\Backend\Settings\Website\SliderController;
 use App\Http\Controllers\Backend\Settings\Website\SpeechController;
+use App\Http\Controllers\Backend\Sms\SmsController;
 use App\Http\Controllers\Backend\Student\Attendance_controller;
 use App\Http\Controllers\Backend\Student\Bill_CollectionController;
 use App\Http\Controllers\Backend\Student\classController;
@@ -372,6 +373,21 @@ Route::group(['middleware'=>'admin'],function(){
                 /* Change Area Status */
                 Route::post('/change/status/{id}','area_change_status')->name('admin.pop.area.change_status');
             });
+        });
+
+    });
+    /* SMS Management Route */
+    Route::prefix('admin/sms')->group(function() {
+         /* POP/BRANCH Route */
+         Route::controller(SmsController::class)->group(function() {
+            Route::get('/config', 'config')->name('admin.sms.config');
+            Route::post('/config_store', 'config_store')->name('admin.sms.config.store');
+            // Route::get('/all-data', 'get_all_data')->name('admin.pop.get_all_data');
+            // Route::get('/edit/{id}', 'edit')->name('admin.pop.edit');
+            // Route::get('/view/{id}', 'view')->name('admin.pop.view');
+            // Route::post('/delete', 'delete')->name('admin.pop.delete');
+            // Route::post('/store', 'store')->name('admin.pop.store');
+            // Route::post('/update/{id}', 'update')->name('admin.pop.update');
         });
 
     });
