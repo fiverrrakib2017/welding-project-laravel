@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Backend\Sms;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
+use App\Models\Message_template;
 use App\Models\Pop_area;
 use App\Models\Pop_branch;
 use App\Models\Sms_configuration;
@@ -17,17 +18,21 @@ class SmsController extends Controller
        $data= Sms_configuration::latest()->first();
         return view('Backend.Pages.Sms.Config',compact('data'));
     }
-    public function get_all_data(Request $request)
+    public function sms_template_list()
+    {
+        return view('Backend.Pages.Sms.Template');
+    }
+    public function sms_template_get_all_data(Request $request)
     {
         $search = $request->search['value'];
-        $columnsForOrderBy = ['id', 'pop_id', 'name', 'billing_cycle'];
+        $columnsForOrderBy = ['id', 'pop_id', 'name', 'message'];
         $orderByColumn = $request->order[0]['column'];
         $orderDirectection = $request->order[0]['dir'];
 
-        $query = Pop_area::with(['pop'])->when($search, function ($query) use ($search) {
+        $query = Message_template::with(['pop'])->when($search, function ($query) use ($search) {
             $query
                 ->where('name', 'like', "%$search%")
-                ->orWhere('billing_cycle', 'like', "%$search%")
+                ->orWhere('message', 'like', "%$search%")
                 ->orWhereHas('pop', function ($query) use ($search) {
                     $query->where('name', 'like', "%$search%");
                 });
@@ -82,9 +87,43 @@ class SmsController extends Controller
         ]);
     }
 
-    public function delete(Request $request)
+    public function sms_template_Store(Request $request){
+
+        /*Validate the form data*/
+       $rules = [
+        'pop_id' => 'required|integer',
+        'name' => 'required|string',
+        'message' => 'required|string',
+    ];
+    $validator = Validator::make($request->all(), $rules);
+
+    if ($validator->fails()) {
+        return response()->json(
+            [
+                'success' => false,
+                'errors' => $validator->errors(),
+            ],
+            422,
+        );
+    }
+     /* Create a new Instance*/
+     $object =new Message_template();
+     $object->pop_id = $request->pop_id;
+     $object->name = $request->name;
+     $object->message = $request->message;
+
+     /* Save to the database table*/
+     $object->save();
+     return response()->json([
+         'success' => true,
+         'message' => 'Added successfully!',
+     ]);
+
+    }
+
+    public function sms_template_delete(Request $request)
     {
-        $object = Pop_area::find($request->id);
+        $object = Message_template::find($request->id);
 
         if (empty($object)) {
             return response()->json(['error' => 'Not found.'], 404);

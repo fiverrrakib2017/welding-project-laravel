@@ -259,7 +259,7 @@
                 </li>
 
                 @php
-                    $active_prefix = ['admin.sms.config'];
+                    $active_prefix = ['admin.sms.config','admin.sms.template_list'];
                 @endphp
                 <li class="nav-item has-treeview">
                     <a href="#" class="nav-link{{ in_array($route, $active_prefix) ? ' active' : '' }}">
@@ -272,10 +272,16 @@
                                     class="far fa-circle nav-icon"></i>
                                 <p>Send SMS</p>
                             </a></li>
-                        <li class="nav-item"><a href="#" class="nav-link"><i
+
+                        <li class="nav-item"><a href="{{ route('admin.sms.template_list') }}"
+                                class="nav-link {{ $route == 'admin.sms.template_list' ? 'active' : '' }}"><i
                                     class="far fa-circle nav-icon"></i>
-                                <p>SMS Logs</p>
+                                <p>SMS Template</p>
                             </a></li>
+                            <li class="nav-item"><a href="#" class="nav-link"><i
+                                class="far fa-circle nav-icon"></i>
+                            <p>SMS Logs</p>
+                        </a></li>
                         <li class="nav-item"><a href="{{ route('admin.sms.config') }}"
                                 class="nav-link {{ $route == 'admin.sms.config' ? 'active' : '' }}"><i
                                     class="far fa-circle nav-icon"></i>

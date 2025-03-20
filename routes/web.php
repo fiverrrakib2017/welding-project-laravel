@@ -378,18 +378,22 @@ Route::group(['middleware'=>'admin'],function(){
     });
     /* SMS Management Route */
     Route::prefix('admin/sms')->group(function() {
-         /* POP/BRANCH Route */
-         Route::controller(SmsController::class)->group(function() {
-            Route::get('/config', 'config')->name('admin.sms.config');
-            Route::post('/config_store', 'config_store')->name('admin.sms.config.store');
-            // Route::get('/all-data', 'get_all_data')->name('admin.pop.get_all_data');
-            // Route::get('/edit/{id}', 'edit')->name('admin.pop.edit');
-            // Route::get('/view/{id}', 'view')->name('admin.pop.view');
-            // Route::post('/delete', 'delete')->name('admin.pop.delete');
-            // Route::post('/store', 'store')->name('admin.pop.store');
-            // Route::post('/update/{id}', 'update')->name('admin.pop.update');
+        /* SMS Configration Route */
+        Route::prefix('configration')->group(function() {
+            Route::controller(SmsController::class)->group(function() {
+                Route::get('/config', 'config')->name('admin.sms.config');
+                Route::post('/config_store', 'config_store')->name('admin.sms.config.store');
+            });
         });
-
+        /* SMS Template Route */
+        Route::prefix('template')->group(function() {
+            Route::controller(SmsController::class)->group(function() {
+                Route::get('/list', 'sms_template_list')->name('admin.sms.template_list');
+                Route::get('/get_all_data', 'sms_template_get_all_data')->name('admin.sms.template_get_all_data');
+                Route::post('/Store', 'sms_template_Store')->name('admin.sms.template_Store');
+                Route::post('/delete', 'sms_template_delete')->name('admin.sms.template_delete');
+            });
+        });
     });
      /* Mikrotik Router Management Route */
     Route::prefix('admin/mikrotik')->group(function() {
