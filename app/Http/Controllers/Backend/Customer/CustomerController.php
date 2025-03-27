@@ -207,6 +207,11 @@ class CustomerController extends Controller
             'message' => 'Update successfully!',
         ]);
     }
+    public function customer_credit_recharge_list()
+    {
+       
+        return view('Backend.Pages.Customer.Credit.recharge_list');
+    }
 
     public function delete(Request $request)
     {

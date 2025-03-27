@@ -105,7 +105,7 @@
                 </li>
                 {{-- Customer Billings And Payment --}}
                 @php
-                    $active_prefix = ['admin.customer.payment.history'];
+                    $active_prefix = ['admin.customer.payment.history','admin.customer.customer_credit_recharge_list'];
                 @endphp
                 <li class="nav-item has-treeview">
                     <a href="#"
@@ -127,8 +127,8 @@
                         </li>
                         <!-- Creadit Recharge-->
                         <li class="nav-item">
-                            <a href="{{ route('admin.customer.payment.history') }}"
-                                class="nav-link {{ $route == 'admin.customer.payment.history' ? 'active' : '' }}"><i
+                            <a href="{{ route('admin.customer.customer_credit_recharge_list') }}"
+                                class="nav-link {{ $route == 'admin.customer.customer_credit_recharge_list' ? 'active' : '' }}"><i
                                     class="far fa-circle nav-icon"></i>
                                 <p> Creadit Recharge List</p>
                             </a>
