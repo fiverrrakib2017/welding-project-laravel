@@ -13,6 +13,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 
+use function App\Helpers\send_message;
+
 class SmsController extends Controller
 {
     public function config()
@@ -152,9 +154,10 @@ class SmsController extends Controller
                 422,
             );
         }
+        /*Call Send Message Function */
+        send_message($request->phone, $request->message);
         /*Get POP ID From Customer table*/
         $customer=Customer::find($request->customer_id);
-
         /* Create a new Instance*/
         $object =new Send_message();
         $object->pop_id = $customer->pop_id;;

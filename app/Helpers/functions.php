@@ -3,6 +3,8 @@ namespace App\Helpers;
 
 use App\Models\Branch_transaction;
 use App\Models\Customer;
+use App\Models\Customer_log;
+use App\Models\Sms_configuration;
 use App\Models\Customer_recharge;
 use Illuminate\Http\Request;
 
@@ -57,5 +59,57 @@ if(!function_exists('fetch_customer_data')) {
             'recordsFiltered' => $paginatedData->total(),
             'data' => $paginatedData->items(),
         ]);
+    }
+}
+
+if (!function_exists('send_message')) {
+    function send_message($phone_number, $message) {
+        /**GET Message Api Details From Database Table**/
+        $message=Sms_configuration::latest()->first();
+        $api_url = $message->api_url;
+        $api_token = $message->api_token;
+
+        $data = json_encode([
+            "phone" => $phone_number,
+            "message" => $message
+        ]);
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, [
+            CURLOPT_URL => $api_url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => $data,
+            CURLOPT_HTTPHEADER => [
+                "Content-Type: application/json",
+                "Token: $api_token"
+            ],
+        ]);
+
+        $response = curl_exec($curl);
+        $http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $error = curl_error($curl);
+
+        curl_close($curl);
+
+        if ($error) {
+            return "cURL Error: " . $error;
+        } elseif ($http_code !== 201) {
+            return "Error: Received HTTP status code " . $http_code . " - Response: " . $response;
+        }
+
+        return true;
+    }
+     function customer_log($customerId, $actionType, $userId, $description = null)
+    {
+        $object=new Customer_log();
+        $object->customer_id=$customerId;
+        $object->action_type=$actionType;
+        $object->user_id=$userId;
+        $object->description=$description;
+        $object->ip_address=request()->ip();
+        $object->save();
+        return $object;
     }
 }

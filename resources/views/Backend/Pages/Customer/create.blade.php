@@ -213,16 +213,25 @@
                     submitBtn.prop('disabled', true);
                 },
                 success: function(response) {
+
                     if (response.success) {
                         toastr.success(response.message);
+                        submitBtn.html(originalBtnText);
+                        submitBtn.prop('disabled', false);
                         setTimeout(() => {
                             location.reload();
-                        }, 1000);
+                        }, 500);
+                    }
+                    if(success == false){
+                        toastr.error(response.message);
+                        submitBtn.html(originalBtnText);
+                        submitBtn.prop('disabled', false);
                     }
                 },
                 error: function(xhr, status, error) {
                     /* Handle errors */
-                    console.error(xhr.responseText);
+                    submitBtn.html(originalBtnText);
+                    submitBtn.prop('disabled', false);
                     if (xhr.status === 422) {
                         var errors = xhr.responseJSON.errors;
                         for (var error in errors) {
