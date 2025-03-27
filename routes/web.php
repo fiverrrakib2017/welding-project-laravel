@@ -49,7 +49,7 @@ use App\Http\Controllers\Backend\Supplier\SupplierController;
 use App\Http\Controllers\Backend\Teacher\TeacherAttendance_controller;
 use App\Http\Controllers\Backend\Teacher\TeacherController;
 use App\Http\Controllers\Backend\Teacher\Transaction\TeacherTransaction_controller;
-use App\Http\Controllers\Backend\Tickets\Assign_Controller;
+use App\Http\Controllers\Backend\Tickets\Assign_controller;
 use App\Http\Controllers\Backend\Tickets\Complain_typeController;
 use App\Http\Controllers\Backend\Tickets\Ticket_controller;
 use App\Models\Product_Category;
@@ -79,7 +79,7 @@ Route::group(['middleware'=>'admin'],function(){
         });
         /*Assign To */
         Route::prefix('assign')->group(function(){
-            Route::controller(Assign_Controller::class)->group(function(){
+            Route::controller(Assign_controller::class)->group(function(){
                 Route::get('/list', 'index')->name('admin.tickets.assign.index');
                 Route::get('/all-data', 'get_all_data')->name('admin.tickets.assign.get_all_data');
                 Route::get('/edit/{id}', 'edit')->name('admin.tickets.assign.edit');

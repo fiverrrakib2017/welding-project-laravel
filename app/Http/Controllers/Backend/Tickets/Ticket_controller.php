@@ -88,7 +88,14 @@ class Ticket_controller extends Controller
         $object->note = $request->note;
         $object->percentage = $request->percentage ?? '0%';
         $object->status = $request->status_id;
-
+        /*Check Ticket Already Exist*/
+        $check=Ticket::where('customer_id',$request->customer_id)->where('status',0)->first();
+        if($check){
+            return response()->json([
+                'success' => false,
+                'message' => 'Ticket already exist!',
+            ]);
+        }
         /* Save to the database table*/
         $object->save();
         return response()->json([

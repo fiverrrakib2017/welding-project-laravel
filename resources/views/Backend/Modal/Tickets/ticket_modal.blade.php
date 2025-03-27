@@ -4,7 +4,8 @@
     $area_id = $area_id ?? null;
 @endphp
 
-<div class="modal fade bs-example-modal-lg" id="ticketModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade bs-example-modal-lg" id="ticketModal" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content col-md-12">
             <div class="modal-header">
@@ -13,10 +14,10 @@
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
-                  </button>
+                </button>
             </div>
             <div class="modal-body">
-                <form action="{{ route('admin.tickets.store') }}" method="POST"  id="ticketForm">
+                <form action="{{ route('admin.tickets.store') }}" method="POST" id="ticketForm">
                     @csrf
                     <div class="row">
                         <div class="col-md-6 mb-2">
@@ -26,9 +27,12 @@
                                 @php
                                     $customers = \App\Models\Customer::latest()->get();
                                 @endphp
-                                @if($customers->isNotEmpty())
-                                    @foreach($customers as $item)
-                                        <option value="{{ $item->id }}"   @if($item->id == $customer_id) selected @endif> [{{ $item->id }}] - {{ $item->username }} || {{ $item->fullname }}, ({{ $item->phone }})</option>
+                                @if ($customers->isNotEmpty())
+                                    @foreach ($customers as $item)
+                                        <option value="{{ $item->id }}"
+                                            @if ($item->id == $customer_id) selected @endif> [{{ $item->id }}] -
+                                            {{ $item->username }} || {{ $item->fullname }}, ({{ $item->phone }})
+                                        </option>
                                     @endforeach
                                 @else
                                     <option value="">No customer available</option>
@@ -48,15 +52,16 @@
                     </div>
 
                     <div class="row">
-                         <div class="col-md-6 mb-2">
+                        <div class="col-md-6 mb-2">
                             <label>Ticket Assign</label>
-                            <select name="ticket_assign_id" class="form-select" type="text" style="width: 100%;" required>
+                            <select name="ticket_assign_id" class="form-select" type="text" style="width: 100%;"
+                                required>
                                 <option value="">---Select---</option>
                                 @php
                                     $tickets_assign = \App\Models\Ticket_assign::latest()->get();
                                 @endphp
-                                @if($tickets_assign->isNotEmpty())
-                                    @foreach($tickets_assign as $item)
+                                @if ($tickets_assign->isNotEmpty())
+                                    @foreach ($tickets_assign as $item)
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
                                     @endforeach
                                 @else
@@ -68,13 +73,14 @@
                         </div>
                         <div class="col-md-6 mb-2">
                             <label>Complain Type</label>
-                            <select name="ticket_complain_id" class="form-select" type="text" style="width: 100%;" required>
+                            <select name="ticket_complain_id" class="form-select" type="text" style="width: 100%;"
+                                required>
                                 <option value="">---Select---</option>
                                 @php
                                     $tickets_complain = \App\Models\Ticket_complain_type::latest()->get();
                                 @endphp
-                                @if($tickets_complain->isNotEmpty())
-                                    @foreach($tickets_complain as $item)
+                                @if ($tickets_complain->isNotEmpty())
+                                    @foreach ($tickets_complain as $item)
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
                                     @endforeach
                                 @else
@@ -129,7 +135,7 @@
                         </div>
                         <div class="col-md-6 mb-2">
                             <label>Note</label>
-                            <input name="note" class="form-control" type="text" placeholder="Enter Note"/>
+                            <input name="note" class="form-control" type="text" placeholder="Enter Note" />
 
                         </div>
                         <div class="col-md-6 mb-2">
@@ -147,12 +153,74 @@
     </div>
 </div>
 <script src="{{ asset('Backend/plugins/jquery/jquery.min.js') }}"></script>
-<script  src="{{ asset('Backend/assets/js/__handle_submit.js') }}"></script>
-<script  src="{{ asset('Backend/assets/js/delete_data.js') }}"></script>
-<script  src="{{ asset('Backend/assets/js/custom_select.js') }}"></script>
+<script src="{{ asset('Backend/assets/js/__handle_submit.js') }}"></script>
+<script src="{{ asset('Backend/assets/js/delete_data.js') }}"></script>
+<script src="{{ asset('Backend/assets/js/custom_select.js') }}"></script>
 <script type="text/javascript">
-    handleSubmit('#ticketForm','#ticketModal');
-    $(document).ready(function(){
+    __handleSubmit('#ticketForm', '#ticketModal');
+
+    function __handleSubmit(formSelector, modalSelector) {
+        $(formSelector).submit(function(e) {
+            e.preventDefault();
+
+            /* Get the submit button */
+            var submitBtn = $(this).find('button[type="submit"]');
+            var originalBtnText = submitBtn.html();
+
+            submitBtn.html(
+                '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span><span class="visually-hidden"></span>'
+                );
+            submitBtn.prop('disabled', true);
+
+            var form = $(this);
+            var formData = new FormData(this);
+
+            $.ajax({
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: formData,
+                processData: false,
+                contentType: false,
+                beforeSend: function() {
+                    form.find(':input').prop('disabled', true);
+                },
+                success: function(response) {
+                    if (response.success == true) {
+                        toastr.success(response.message);
+                        form[0].reset();
+                        /* Hide the modal */
+                        $(modalSelector).modal('hide');
+                        $('#datatable1').DataTable().ajax.reload(null, false);
+                        submitBtn.html(originalBtnText);
+                        submitBtn.prop('disabled', false);
+                        form.find(':input').prop('disabled', false);
+                    }else if(response.success == false){
+                        toastr.error(response.message);
+                    }
+                },
+                error: function(xhr) {
+                    if (xhr.status === 422) {
+                        /* Validation error*/
+                        var errors = xhr.responseJSON.errors;
+
+                        /* Loop through the errors and show them using toastr*/
+                        $.each(errors, function(field, messages) {
+                            $.each(messages, function(index, message) {
+                                /* Display each error message*/
+                                toastr.error(message);
+                            });
+                        });
+                    }
+                },
+                complete: function() {
+                    submitBtn.html(originalBtnText);
+                    submitBtn.prop('disabled', false);
+                    form.find(':input').prop('disabled', false);
+                }
+            });
+        });
+    }
+    $(document).ready(function() {
         /** Handle Edit button click **/
         $(document).on('click', '.tickets_edit_btn', function() {
             var id = $(this).data('id');
@@ -166,7 +234,7 @@
                                 id));
                         $('#ticketModalLabel').html(
                             '<span class="mdi mdi-account-edit mdi-18px"></span> &nbsp;Edit Ticket'
-                            );
+                        );
                         $('#ticketForm select[name="customer_id"]').val(response.data
                             .customer_id).trigger('change');
                         $('#ticketForm select[name="ticket_for"]').val(response.data
@@ -206,7 +274,7 @@
             $('#deleteModal').modal('show');
         });
         /** Handle Completed button click**/
-        $(document).on("click", ".tickets_completed_btn", function () {
+        $(document).on("click", ".tickets_completed_btn", function() {
             let id = $(this).data("id");
             let btn = $(this);
             let originalHtml = btn.html();
@@ -217,19 +285,19 @@
                 data: {
                     _token: "{{ csrf_token() }}"
                 },
-                success: function (response) {
+                success: function(response) {
                     if (response.success) {
                         btn.html(originalHtml).prop("disabled", false);
                         toastr.success(response.message);
-                        $('#datatable1').DataTable().ajax.reload( null , false);
-                    } else {
+                        $('#datatable1').DataTable().ajax.reload(null, false);
+                    } else if (response.success == false) {
                         toastr.error(response.message);
                     }
                 },
-                error: function () {
+                error: function() {
                     toastr.error("Something went wrong!");
                 },
-                complete: function () {
+                complete: function() {
                     btn.prop("disabled", false);
                 }
             });
