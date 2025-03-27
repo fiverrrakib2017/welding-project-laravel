@@ -140,13 +140,13 @@
                         <!-- Customer -->
                         <div class="active tab-pane" id="customers">
                             <div class="table-responsive">
-                                @include('Backend.Component.Customer.Customer')
+                                @include('Backend.Component.Customer.Customer',['area_id' => $data->id])
                             </div>
                         </div>
                         <!-- Tickets -->
                         <div class="tab-pane" id="tickets">
                             <div class="table table-responsive">
-                                @include('Backend.Component.Tickets.Tickets')
+                                @include('Backend.Component.Tickets.Tickets',['area_id' => $data->id])
                             </div>
                         </div>
                     </div>

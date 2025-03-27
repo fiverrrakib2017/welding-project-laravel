@@ -29,6 +29,9 @@ class CustomerController extends Controller
 
     public function get_all_data(Request $request)
     {
+
+        $pop_id = $request->pop_id;
+        $area_id = $request->area_id;
         $search = $request->search['value'];
         $columnsForOrderBy = ['id', 'id', 'fullname', 'package', 'amount', 'created_at', 'expire_date', 'username', 'phone', 'pop_id', 'area_id', 'created_at', 'created_at'];
 
@@ -53,16 +56,24 @@ class CustomerController extends Controller
                     ->orWhereHas('package', function ($query) use ($search) {
                         $query->where('name', 'like', "%$search%");
                     });
-            });
+            })->when($pop_id, function ($query) use ($pop_id) {
+                $query->where('pop_id', $pop_id);
+            })
+            ->when($area_id, function ($query) use ($area_id) {
+                $query->where('area_id', $area_id);
+            }) ;
 
         /*Pagination*/
-        $paginatedData = $query->orderBy($columnsForOrderBy[$orderByColumn], $orderDirection)->paginate($length, ['*'], 'page', $start / $length + 1);
+        $paginatedData = $query->orderBy($columnsForOrderBy[$orderByColumn], $orderDirection)
+            ->skip($start)
+            ->take($length)
+            ->get();
 
         return response()->json([
             'draw' => intval($request->draw),
             'recordsTotal' => Customer::where('is_delete', '!=', 1)->count(),
-            'recordsFiltered' => $paginatedData->total(),
-            'data' => $paginatedData->items(),
+            'recordsFiltered' => $query->count(),
+            'data' => $paginatedData,
         ]);
     }
 
@@ -238,13 +249,15 @@ class CustomerController extends Controller
         /* Delete it From Database Table */
         $object->is_delete = 0;
         $object->save();
-
+        /* Create Customer Log */
+        customer_log($object->id, 'delete', auth()->guard('admin')->user()->id, 'Customer Restored  Successfully!');
         return response()->json(['success' => true, 'message' => 'Restored successfully.']);
     }
     public function edit($id)
     {
         $data = Customer::find($id);
         if ($data) {
+            customer_log($data->id, 'edit', auth()->guard('admin')->user()->id, 'Customer Edit Modal Open!');
             return response()->json(['success' => true, 'data' => $data]);
             exit();
         } else {
@@ -323,6 +336,7 @@ class CustomerController extends Controller
             $object->note = $request->note;
 
             if ($object->save()) {
+                customer_log($object->customer_id, 'recharge', auth()->guard('admin')->user()->id, 'Customer Recharge Completed!');
                 return response()->json([
                     'success' => true,
                     'message' => 'Recharge successfully.',
@@ -357,6 +371,7 @@ class CustomerController extends Controller
 
         if ($object) {
             $object->delete();
+            customer_log($customer->id, 'recharge', auth()->guard('admin')->user()->id, 'Customer Recharge Undo!');
             return response()->json(['success' => true, 'message' => 'Successfully!']);
             exit();
         } else {

@@ -23,11 +23,15 @@ style="border-collapse: collapse; border-spacing: 0; width: 100%;">
     </thead>
     <tbody></tbody>
 </table>
-<script  src="{{ asset('Backend/assets/js/delete_data.js') }}"></script>
 <script src="{{ asset('Backend/plugins/jquery/jquery.min.js') }}"></script>
+<script  src="{{ asset('Backend/assets/js/delete_data.js') }}"></script>
+
 <script>
+
     $(document).ready(function() {
-        var customer_id = "{{ $customer_id ?? '34' }}";
+        var customer_id = @json($customer_id ?? '');
+        var pop_id = @json($pop_id ?? '');
+        var area_id = @json($area_id ?? '');
 
         var table = $("#datatable1").DataTable({
             "processing": true,
@@ -35,9 +39,15 @@ style="border-collapse: collapse; border-spacing: 0; width: 100%;">
             "serverSide": true,
             beforeSend: function() {},
             complete: function() {},
-            ajax: "{{ route('admin.tickets.get_all_data') }}",
-            type: "GET",
-
+           "ajax": {
+                url: "{{ route('admin.tickets.get_all_data') }}",
+                type: "GET",
+                data: function(d) {
+                    d.customer_id = customer_id;
+                    d.pop_id = pop_id;
+                    d.area_id = area_id;
+                }
+            },
             language: {
                 searchPlaceholder: 'Search...',
                 sSearch: '',

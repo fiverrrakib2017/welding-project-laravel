@@ -19,34 +19,47 @@ class Ticket_controller extends Controller
         return view('Backend.Pages.Tickets.index');
     }
 
-    public function get_all_data(Request $request){
-        $search = $request->search['value'];
-        $columnsForOrderBy = ['id', 'status', 'created_at','priority_id', 'customer_id', 'customer_id','customer_id','customer_id','customer_id','customer_id','customer_id','customer_id','created_at'];
-        $orderByColumn = $request->order[0]['column'];
-        $orderDirection = $request->order[0]['dir'];
+    public function get_all_data(Request $request)
+    {
+        $search = $request->search['value'] ?? null;
+        $customer_id = $request->customer_id;
+        $pop_id = $request->pop_id;
+        $area_id = $request->area_id;
+        $columnsForOrderBy = ['id', 'status', 'created_at', 'priority_id', 'customer_id', 'customer_id', 'customer_id', 'customer_id', 'customer_id', 'customer_id', 'customer_id', 'created_at'];
+        $orderByColumn = $request->order[0]['column'] ?? 0;
+        $orderDirection = $request->order[0]['dir'] ?? 'asc';
 
-        $query = Ticket::with(['customer','assign','complain_type','pop','area'])->when($search, function ($query) use ($search) {
-            $query->where('status', 'like', "%$search%")
-                //    ->orWhere('priority', 'like', "%$search%")
-                  ->orWhereHas('customer', function ($query) use ($search) {
-                      $query->where('fullname', 'like', "%$search%")
-                            ->orWhere('phone', 'like', "%$search%");
-                  })
-                  ->orWhereHas('complain_type', function ($query) use ($search) {
-                      $query->where('name', 'like', "%$search%");
-                  })
-                  ->orWhereHas('pop', function ($query) use ($search) {
-                      $query->where('name', 'like', "%$search%");
-                  })
-                  ->orWhereHas('area', function ($query) use ($search) {
-                      $query->where('name', 'like', "%$search%");
-                  })
-                  ->orWhereHas('assign', function ($query) use ($search) {
-                      $query->where('name', 'like', "%$search%");
-                  });
-        }) ->orderBy($columnsForOrderBy[$orderByColumn], $orderDirection)
-        ->paginate($request->length);
-
+        $query = Ticket::with(['customer', 'assign', 'complain_type', 'pop', 'area'])
+            ->when($search, function ($query) use ($search) {
+                $query
+                    ->where('status', 'like', "%$search%")
+                    ->orWhereHas('customer', function ($query) use ($search) {
+                        $query->where('fullname', 'like', "%$search%")->orWhere('phone', 'like', "%$search%");
+                    })
+                    ->orWhereHas('complain_type', function ($query) use ($search) {
+                        $query->where('name', 'like', "%$search%");
+                    })
+                    ->orWhereHas('pop', function ($query) use ($search) {
+                        $query->where('name', 'like', "%$search%");
+                    })
+                    ->orWhereHas('area', function ($query) use ($search) {
+                        $query->where('name', 'like', "%$search%");
+                    })
+                    ->orWhereHas('assign', function ($query) use ($search) {
+                        $query->where('name', 'like', "%$search%");
+                    });
+            })
+            ->when($customer_id, function ($query) use ($customer_id) {
+                $query->where('customer_id', $customer_id);
+            })
+            ->when($pop_id, function ($query) use ($pop_id) {
+                $query->where('pop_id', $pop_id);
+            })
+            ->when($area_id, function ($query) use ($area_id) {
+                $query->where('area_id', $area_id);
+            })
+            ->orderBy($columnsForOrderBy[$orderByColumn] ?? 'id', $orderDirection)
+            ->paginate($request->length);
 
         return response()->json([
             'draw' => $request->draw,
@@ -55,6 +68,7 @@ class Ticket_controller extends Controller
             'data' => $query->items(),
         ]);
     }
+
     public function store(Request $request)
     {
         /*GET Customer POP & Area ID*/
@@ -79,7 +93,7 @@ class Ticket_controller extends Controller
         $object->save();
         return response()->json([
             'success' => true,
-            'message' => 'Added successfully!'
+            'message' => 'Added successfully!',
         ]);
     }
     public function change_status($id)
@@ -89,10 +103,9 @@ class Ticket_controller extends Controller
         $object->update();
         return response()->json([
             'success' => true,
-            'message' => 'Completed successfully!'
+            'message' => 'Completed successfully!',
         ]);
     }
-
 
     public function delete(Request $request)
     {
@@ -102,27 +115,24 @@ class Ticket_controller extends Controller
             return response()->json(['error' => 'Not found.'], 404);
         }
 
-
         /* Delete it From Database Table */
         $object->delete();
 
-        return response()->json(['success' =>true, 'message'=> 'Deleted successfully.']);
+        return response()->json(['success' => true, 'message' => 'Deleted successfully.']);
     }
     public function edit($id)
     {
         $data = Ticket::find($id);
         if ($data) {
             return response()->json(['success' => true, 'data' => $data]);
-            exit;
+            exit();
         } else {
             return response()->json(['success' => false, 'message' => 'Not found.']);
         }
     }
 
-
     public function update(Request $request, $id)
     {
-
         $this->validateForm($request);
 
         $object = Ticket::findOrFail($id);
@@ -132,38 +142,37 @@ class Ticket_controller extends Controller
         $object->ticket_complain_id = $request->ticket_complain_id;
         $object->priority_id = $request->priority_id;
 
-
         $object->note = $request->note;
         $object->percentage = $request->percentage ?? '0%';
-        $object->status = $request->status_id ;
+        $object->status = $request->status_id;
         $object->update();
 
         return response()->json([
             'success' => true,
-            'message' => 'Update successfully!'
+            'message' => 'Update successfully!',
         ]);
     }
     private function validateForm($request)
     {
-
         /*Validate the form data*/
-        $rules=[
+        $rules = [
             'student_id' => 'required|integer',
             'ticket_for' => 'required|integer',
             'ticket_assign_id' => 'required|integer',
             'ticket_complain_id' => 'required|integer',
             'priority_id' => 'required|integer',
-            'status_id'=>'required|integer',
+            'status_id' => 'required|integer',
         ];
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors()
-            ], 422);
+            return response()->json(
+                [
+                    'success' => false,
+                    'errors' => $validator->errors(),
+                ],
+                422,
+            );
         }
     }
-
-
 }

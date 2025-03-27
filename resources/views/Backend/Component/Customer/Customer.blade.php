@@ -53,6 +53,9 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
+        var pop_id = @json($pop_id ?? '');
+        var area_id = @json($area_id ?? '');
+
 
         var customer_table = $("#customer_datatable1").DataTable({
             "processing": true,
@@ -60,7 +63,14 @@
             "serverSide": true,
             beforeSend: function() {},
             complete: function() {},
-            ajax: "{{ route('admin.customer.get_all_data') }}",
+            "ajax": {
+                url: "{{ route('admin.customer.get_all_data') }}",
+                type: "GET",
+                data: function(d) {
+                    d.pop_id = pop_id;
+                    d.area_id = area_id;
+                }
+            },
             language: {
                 searchPlaceholder: 'Search...',
                 sSearch: '',
@@ -190,14 +200,14 @@
            'rt' +
            '<"row"<"col-md-6"i><"col-md-6"p>>' +
            '<"row"<"col-md-12"B>>',
-            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+           lengthMenu: [[10, 25, 50,100,150,200, -1], [10, 25, 50,100,150,200, "All"]],
             "pageLength": 10,
             "buttons": [
                 { extend: 'copy', text: 'Copy', className: 'btn btn-secondary btn-sm ' },
                 { extend: 'csv', text: 'CSV', className: 'btn btn-secondary btn-sm ml-1' },
                 { extend: 'excel', text: 'Excel', className: 'btn btn-success btn-sm ml-1' },
                 { extend: 'pdf', text: 'PDF', className: 'btn btn-danger btn-sm ml-1' },
-                { extend: 'print', text: 'Print', className: 'btn btn-info btn-sm ml-1',title: "Customer Report - {{ date('Y-m-d') }}"  }
+                { extend: 'print', text: 'Print', className: 'btn btn-info btn-sm ml-1',title: "Customer Report - {{ date('Y-m-d') }}"},
             ],
         });
 

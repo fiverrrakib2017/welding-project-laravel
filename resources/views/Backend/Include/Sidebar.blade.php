@@ -51,7 +51,7 @@
                     </script>
                 </li>
                 @php
-                    $active_prefix = ['admin.customer.index','admin.customer.create'];
+                    $active_prefix = ['admin.customer.index','admin.customer.create','admin.customer.restore.index','admin.customer.log.index'];
                 @endphp
                 <li class="nav-item has-treeview mt-2">
                     <a href="#"
