@@ -51,7 +51,7 @@
                     </script>
                 </li>
                 @php
-                    $active_prefix = ['admin.customer.ip_pool', 'admin.customer.package', 'admin.customer'];
+                    $active_prefix = ['admin.customer.index','admin.customer.create'];
                 @endphp
                 <li class="nav-item has-treeview mt-2">
                     <a href="#"
@@ -73,33 +73,14 @@
                                 <p>Add Customer</p>
                             </a></li>
 
-                        <li class="nav-item"><a href="{{ route('admin.customer.ip_pool.index') }}"
-                                class="nav-link {{ $route == 'admin.customer.ip_pool.index' ? 'active' : '' }}"><i
-                                    class="far fa-circle nav-icon"></i>
-                                <p>IP Pool</p>
-                            </a></li>
 
-                        <li class="nav-item">
-                            <a href="{{ route('admin.customer.package.index') }}"
-                                class="nav-link {{ $route == 'admin.customer.package.index' ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Package </p>
-                            </a>
-                        </li>
                         {{-- <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
                             <p>Billing & Payments</p>
                         </a>
                     </li> --}}
-                        <!-- Payment Management -->
-                        <li class="nav-item">
-                            <a href="{{ route('admin.customer.payment.history') }}"
-                                class="nav-link {{ $route == 'admin.customer.payment.history' ? 'active' : '' }}"><i
-                                    class="far fa-circle nav-icon"></i>
-                                <p>Payment History</p>
-                            </a>
-                        </li>
+
                         <li class="nav-item">
                             <a href="{{ route('admin.customer.log.index') }}"
                                 class="nav-link {{ $route == 'admin.customer.log.index' ? 'active' : '' }}">
@@ -120,12 +101,66 @@
                                 <p>Backup & Restore</p>
                             </a>
                         </li>
-                        {{-- <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Settings</p>
-                        </a>
-                    </li> --}}
+                    </ul>
+                </li>
+                {{-- Customer Billings And Payment --}}
+                @php
+                    $active_prefix = ['admin.customer.payment.history'];
+                @endphp
+                <li class="nav-item has-treeview">
+                    <a href="#"
+                        class="nav-link  {{ Str::startsWith($currentRoute, $active_prefix) ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-money-bill-wave"></i>
+                        <p>Billing & Payments <i class="right fas fa-angle-left"></i></p>
+                    </a>
+
+                    <ul class="nav nav-treeview"
+                        style="{{ Str::startsWith($currentRoute, $active_prefix) ? 'display: block;' : 'display: none;' }}">
+
+                        <!-- Payment Management -->
+                        <li class="nav-item">
+                            <a href="{{ route('admin.customer.payment.history') }}"
+                                class="nav-link {{ $route == 'admin.customer.payment.history' ? 'active' : '' }}"><i
+                                    class="far fa-circle nav-icon"></i>
+                                <p>Payment History</p>
+                            </a>
+                        </li>
+                        <!-- Creadit Recharge-->
+                        <li class="nav-item">
+                            <a href="{{ route('admin.customer.payment.history') }}"
+                                class="nav-link {{ $route == 'admin.customer.payment.history' ? 'active' : '' }}"><i
+                                    class="far fa-circle nav-icon"></i>
+                                <p> Creadit Recharge List</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                {{-- Customer Package --}}
+                @php
+                    $active_prefix = ['admin.customer.ip_pool.index','admin.customer.package.index'];
+                @endphp
+                <li class="nav-item has-treeview">
+                    <a href="#"
+                        class="nav-link  {{ Str::startsWith($currentRoute, $active_prefix) ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-gift"></i>
+                        <p>Cusomer Packages <i class="right fas fa-angle-left"></i></p>
+                    </a>
+                    <ul class="nav nav-treeview"
+                        style="{{ Str::startsWith($currentRoute, $active_prefix) ? 'display: block;' : 'display: none;' }}">
+
+                        <li class="nav-item"><a href="{{ route('admin.customer.ip_pool.index') }}"
+                            class="nav-link {{ $route == 'admin.customer.ip_pool.index' ? 'active' : '' }}"><i
+                                class="far fa-circle nav-icon"></i>
+                            <p>IP Pool</p>
+                        </a></li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('admin.customer.package.index') }}"
+                                class="nav-link {{ $route == 'admin.customer.package.index' ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Package </p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 @php
