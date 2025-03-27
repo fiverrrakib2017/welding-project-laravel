@@ -219,10 +219,9 @@
                 },
                 success: function (response) {
                     if (response.success) {
+                        btn.html(originalHtml).prop("disabled", false);
                         toastr.success(response.message);
-                        setTimeout(() => {
-                            location.reload();
-                        }, 500);
+                        $('#datatable1').DataTable().ajax.reload( null , false);
                     } else {
                         toastr.error(response.message);
                     }

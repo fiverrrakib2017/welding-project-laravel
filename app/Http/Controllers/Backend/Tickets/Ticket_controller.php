@@ -82,10 +82,10 @@ class Ticket_controller extends Controller
             'message' => 'Added successfully!'
         ]);
     }
-    public function change_status(Request $request)
+    public function change_status($id)
     {
-        $object = Ticket::find($request->id);
-        $object->status = $request->status;
+        $object = Ticket::find($id);
+        $object->status = $object->status == 1 ? 0 : 1;
         $object->update();
         return response()->json([
             'success' => true,
