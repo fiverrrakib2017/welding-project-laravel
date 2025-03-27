@@ -209,7 +209,6 @@ class CustomerController extends Controller
     }
     public function customer_credit_recharge_list()
     {
-       
         return view('Backend.Pages.Customer.Credit.recharge_list');
     }
 

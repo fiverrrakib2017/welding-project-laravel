@@ -39,6 +39,7 @@
                                     /* Calculate total recharge per customer */
                                     $total_recharge = App\Models\Customer_recharge::where('customer_id', $item->customer_id)
                                         ->where('recharge_month', $item->recharge_month)
+                                        ->where('transaction_type', '!=', 'due_paid')
                                         ->sum('amount');
 
                                     /* Calculate total Paid per customer */
@@ -47,8 +48,13 @@
                                         ->where('transaction_type', '!=', 'credit')
                                         ->sum('amount');
 
+                                    /* Calculate total Recharge per customer */
+                                    $get_total_due= App\Models\Customer_recharge::where('customer_id', $item->customer_id)->where('transaction_type', 'credit')->sum('amount');
+
+                                    $due_paid= App\Models\Customer_recharge::where('customer_id', $item->customer_id)->where('transaction_type', 'due_paid')->sum('amount');
+
                                     /* Calculate total Due per customer */
-                                    $total_due = $total_recharge - $total_paid;
+                                    $total_due = $get_total_due - $due_paid;
 
                                     /* Get the month with the due */
                                     $due_month = $total_due > 0 ? $item->recharge_month : null;
