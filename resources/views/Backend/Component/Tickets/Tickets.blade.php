@@ -37,7 +37,7 @@ style="border-collapse: collapse; border-spacing: 0; width: 100%;">
             complete: function() {},
             ajax: "{{ route('admin.tickets.get_all_data') }}",
             type: "GET",
-            
+
             language: {
                 searchPlaceholder: 'Search...',
                 sSearch: '',
@@ -147,9 +147,22 @@ style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                 {
                     data: null,
                     render: function(data, type, row) {
-                        return `<button  class="btn btn-primary btn-sm mr-3 tickets_edit_btn" data-id="${row.id}"><i class="fa fa-edit"></i></button>
+                        if(data.status == 1){
+                            return `
+                            <button class="btn btn-primary btn-sm mr-3 tickets_edit_btn" data-id="${row.id}"><i class="fa fa-edit"></i></button>
+                            <button class="btn btn-danger btn-sm mr-3 tickets_delete_btn"  data-id="${row.id}"><i class="fa fa-trash"></i></button>
+                            `;
+                        }else{
+                            return `
+                            <button  class="btn btn-primary btn-sm mr-3 tickets_edit_btn" data-id="${row.id}"><i class="fa fa-edit"></i></button>
 
-                <button class="btn btn-danger btn-sm mr-3 tickets_delete_btn"  data-id="${row.id}"><i class="fa fa-trash"></i></button>`;
+                            <button class="btn btn-danger btn-sm mr-3 tickets_delete_btn"  data-id="${row.id}"><i class="fa fa-trash"></i></button>
+
+                            <button class=" btn btn-info btn-sm mr-3 tickets_completed_btn" data-id="${row.id}"> <i class="fas fa-check-circle"></i> </button>
+
+                            `;
+                        }
+
                     }
 
                 },

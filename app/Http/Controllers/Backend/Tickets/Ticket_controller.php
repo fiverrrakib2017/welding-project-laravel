@@ -57,6 +57,10 @@ class Ticket_controller extends Controller
     }
     public function store(Request $request)
     {
+        /*GET Customer POP & Area ID*/
+        $customer = Customer::find($request->customer_id);
+        $request->merge(['pop_id' => $customer->pop_id]);
+        $request->merge(['area_id' => $customer->area_id]);
         /*Validate the form data*/
         $this->validateForm($request);
         $object = new Ticket();
@@ -76,6 +80,16 @@ class Ticket_controller extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Added successfully!'
+        ]);
+    }
+    public function change_status(Request $request)
+    {
+        $object = Ticket::find($request->id);
+        $object->status = $request->status;
+        $object->update();
+        return response()->json([
+            'success' => true,
+            'message' => 'Completed successfully!'
         ]);
     }
 
@@ -117,8 +131,7 @@ class Ticket_controller extends Controller
         $object->ticket_assign_id = $request->ticket_assign_id;
         $object->ticket_complain_id = $request->ticket_complain_id;
         $object->priority_id = $request->priority_id;
-        $object->pop_id = $request->pop_id;
-        $object->area_id = $request->area_id;
+
 
         $object->note = $request->note;
         $object->percentage = $request->percentage ?? '0%';
@@ -140,8 +153,6 @@ class Ticket_controller extends Controller
             'ticket_assign_id' => 'required|integer',
             'ticket_complain_id' => 'required|integer',
             'priority_id' => 'required|integer',
-            'pop_id' => 'required|integer',
-            'area_id' => 'required|integer',
             'status_id'=>'required|integer',
         ];
         $validator = Validator::make($request->all(), $rules);

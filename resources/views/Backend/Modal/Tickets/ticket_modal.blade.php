@@ -46,42 +46,6 @@
 
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-2">
-                            <label>POP/Branch</label>
-                            <select name="pop_id" class="form-select" type="text" style="width: 100%;" required>
-                                <option value="">---Select---</option>
-                                @php
-                                    $customers = \App\Models\Pop_branch::latest()->get();
-                                @endphp
-                                @if($customers->isNotEmpty())
-                                    @foreach($customers as $item)
-                                        <option value="{{ $item->id }}"  @if($item->id == $pop_id) selected @endif>{{ $item->name }}</option>
-                                    @endforeach
-                                @else
-                                @endif
-                            </select>
-
-                        </div>
-
-                        <div class="col-md-6 mb-2">
-                            <label>Area</label>
-                            <select name="area_id" class="form-select" type="text" style="width: 100%;" required>
-                                <option value="">---Select---</option>
-                                @php
-                                    $datas = \App\Models\Pop_area::latest()->get();
-                                @endphp
-                                @if($datas->isNotEmpty())
-                                    @foreach($datas as $item)
-                                        <option value="{{ $item->id }}" @if($item->id == $area_id) selected @endif>{{ $item->name }}</option>
-                                    @endforeach
-                                @else
-
-                                @endif
-                            </select>
-
-                        </div>
-                    </div>
 
                     <div class="row">
                          <div class="col-md-6 mb-2">
@@ -138,7 +102,7 @@
                         <div class="col-md-6 mb-2">
                             <label>Ticket Status</label>
                             <select name="status_id" class="form-select" type="text" style="width: 100%;" required>
-                                <option value="0">Active</option>
+                                <option value="0" selected>Active</option>
                                 <option value="1">Completed</option>
                             </select>
 
@@ -213,10 +177,7 @@
                             .ticket_complain_id).trigger('change');
                         $('#ticketForm select[name="priority_id"]').val(response.data
                             .priority_id).trigger('change');
-                        $('#ticketForm select[name="pop_id"]').val(response.data.pop_id)
-                            .trigger('change');
-                        $('#ticketForm select[name="area_id"]').val(response.data.area_id)
-                            .trigger('change');
+
                         $('#ticketForm input[name="note"]').val(response.data.note);
                         $('#ticketForm select[name="status_id"]').val(response.data.status)
                             .trigger('change');
@@ -243,6 +204,36 @@
             $('#deleteForm').attr('action', deleteUrl);
             $('#deleteModal').find('input[name="id"]').val(id);
             $('#deleteModal').modal('show');
+        });
+        /** Handle Completed button click**/
+        $(document).on("click", ".tickets_completed_btn", function () {
+            let id = $(this).data("id");
+            let btn = $(this);
+            let originalHtml = btn.html();
+            btn.html('<i class="fas fa-spinner fa-spin"></i> Processing...').prop("disabled", true);
+            $.ajax({
+                url: "{{ route('admin.tickets.change_status', '') }}/" + id,
+                type: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function (response) {
+                    if (response.success) {
+                        toastr.success(response.message);
+                        setTimeout(() => {
+                            location.reload();
+                        }, 500);
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function () {
+                    toastr.error("Something went wrong!");
+                },
+                complete: function () {
+                    btn.prop("disabled", false);
+                }
+            });
         });
     });
 </script>

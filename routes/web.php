@@ -97,6 +97,7 @@ Route::group(['middleware'=>'admin'],function(){
             Route::post('/delete', 'delete')->name('admin.tickets.delete');
             Route::post('/store', 'store')->name('admin.tickets.store');
             Route::post('/update/{id}', 'update')->name('admin.tickets.update');
+            Route::post('/change_status', 'change_status')->name('admin.tickets.change_status');
         });
      });
     /** Accounts Management  Route **/
