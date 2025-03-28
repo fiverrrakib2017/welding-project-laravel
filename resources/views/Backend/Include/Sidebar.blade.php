@@ -29,7 +29,10 @@
                         @endphp
                         @if ($customers->isNotEmpty())
                             @foreach ($customers as $item)
-                                <option value="{{ $item->id }}"> [{{ $item->id }}] - {{ $item->username }} ||
+                            @php
+                                $status_icon = $item->status == 'online' ? '🟢' : '🔴';
+                            @endphp
+                                <option value="{{ $item->id }}"> {!! $status_icon !!} [{{ $item->id }}] - {{ $item->username }} ||
                                     {{ $item->fullname }}, ({{ $item->phone }})</option>
                             @endforeach
                         @else
