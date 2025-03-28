@@ -133,7 +133,7 @@
                             <a href="{{ route('admin.customer.customer_credit_recharge_list') }}"
                                 class="nav-link {{ $route == 'admin.customer.customer_credit_recharge_list' ? 'active' : '' }}"><i
                                     class="far fa-circle nav-icon"></i>
-                                <p> Creadit Recharge List</p>
+                                <p> Credit Recharge List</p>
                             </a>
                         </li>
                     </ul>
@@ -326,7 +326,7 @@
                             </a></li>
                     </ul>
                 </li>
-
+                <!-- HR Management -->
                 <li class="nav-item has-treeview">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-users-cog"></i>
@@ -344,20 +344,17 @@
                                 <p>Add New Employee</p>
                             </a>
                         </li>
-
-                        <!-- Payroll Management -->
                         <li class="nav-item">
                             <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i>
-                                <p>Payroll</p>
+                                <p>Leave Management</p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i>
-                                <p>Bonus & Deductions</p>
-                            </a>
-                        </li>
-
                         <!-- Attendance Management -->
+                        <li class="nav-item">
+                            <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i>
+                                <p>Attendance </p>
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i>
                                 <p>Attendance Report</p>
@@ -365,7 +362,17 @@
                         </li>
                         <li class="nav-item">
                             <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i>
-                                <p>Leave Requests</p>
+                                <p>Salary</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i>
+                                <p>Advance Salary</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i>
+                                <p>Payroll Management</p>
                             </a>
                         </li>
 
@@ -380,16 +387,31 @@
                                 <p>Designations</p>
                             </a>
                         </li>
-
-                        <!-- Holiday & Leave Management -->
                         <li class="nav-item">
                             <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i>
-                                <p>Holiday Calendar</p>
+                                <p>Shift Management</p>
+                            </a>
+                        </li>
+
+
+                    </ul>
+                </li>
+                <!-- Loan Management -->
+                <li class="nav-item has-treeview">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-money-check-alt"></i>
+                        <p>Loan Management <i class="right fas fa-angle-left"></i></p>
+                    </a>
+                    <ul class="nav nav-treeview">
+
+                        <li class="nav-item">
+                            <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i>
+                                <p>Employee Loans</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i>
-                                <p>Leave Management</p>
+                                <p>Add New Loan</p>
                             </a>
                         </li>
                     </ul>
@@ -408,16 +430,15 @@
                                 <p>Account List</p>
                             </a>
                         </li>
-
-                        <!-- Accounting Reports -->
+                        <!-- Account Transaction -->
                         <li class="nav-item">
                             <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i>
-                                <p>Journals</p>
+                                <p>Account Transaction</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i>
-                                <p>Ledgers</p>
+                                <p>Ledger Report</p>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -425,57 +446,13 @@
                                 <p>Trial Balance</p>
                             </a>
                         </li>
-
-                        <!-- Financial Statements -->
                         <li class="nav-item">
                             <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i>
                                 <p>Income Statement</p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i>
-                                <p>Balance Sheet</p>
-                            </a>
-                        </li>
 
-                        <!-- Account Transactions -->
-                        <li class="nav-item">
-                            <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i>
-                                <p>Account Transactions</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i>
-                                <p>Deposit History</p>
-                            </a>
-                        </li>
 
-                        <!-- Account Balances -->
-                        <li class="nav-item">
-                            <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i>
-                                <p>Account Balances</p>
-                            </a>
-                        </li>
-                        <!-- Cash Flow Statement -->
-                        <li class="nav-item">
-                            <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i>
-                                <p>Cash Flow Statement</p>
-                            </a>
-                        </li>
-
-                        <!-- Bank Reconciliation Statement: -->
-                        <li class="nav-item">
-                            <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i>
-                                <p>Bank Reconciliation:</p>
-                            </a>
-                        </li>
-
-                        <!-- Account Settings -->
-                        <li class="nav-item">
-                            <a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i>
-                                <p>Account Settings</p>
-                            </a>
-                        </li>
                     </ul>
                 </li>
                 <!-----------------Task Management--------------------->
@@ -519,7 +496,7 @@
                     <a href="#"
                         class="nav-link {{ Str::startsWith($currentRoute, $active_prefix) ? 'active' : '' }}">
                         <i class="nav-icon fas fa-network-wired"></i>
-                        <p>Router <i class="right fas fa-angle-left"></i></p>
+                        <p>Mikrotik Router <i class="right fas fa-angle-left"></i></p>
                     </a>
                     <ul class="nav nav-treeview"
                         style="{{ Str::startsWith($currentRoute, $active_prefix) ? 'display: block;' : 'display: none;' }}">

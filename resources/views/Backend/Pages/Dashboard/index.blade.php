@@ -89,6 +89,12 @@
             <a class="dropdown-item" href="/transaction-report">
                 <i class="fas fa-exchange-alt text-danger"></i> Transaction Report
             </a>
+            <a class="dropdown-item" href="/transaction-report">
+                <i class="fas fa-exchange-alt text-danger"></i> Transaction Report
+            </a>
+            <a class="dropdown-item" href="/transaction-report">
+                <i class="fas fa-exchange-alt text-danger"></i> Transaction Report
+            </a>
         </div>
         {{-- <button class="btn btn-dark m-1"><i class="fas fa-user-shield"></i> Admin Panel</button>
          <button class="btn btn-secondary m-1"><i class="fas fa-cogs"></i> Settings</button>
