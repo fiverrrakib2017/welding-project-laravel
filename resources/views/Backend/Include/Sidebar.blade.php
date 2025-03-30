@@ -416,7 +416,52 @@
                         </li>
                     </ul>
                 </li>
+ <!-----------Invenotry Menu------------------->
+ <li class="nav-item">
+    <a href="#" class="nav-link ">
+        <i class="nav-icon fas fa-warehouse"></i>
+      <p>&nbsp; Inventory <i class="right fas fa-angle-left"></i> </p>
+    </a>
+    <ul class="nav nav-treeview" style="display: none;">
 
+      <li class="nav-item">
+         <a href="https://admin.futureictbd.com/admin/customer/invoice/create" class="nav-link  "><i class="far fa-circle nav-icon"></i><p>Sale</p></a>
+      </li>
+      <li class="nav-item">
+         <a href="https://admin.futureictbd.com/admin/customer/invoice/show" class="nav-link "><i class="far fa-circle nav-icon"></i><p>Sale Invoice</p></a>
+      </li>
+      <li class="nav-item">
+         <a href="https://admin.futureictbd.com/admin/supplier/invoice/create" class="nav-link "><i class="far fa-circle nav-icon"></i><p>Purchase</p></a>
+      </li>
+      <li class="nav-item">
+        <a href="https://admin.futureictbd.com/admin/supplier/invoice/show" class="nav-link "><i class="far fa-circle nav-icon"></i><p>Purchase Invoice</p></a>
+      </li>
+      <li class="nav-item">
+        <a href="https://admin.futureictbd.com/admin/product/brand/list" class="nav-link "><i class="far fa-circle nav-icon"></i><p>Brand</p></a>
+      </li>
+      <li class="nav-item">
+         <a href="https://admin.futureictbd.com/admin/product/category/list" class="nav-link "><i class="far fa-circle nav-icon"></i><p>Category</p></a>
+      </li>
+      <li class="nav-item">
+         <a href="https://admin.futureictbd.com/admin/product/unit/list" class="nav-link "><i class="far fa-circle nav-icon"></i><p>Units</p></a>
+      </li>
+      <li class="nav-item">
+         <a href="https://admin.futureictbd.com/admin/product/store/list" class="nav-link "><i class="far fa-circle nav-icon"></i><p>Store</p></a>
+      </li>
+      <li class="nav-item">
+         <a href="https://admin.futureictbd.com/admin/product/list" class="nav-link  "><i class="far fa-circle nav-icon"></i><p>Products</p></a>
+      </li>
+      <li class="nav-item">
+         <a href="https://admin.futureictbd.com/admin/supplier/list" class="nav-link "><i class="far fa-circle nav-icon"></i><p>Supplier</p></a>
+      </li>
+      <li class="nav-item">
+         <a href="https://admin.futureictbd.com/admin/customer/list" class="nav-link "><i class="far fa-circle nav-icon"></i><p>Customer</p></a>
+      </li>
+      <li class="nav-item">
+         <a href="https://admin.futureictbd.com/admin/customer/ticket/list" class="nav-link "><i class="far fa-circle nav-icon"></i><p>Customer Ticket</p></a>
+      </li>
+    </ul>
+  </li>
                 <!-----------------Accounts--------------------->
                 <li class="nav-item has-treeview">
                     <a href="#" class="nav-link">
