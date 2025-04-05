@@ -36,7 +36,7 @@
             <div class="card card-danger card-outline shadow-sm">
                 <div class="card-body box-profile">
                     <div class="text-center">
-                        <img src="{{ asset($data->photo ?? 'uploads/photos/avatar.png') }}"
+                        <img src="{{ asset($data->photo ?? 'Backend/images/avatar.png') }}"
                              alt="Profile Picture"
                              class="profile-user-img img-fluid img-circle border border-primary">
                     </div>
