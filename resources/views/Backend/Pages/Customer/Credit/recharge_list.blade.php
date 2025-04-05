@@ -28,69 +28,77 @@
                         </thead>
                         <tbody>
                             @php
-                            $data = App\Models\Customer_recharge::select('customer_id', 'recharge_month')
-                                ->groupBy('customer_id', 'recharge_month')
+                            $data = App\Models\Customer_recharge::select('customer_id')
+                                ->groupBy('customer_id')
                                 ->latest()
                                 ->get();
+                        @endphp
+
+                        @foreach ($data as $item)
+                            @php
+                                /* get customer  */
+                                $recharge_months = App\Models\Customer_recharge::where('customer_id', $item->customer_id)
+                                    ->groupBy('recharge_month')
+                                    ->pluck('recharge_month');
+
+                                /* total recharge */
+                                $total_recharge = App\Models\Customer_recharge::where('customer_id', $item->customer_id)
+                                    ->where('transaction_type', '!=', 'due_paid')
+                                    ->sum('amount');
+
+                                /* total paid */
+                                $total_paid = App\Models\Customer_recharge::where('customer_id', $item->customer_id)
+                                    ->where('transaction_type', '!=', 'credit')
+                                    ->sum('amount');
+
+                                /* total due */
+                                $get_total_due = App\Models\Customer_recharge::where('customer_id', $item->customer_id)
+                                    ->where('transaction_type', 'credit')
+                                    ->sum('amount');
+
+                                $due_paid = App\Models\Customer_recharge::where('customer_id', $item->customer_id)
+                                    ->where('transaction_type', 'due_paid')
+                                    ->sum('amount');
+
+                                $total_due = $get_total_due - $due_paid;
+
+                                /* ডিউ থাকতে হলে প্রথম মাস দেখানো হবে */
+                                $due_month = $recharge_months->firstWhere(function ($month) use ($total_due) {
+                                    return $total_due > 0;
+                                });
                             @endphp
 
-                            @foreach ($data as $item)
-                                @php
-                                    /* Calculate total recharge per customer */
-                                    $total_recharge = App\Models\Customer_recharge::where('customer_id', $item->customer_id)
-                                        ->where('recharge_month', $item->recharge_month)
-                                        ->where('transaction_type', '!=', 'due_paid')
-                                        ->sum('amount');
+                            @if($total_due !== 0)
+                                <tr>
+                                    @if($item->customer->status == 'online')
+                                        <td>
+                                            <a href="{{ route('admin.customer.view', $item->customer->id) }}"
+                                            style="display: flex; align-items: center; text-decoration: none; color: #333;">
+                                                <i class="fas fa-unlock" style="font-size: 15px; color: green; margin-right: 8px;"></i>
+                                                &nbsp;<span class="font-size: 16px; font-weight: bold;">{{ $item->customer->username }}</span>
+                                            </a>
+                                        </td>
+                                    @else
+                                        <td>
+                                            <a href="{{ route('admin.customer.view', $item->customer->id) }}"
+                                            style="display: flex; align-items: center; text-decoration: none; color: #333;">
+                                                <i class="fas fa-lock" style="font-size: 15px; color: rgb(236, 0, 0); margin-right: 8px;"></i>
+                                                &nbsp; <span class="font-size: 16px; font-weight: bold;">{{ $item->customer->username }}</span>
+                                            </a>
+                                        </td>
+                                    @endif
 
-                                    /* Calculate total Paid per customer */
-                                    $total_paid = App\Models\Customer_recharge::where('customer_id', $item->customer_id)
-                                        ->where('recharge_month', $item->recharge_month)
-                                        ->where('transaction_type', '!=', 'credit')
-                                        ->sum('amount');
+                                    <td>{{ $item->customer->pop->name }}</td>
+                                    <td>{{ $item->customer->area->name }}</td>
+                                    <td>{{ $item->customer->phone }}</td>
+                                    <td>{{ $due_month ?? 'N/A' }}</td>
+                                    <td>{{ $total_recharge ?? '' }}</td>
+                                    <td>{{ $total_paid ?? '' }}</td>
+                                    <td>{{ $total_due ?? '' }}</td>
+                                </tr>
+                            @endif
+                        @endforeach
 
-                                    /* Calculate total Recharge per customer */
-                                    $get_total_due= App\Models\Customer_recharge::where('customer_id', $item->customer_id)->where('transaction_type', 'credit')->sum('amount');
-
-                                    $due_paid= App\Models\Customer_recharge::where('customer_id', $item->customer_id)->where('transaction_type', 'due_paid')->sum('amount');
-
-                                    /* Calculate total Due per customer */
-                                    $total_due = $get_total_due - $due_paid;
-
-                                    /* Get the month with the due */
-                                    $due_month = $total_due > 0 ? $item->recharge_month : null;
-                                @endphp
-
-                                @if($total_due !== 0)
-                                    <tr>
-                                        @if($item->customer->status == 'online')
-                                            <td>
-                                                <a href="{{ route('admin.customer.view', $item->customer->id) }}"
-                                                style="display: flex; align-items: center; text-decoration: none; color: #333;">
-                                                    <i class="fas fa-unlock" style="font-size: 15px; color: green; margin-right: 8px;"></i>
-                                                    &nbsp;<span class="font-size: 16px; font-weight: bold;">{{ $item->customer->username }}</span>
-                                                </a>
-                                            </td>
-                                            @else
-                                            <td>
-                                                <a href="{{ route('admin.customer.view', $item->customer->id) }}"
-                                                style="display: flex; align-items: center; text-decoration: none; color: #333;">
-                                                    <i class="fas fa-lock" style="font-size: 15px; color: rgb(236, 0, 0); margin-right: 8px;"></i>
-                                                    &nbsp; <span class="font-size: 16px; font-weight: bold;">{{ $item->customer->username }}</span>
-                                                </a>
-                                            </td>
-                                        @endif
-
-                                        <td>{{ $item->customer->pop->name }}</td>
-                                        <td>{{ $item->customer->area->name }}</td>
-                                        <td>{{ $item->customer->phone }}</td>
-                                        <td>{{ $due_month ?? 'N/A' }}</td>
-                                        <td>{{ $total_recharge ?? '' }}</td>
-                                        <td>{{ $total_paid ?? '' }}</td>
-                                        <td>{{ $total_due ?? '' }}</td>
-                                    </tr>
-                                @endif
-
-                            @endforeach
                         </tbody>
 
                     </table>
