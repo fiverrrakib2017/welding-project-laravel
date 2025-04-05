@@ -38,6 +38,8 @@ use App\Http\Controllers\Backend\Tickets\Ticket_controller;
 use App\Models\Product_Category;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
+
+
 /*Backend Route*/
 Route::get('/admin/login', [AdminController::class, 'login_form'])->name('admin.login');
 Route::post('login-functionality',[AdminController::class,'login_functionality'])->name('login.functionality');
