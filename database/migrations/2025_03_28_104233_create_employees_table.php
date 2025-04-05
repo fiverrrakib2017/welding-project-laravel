@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('blood_group')->nullable();
             $table->string('highest_education');
             $table->string('previous_school')->nullable();
-            $table->unsignedBigInteger('department_id ');
+            $table->unsignedBigInteger('department_id');
             $table->unsignedBigInteger('designation_id');
             $table->integer('salary');
             $table->string('emergency_contact_name');

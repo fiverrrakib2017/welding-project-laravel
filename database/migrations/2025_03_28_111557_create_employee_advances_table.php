@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('employee_advances', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('employee_id');
-            $table->decimal('amount ', 10, 2);
+            $table->decimal('amount', 10, 2);
             $table->varchar('description')->nullable();
             $table->date('advance_date');
             $table->enum('status', ['Pending', 'Approved', 'Rejected'])->default('Pending');

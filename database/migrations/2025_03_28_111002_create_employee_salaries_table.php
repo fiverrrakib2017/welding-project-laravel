@@ -16,12 +16,12 @@ return new class extends Migration
             $table->unsignedBigInteger('employee_id');
             $table->decimal('basic_salary', 10, 2);
             $table->decimal('house_allowance', 10, 2);
-            $table->decimal('medical_allowance ', 10, 2);
-            $table->decimal('other_allowance  ', 10, 2);
+            $table->decimal('medical_allowance', 10, 2);
+            $table->decimal('other_allowance', 10, 2);
             $table->decimal('tax', 10, 2);
-            $table->decimal('net_salary ', 10, 2);
+            $table->decimal('net_salary', 10, 2);
             $table->date('effective_from')->nullable();
-            $table->boolean('is_current ')->default(true);
+            $table->boolean('is_current')->default(true);
             $table->timestamps();
             $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade');
         });
