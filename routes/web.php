@@ -406,9 +406,25 @@ Route::group(['middleware'=>'admin'],function(){
             });
         });
     });
+     /* Network Diagram Router Management Route */
+    // Route::prefix('admin/network')->group(function() {
+
+    //     Route::prefix('diagram')->group(function() {
+    //         Route::controller(RouterController::class)->group(function() {
+    //             Route::get('/list', 'index')->name('admin.router.index');
+    //             Route::get('/edit/{id}', 'edit')->name('admin.router.edit');
+    //             Route::post('/update/{id}', 'update')->name('admin.router.update');
+    //             Route::post('/delete', 'delete')->name('admin.router.delete');
+    //             Route::post('/store', 'store')->name('admin.router.store');
+    //         });
+    //     });
+    // });
     Route::get('/optimize',function(){
         Artisan::call('optimize:clear');
         return 'Optimize Clear Completed';
     });
+    Route::get('/admin/network/diagram',function(){
+        return view('Backend.Pages.Network.diagram');
+    })->name('admin.network.diagram');
 
 });
