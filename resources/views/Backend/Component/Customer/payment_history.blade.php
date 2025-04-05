@@ -106,11 +106,11 @@
          filterContainer.append(from_date);
          filterContainer.append(to_date);
          filterContainer.append(status);
-         filterContainer.append(bill_collect);
+        //  filterContainer.append(bill_collect);
          filterContainer.append(total_amount);
 
          $('.status_filter').select2({ width: '150px' });
-         $('.bill_collect').select2({ width: '150px' });
+        //  $('.bill_collect').select2({ width: '150px' });
      }, 1000);
 
      var table = $("#datatable1").DataTable({
