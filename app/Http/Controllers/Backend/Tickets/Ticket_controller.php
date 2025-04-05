@@ -16,7 +16,10 @@ class Ticket_controller extends Controller
 {
     public function index()
     {
-        return view('Backend.Pages.Tickets.index');
+        $tickets=Ticket::count();
+        $ticket_completed=Ticket::where('status','1')->count();
+        $ticket_pending=Ticket::where('status','0')->count();
+        return view('Backend.Pages.Tickets.index',compact('tickets','ticket_completed','ticket_pending'));
     }
 
     public function get_all_data(Request $request)
