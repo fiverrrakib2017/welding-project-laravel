@@ -149,7 +149,10 @@
             <div class="card shadow">
                 <div class="card-header p-2">
                     <ul class="nav nav-pills">
-                        <li class="nav-item"><a class="nav-link active" href="#customers" data-toggle="tab">Total Customers ( 3369
+                        <li class="nav-item"><a class="nav-link active" href="#customers" data-toggle="tab">Total Customers (
+                            @php
+                            echo   $area_count=App\Models\Customer::where('pop_id',$pop->id)->count();
+                          @endphp
                                 )</a></li>
                         <li class="nav-item"><a class="nav-link" href="#tickets" data-toggle="tab">Tickets</a></li>
 
