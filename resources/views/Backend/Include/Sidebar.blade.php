@@ -54,7 +54,7 @@
                     </script>
                 </li>
                 @php
-                    $active_prefix = ['admin.customer.index','admin.customer.create','admin.customer.restore.index','admin.customer.log.index'];
+                    $active_prefix = ['admin.customer.index','admin.customer.create','admin.customer.restore.index','admin.customer.log.index','admin.customer.customer_import'];
                 @endphp
                 <li class="nav-item has-treeview mt-2">
                     <a href="#"
@@ -76,14 +76,13 @@
                                 <p>Add Customer</p>
                             </a></li>
 
-
-                        {{-- <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Billing & Payments</p>
-                        </a>
-                    </li> --}}
-
+                        <li class="nav-item">
+                            <a href="{{ route('admin.customer.customer_import') }}"
+                                class="nav-link {{ $route == 'admin.customer.customer_import' ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Customer Import</p>
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a href="{{ route('admin.customer.log.index') }}"
                                 class="nav-link {{ $route == 'admin.customer.log.index' ? 'active' : '' }}">

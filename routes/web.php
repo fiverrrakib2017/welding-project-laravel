@@ -164,6 +164,9 @@ Route::group(['middleware'=>'admin'],function(){
              Route::get('/customer/restore', 'customer_restore')->name('admin.customer.restore.index');
              Route::get('/customer/restore/get_all_data', 'customer_restore_get_all_data')->name('admin.customer.restore.get_all_data');
              Route::post('/customer/restore/back', 'customer_restore_back')->name('admin.customer.restore.back');
+              /***** Customer Import *******/
+              Route::get('/import/index','customer_import')->name('admin.customer.customer_import');
+              Route::post('/import/store','customer_csv_file_import')->name('admin.customer.customer_csv_file_import');
         });
         /* IP POOL Route */
         Route::prefix('ip-pool')->group(function() {

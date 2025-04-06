@@ -477,6 +477,68 @@ class CustomerController extends Controller
             'data' => $data,
         ]);
     }
+    public function customer_import(){
+        return view('Backend.Pages.Customer.import');
+    }
+    public function customer_csv_file_import(Request $request){
+        $request->validate([
+            'csv_file' => 'required|file|mimes:csv,txt',
+        ]);
+        $file = fopen($request->file('csv_file'), 'r');
+        /* header skip*/
+        $header = fgetcsv($file);
+
+        $imported = 0;
+        $skipped = 0;
+
+        while (($row = fgetcsv($file)) !== false) {
+           $data = array_combine($header, $row);
+           
+            // Validate required fields
+            $validator = Validator::make($data, [
+                'fullname' => 'required|string|max:100',
+                'phone' => 'required|string|max:15|unique:customers,phone',
+                'username' => 'required|string|max:100|unique:customers,username',
+                'password' => 'required|string',
+                'package_id' => 'required|exists:branch_packages,id',
+                'pop_id' => 'required|exists:pop_branches,id',
+                'area_id' => 'required|exists:pop_areas,id',
+                'router_id' => 'required|exists:routers,id',
+            ]);
+
+            if ($validator->fails()) {
+                $skipped++;
+                continue;
+            }
+
+            try {
+                Customer::create([
+                    'fullname' => $data['fullname'],
+                    'phone' => $data['phone'],
+                    'nid' => $data['nid'] ?? null,
+                    'address' => $data['address'] ?? null,
+                    'con_charge' => $data['con_charge'] ?? 0,
+                    'amount' => $data['amount'] ?? 0,
+                    'username' => $data['username'],
+                    'password' =>  $data['password'],
+                    'package_id' => $data['package_id'],
+                    'pop_id' => $data['pop_id'],
+                    'area_id' => $data['area_id'],
+                    'router_id' => $data['router_id'],
+                    'status' => $data['status'] ?? 'active',
+                    'expire_date' => $data['expire_date'] ?? null,
+                    'remarks' => $data['remarks'] ?? null,
+                    'liabilities' => $data['liabilities'] ?? 'NO',
+                    'is_delete' => $data['is_delete'] ?? 0,
+                ]);
+                $imported++;
+            } catch (\Exception $e) {
+                $skipped++;
+            }
+        }
+
+        fclose($file);
+    }
 
     private function validateForm($request)
     {
