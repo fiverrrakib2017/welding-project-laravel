@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('employee_id');
             $table->decimal('amount', 10, 2);
-            $table->varchar('description')->nullable();
+            $table->text('description')->nullable();
             $table->date('advance_date');
             $table->enum('status', ['Pending', 'Approved', 'Rejected'])->default('Pending');
             $table->unsignedBigInteger('approved_by')->nullable();

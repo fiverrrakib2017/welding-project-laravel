@@ -554,6 +554,23 @@
                         </li>
                     </ul>
                 </li>
+                <!-----------------Settings--------------------->
+            @php
+            $active_prefix=['admin.settings.information.index'];
+        @endphp
+      <li class="nav-item">
+        <a href="#" class="nav-link  {{ Str::startsWith($currentRoute, $active_prefix) ? 'active' : '' }}">
+            <i class="fa fa-cog mr-2 "></i>
+          <p>&nbsp; Settings <i class="right fas fa-angle-left"></i> </p>
+        </a>
+        <ul class="nav nav-treeview"  style="{{ Str::startsWith($currentRoute, $active_prefix) ? 'display: block;' : 'display: none;' }}">
+
+          <li class="nav-item">
+             <a href="{{ route('admin.settings.information.index') }}" class="nav-link {{($route=='admin.settings.information.index') ?  'active':''}}"><i class="far fa-circle nav-icon"></i><p>Application Information</p></a>
+          </li>
+
+        </ul>
+      </li>
                 @php
                     $active_prefix = ['admin.router'];
                 @endphp

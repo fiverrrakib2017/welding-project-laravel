@@ -18,11 +18,12 @@ return new class extends Migration
             $table->unsignedBigInteger('shift_id')->nullable();
             $table->time('time_in')->nullable();
             $table->time('time_out')->nullable();
-            $table->enum('status', ['Present', 'Absent','Late','Leave'])->default('Present');
-
+            $table->enum('status', ['Present', 'Absent', 'Late', 'Leave'])->default('Present');
             $table->timestamps();
-            $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade');
-            $table->foreign('shift_id')->references('id')->on('employee_shifts')->onDelete('cascade');
+
+            // Foreign key constraints
+            $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('shift_id')->references('id')->on('employee_shifts')->onDelete('set null')->onUpdate('cascade');
         });
     }
 

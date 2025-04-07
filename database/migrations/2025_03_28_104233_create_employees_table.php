@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
+            $table->text('email')->unique();
             $table->string('phone');
             $table->string('phone_2')->nullable();
             $table->date('hire_date');
@@ -31,7 +31,7 @@ return new class extends Migration
             $table->string('previous_school')->nullable();
             $table->unsignedBigInteger('department_id');
             $table->unsignedBigInteger('designation_id');
-            $table->integer('salary');
+            $table->decimal('salary', 10, 2);
             $table->string('emergency_contact_name');
             $table->string('emergency_contact_phone');
             $table->text('remarks')->nullable();

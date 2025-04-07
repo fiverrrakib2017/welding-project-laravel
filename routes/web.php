@@ -27,6 +27,7 @@ use App\Http\Controllers\Backend\Product\StockController;
 use App\Http\Controllers\Backend\Product\StoreController;
 use App\Http\Controllers\Backend\Product\UnitController;
 use App\Http\Controllers\Backend\Router\RouterController;
+use App\Http\Controllers\Backend\Settings\Others\SettingsController;
 use App\Http\Controllers\Backend\Sms\SmsController;
 use App\Http\Controllers\Backend\Supplier\SupplierController;
 use App\Http\Controllers\Backend\Teacher\TeacherAttendance_controller;
@@ -394,6 +395,13 @@ Route::group(['middleware'=>'admin'],function(){
                 Route::post('/Store', 'send_message_store')->name('admin.sms.send_message_store');
                 Route::post('/delete', 'send_message_delete')->name('admin.sms.send_message_delete');
             });
+        });
+    });
+    /** Settings Management  Route **/
+    Route::prefix('admin/settings/')->group(function(){
+        Route::controller(SettingsController::class)->group(function(){
+            Route::get('/information','index')->name('admin.settings.information.index');
+            Route::post('/store', 'store')->name('admin.settings.information.store');
         });
     });
      /* Mikrotik Router Management Route */
