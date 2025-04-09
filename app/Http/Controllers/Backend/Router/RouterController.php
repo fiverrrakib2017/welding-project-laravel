@@ -121,6 +121,37 @@ class RouterController extends Controller
         return view('Backend.Pages.Mikrotik.log', compact('allLogs'));
     }
 
+    public function router_user_list($router_id){
+        $routers=Router::where('status', 'active')->where('id',$router_id)->get();
+        $data = [];
+        foreach ($routers as $router) {
+            try {
+                $client = new Client([
+                    'host'     => $router->ip_address,
+                    'user'     => $router->username,
+                    'pass'     => $router->password,
+                    'port'     => (int)$router->port,
+                    'timeout'  => 3,
+                    'attempts' => 1
+                ]);
+
+                $query = new Query('/ppp/active/print');
+                $data = $client->query($query)->read();
+                // return $data;
+                return view('Backend.Pages.Mikrotik.customers', compact('data'));
+            } catch (\Exception $e) {
+                $data[] = [
+                    'router_name' => $router->name,
+                    'message'     => 'Connection failed: ' . $e->getMessage(),
+                    'time'        => now(),
+                    'topics'      => 'error'
+                ];
+            }
+        }
+        // return $data;
+        // return view('Backend.Pages.Mikrotik.customers',  ['data' => $data]);
+    }
+
 
     public function delete(Request $request)
     {
