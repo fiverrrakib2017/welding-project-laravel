@@ -39,8 +39,8 @@ use App\Http\Controllers\Backend\Tickets\Ticket_controller;
 use App\Models\Product_Category;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
-
-
+use RouterOS\Client;
+use RouterOS\Query;
 /*Backend Route*/
 Route::get('/admin/login', [AdminController::class, 'login_form'])->name('admin.login');
 Route::post('login-functionality',[AdminController::class,'login_functionality'])->name('login.functionality');
@@ -416,6 +416,8 @@ Route::group(['middleware'=>'admin'],function(){
                 Route::post('/update/{id}', 'update')->name('admin.router.update');
                 Route::post('/delete', 'delete')->name('admin.router.delete');
                 Route::post('/store', 'store')->name('admin.router.store');
+                /* mikrotik Log */
+                Route::get('/log', 'router_log')->name('admin.router.log.index');
             });
         });
     });
@@ -440,4 +442,31 @@ Route::group(['middleware'=>'admin'],function(){
         return view('Backend.Pages.Network.diagram');
     })->name('admin.network.diagram');
 
+    Route::get('/router/show/data', function () {
+        $api_config = [
+            'host' => '103.174.193.41',
+            'user' => 'billing',
+            'pass' => 'billing@123#',
+            'port' => 7700,
+            'timeout' => 3,
+            'attempts' => 1
+        ];
+
+        try {
+            $client = new Client($api_config);
+
+            $query = new Query('/ppp/active/print');
+
+            $result = $client->query($query)->read();
+
+            return response()->json($result);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage()
+            ]);
+        }
+
+    });
 });

@@ -6,6 +6,9 @@ use App\Models\Router;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
+use RouterOS\Client;
+use RouterOS\Query;
+use Carbon\Carbon;
 
 class RouterController extends Controller
 {
@@ -39,6 +42,42 @@ class RouterController extends Controller
             'success' => true,
             'message' => 'Added successfully!'
         ]);
+    }
+    public function router_log(){
+        $routers=Router::where('status', 'active')->get();
+        $allLogs = [];
+        foreach ($routers as $router) {
+            try {
+                $client = new Client([
+                    'host'     => $router->ip_address,
+                    'user'     => $router->username,
+                    'pass'     => $router->password,
+                    'port'     => (int)$router->port,
+                    'timeout'  => 3,
+                    'attempts' => 1
+                ]);
+
+                $query = new Query('/log/print');
+                $logs = $client->query($query)->read();
+
+                foreach ($logs as $log) {
+                    $allLogs[] = [
+                        'router_name' => $router->name,
+                        'message'     => $log['message'] ?? '',
+                        'time'        =>  Carbon::parse($log['time'])->format('l, F j, Y g:i A') ?? '',
+                        'topics'      => $log['topics'] ?? '',
+                    ];
+                }
+            } catch (\Exception $e) {
+                $allLogs[] = [
+                    'router_name' => $router->name,
+                    'message'     => 'Connection failed: ' . $e->getMessage(),
+                    'time'        => now(),
+                    'topics'      => 'error'
+                ];
+            }
+        }
+        return view('Backend.Pages.Mikrotik.log', compact('allLogs'));
     }
 
 

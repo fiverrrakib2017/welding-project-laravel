@@ -54,7 +54,7 @@
                     </script>
                 </li>
                 @php
-                    $active_prefix = ['admin.customer.index','admin.customer.create','admin.customer.restore.index','admin.customer.log.index','admin.customer.customer_import'];
+                    $active_prefix = ['admin.customer.index','admin.customer.create','admin.customer.restore.index','admin.customer.log.index','admin.customer.customer_import','admin.router.log.index'];
                 @endphp
                 <li class="nav-item has-treeview mt-2">
                     <a href="#"
@@ -88,6 +88,13 @@
                                 class="nav-link {{ $route == 'admin.customer.log.index' ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Customer Logs</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.router.log.index') }}"
+                                class="nav-link {{ $route == 'admin.router.log.index' ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Mikrotik Logs</p>
                             </a>
                         </li>
                         {{-- <li class="nav-item">
