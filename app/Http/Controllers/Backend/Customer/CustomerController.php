@@ -40,7 +40,7 @@ class CustomerController extends Controller
         $start = $request->start ?? 0;
         $length = $request->length ?? 10;
 
-        $query = Customer::with(['pop', 'area', 'package'])
+        $baseQuery = Customer::with(['pop', 'area', 'package'])
             ->where('is_delete', '!=', 1)
             ->when($search, function ($query) use ($search) {
                 $query
@@ -62,14 +62,17 @@ class CustomerController extends Controller
             ->when($area_id, function ($query) use ($area_id) {
                 $query->where('area_id', $area_id);
             });
-
+            $filteredQuery = clone $baseQuery;
         /*Pagination*/
-        $paginatedData = $query->orderBy($columnsForOrderBy[$orderByColumn], $orderDirection)->skip($start)->take($length)->get();
+        $paginatedData = $baseQuery->orderBy($columnsForOrderBy[$orderByColumn] ?? 'id', $orderDirection)
+        ->skip($start)
+        ->take($length)
+        ->get();
 
         return response()->json([
             'draw' => intval($request->draw),
             'recordsTotal' => Customer::where('is_delete', '!=', 1)->count(),
-            'recordsFiltered' => $query->count(),
+            'recordsFiltered' => $filteredQuery->count(),
             'data' => $paginatedData,
         ]);
     }

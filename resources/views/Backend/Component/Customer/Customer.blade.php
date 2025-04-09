@@ -49,7 +49,7 @@
         </form>
     </div>
 </div>
-
+<script src="{{ asset('Backend/plugins/jquery/jquery.min.js') }}"></script>
 <script type="text/javascript">
     $(document).ready(function() {
 
