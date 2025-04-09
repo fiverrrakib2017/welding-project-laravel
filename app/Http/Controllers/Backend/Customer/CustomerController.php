@@ -29,7 +29,6 @@ class CustomerController extends Controller
 
     public function get_all_data(Request $request)
     {
-
         $pop_id = $request->pop_id;
         $area_id = $request->area_id;
         $search = $request->search['value'];
@@ -56,18 +55,16 @@ class CustomerController extends Controller
                     ->orWhereHas('package', function ($query) use ($search) {
                         $query->where('name', 'like', "%$search%");
                     });
-            })->when($pop_id, function ($query) use ($pop_id) {
+            })
+            ->when($pop_id, function ($query) use ($pop_id) {
                 $query->where('pop_id', $pop_id);
             })
             ->when($area_id, function ($query) use ($area_id) {
                 $query->where('area_id', $area_id);
-            }) ;
+            });
 
         /*Pagination*/
-        $paginatedData = $query->orderBy($columnsForOrderBy[$orderByColumn], $orderDirection)
-            ->skip($start)
-            ->take($length)
-            ->get();
+        $paginatedData = $query->orderBy($columnsForOrderBy[$orderByColumn], $orderDirection)->skip($start)->take($length)->get();
 
         return response()->json([
             'draw' => intval($request->draw),
@@ -211,8 +208,8 @@ class CustomerController extends Controller
 
         /* Save to the database table*/
         $customer->save();
-          /* Create Customer Log */
-          customer_log($customer->id, 'edit', auth()->guard('admin')->user()->id, 'Customer Update Successfully!');
+        /* Create Customer Log */
+        customer_log($customer->id, 'edit', auth()->guard('admin')->user()->id, 'Customer Update Successfully!');
         return response()->json([
             'success' => true,
             'message' => 'Update successfully!',
@@ -477,23 +474,36 @@ class CustomerController extends Controller
             'data' => $data,
         ]);
     }
-    public function customer_import(){
+    public function customer_import()
+    {
         return view('Backend.Pages.Customer.import');
     }
-    public function customer_csv_file_import(Request $request){
+    public function customer_csv_file_import(Request $request)
+    {
         $request->validate([
             'csv_file' => 'required|file|mimes:csv,txt',
         ]);
+        /*Upload CSV File*/
+        $file = $request->file('csv_file');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('uploads/csv'), $filename);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'CSV file uploaded successfully.',
+        ]);
+
+        exit();
+
         $file = fopen($request->file('csv_file'), 'r');
         /* header skip*/
         $header = fgetcsv($file);
-
         $imported = 0;
         $skipped = 0;
 
         while (($row = fgetcsv($file)) !== false) {
-           $data = array_combine($header, $row);
-           
+            $data = array_combine($header, $row);
+
             // Validate required fields
             $validator = Validator::make($data, [
                 'fullname' => 'required|string|max:100',
@@ -507,37 +517,136 @@ class CustomerController extends Controller
             ]);
 
             if ($validator->fails()) {
-                $skipped++;
-                continue;
+                print_r($validator->errors());
+                // $skipped++;
+                // continue;
             }
 
-            try {
-                Customer::create([
-                    'fullname' => $data['fullname'],
-                    'phone' => $data['phone'],
-                    'nid' => $data['nid'] ?? null,
-                    'address' => $data['address'] ?? null,
-                    'con_charge' => $data['con_charge'] ?? 0,
-                    'amount' => $data['amount'] ?? 0,
-                    'username' => $data['username'],
-                    'password' =>  $data['password'],
-                    'package_id' => $data['package_id'],
-                    'pop_id' => $data['pop_id'],
-                    'area_id' => $data['area_id'],
-                    'router_id' => $data['router_id'],
-                    'status' => $data['status'] ?? 'active',
-                    'expire_date' => $data['expire_date'] ?? null,
-                    'remarks' => $data['remarks'] ?? null,
-                    'liabilities' => $data['liabilities'] ?? 'NO',
-                    'is_delete' => $data['is_delete'] ?? 0,
+            /* Check Pop Balance */
+            $pop_balance = check_pop_balance($data['pop_id']);
+            if ($pop_balance < $data['amount']) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Pop balance is not enough',
                 ]);
-                $imported++;
-            } catch (\Exception $e) {
-                $skipped++;
             }
+
+            DB::beginTransaction();
+            /* Create a new Customer*/
+            $customer = new Customer();
+            $customer->fullname = $data['fullname'];
+            $customer->phone = $data['phone'];
+            $customer->nid = $data['nid'] ?? null;
+            $customer->address = $data['address'] ?? null;
+            $customer->con_charge = $data['con_charge'] ?? 0;
+            $customer->amount = $data['amount'] ?? 0;
+            $customer->username = $data['username'];
+            $customer->password = $data['password'];
+            $customer->package_id = $data['package_id'];
+            $customer->pop_id = $data['pop_id'];
+            $customer->area_id = $data['area_id'];
+            $customer->router_id = $data['router_id'];
+            $customer->status = $data['status'] ?? 'active';
+            $customer->expire_date = $data['expire_date'] ?? date('Y-m-d', strtotime('+1 month'));
+            $customer->remarks = $data['remarks'] ?? null;
+            $customer->liabilities = $data['liabilities'] ?? 'NO';
+            $customer->save();
+            /* Store recharge data */
+            $object = new Customer_recharge();
+            $object->user_id = auth()->guard('admin')->user()->id;
+            $object->customer_id = $customer->id;
+            $object->pop_id = $data['pop_id'];
+            $object->area_id = $data['area_id'];
+            $object->recharge_month = implode(',', [date('F')]);
+            $object->transaction_type = 'cash';
+            $object->paid_until = date('Y-m-d', strtotime('+1 month'));
+            $object->amount = $data['amount'];
+            $object->note = 'Created';
+            $object->save();
+            /* Create Customer Log */
+            customer_log($customer->id, 'add', auth()->guard('admin')->user()->id, 'Customer Created Successfully!');
+            DB::commit();
+            $imported++;
         }
 
         fclose($file);
+        return response()->json([
+            'success' => true,
+            'message' => 'Import completed successfully. Imported: ' . $imported . ', Skipped: ' . $skipped,
+        ]);
+    }
+    public function delete_csv_file($file)
+    {
+        $file_path = public_path('uploads/csv/' . $file);
+        if (file_exists($file_path)) {
+            unlink($file_path);
+            return back()->with('success', 'File deleted successfully.');
+        } else {
+            return back()->with('error', 'File not found.');
+        }
+    }
+    public function upload_csv_file()
+    {
+        $files = glob(public_path('uploads/csv/*'));
+
+        /*Store The Database  table*/
+        // Loop through each file
+        foreach ($files as $file) {
+            if (pathinfo($file, PATHINFO_EXTENSION) === 'csv') {
+                // Open the CSV file
+                $csvFile = fopen($file, 'r');
+                if ($csvFile !== false) {
+                    // Skip the header row if necessary
+                    $header = fgetcsv($csvFile);
+
+                    // Loop through the rows and insert them into the database
+                    while (($row = fgetcsv($csvFile)) !== false) {
+                        // Validate and insert the data
+                        if (1==1) {
+
+                            $data = array_combine($header, $row);
+                            DB::beginTransaction();
+                            $customer = new Customer();
+                            $customer->fullname = $data['fullname'];
+                            $customer->phone = $data['phone'];
+                            $customer->nid = $data['nid'] ?? null;
+                            $customer->address = $data['address'] ?? null;
+                            $customer->con_charge = $data['con_charge'] ?? 0;
+                            $customer->amount = $data['amount'] ?? 0;
+                            $customer->username = $data['username'];
+                            $customer->password = $data['password'];
+                            $customer->package_id = $data['package_id'];
+                            $customer->pop_id = $data['pop_id'];
+                            $customer->area_id = $data['area_id'];
+                            $customer->router_id = $data['router_id'];
+                            if(isset($data['status']) && $data['status'] !== 'active'){
+                                $customer->status = 'active';
+
+                            }else{
+                                $customer->status = $data['status'] ?? 'active';
+                            }
+                            $customer->expire_date = $data['expire_date'] ?? date('Y-m-d', strtotime('+1 month'));
+                            $customer->remarks = $data['remarks'] ?? null;
+                            $customer->liabilities = $data['liabilities'] ?? 'NO';
+                            $customer->is_delete = $data['is_delete'] ?? '0';
+                            $customer->save();
+                            /* Store Customer Log  */
+                            customer_log($customer->id, 'add', auth()->guard('admin')->user()->id, 'Customer Created Successfully!');
+                            DB::commit();
+                        }
+                    }
+                    /*Close the CSV file*/
+                    fclose($csvFile);
+                    /*Delete the CSV file*/
+                    unlink($file);
+                }
+            }
+        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Server Uploaded CSV file successfully.',
+        ]);
+        exit();
     }
 
     private function validateForm($request)
