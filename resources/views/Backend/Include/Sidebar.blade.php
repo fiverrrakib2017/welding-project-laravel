@@ -594,7 +594,7 @@
                             <a href="{{ route('admin.router.index') }}"
                                 class="nav-link {{ $route == 'admin.router.index' ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>NAS</p>
+                                <p>Router Add</p>
                             </a>
                         </li>
                         <li class="nav-item">

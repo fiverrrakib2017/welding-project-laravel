@@ -18,7 +18,7 @@
                                     <th>Username</th>
                                     <th>Service</th>
                                     <th>Uptime</th>
-                                    <th>Address</th>
+                                    <th>IP Address</th>
                                     <th>MAC</th>
                                 </tr>
                             </thead>

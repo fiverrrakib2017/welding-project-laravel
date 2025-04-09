@@ -62,7 +62,7 @@
         </td>
         <td>
             @if(isset($router_data['online_users']))
-            <a href="{{ route('admin.router.ppp.users.index',$router_data['router_id']) }}"><span class="badge bg-success">{{ $router_data['online_users'] }} Online</span></a>
+            <a target="__blank" href="{{ route('admin.router.ppp.users.index',$router_data['router_id']) }}"><span class="badge bg-success">{{ $router_data['online_users'] }} Online</span></a>
                 <br>
                 <span class="badge bg-danger">{{ $router_data['offline_users'] }} Offline</span><br>
             @elseif(isset($router_data['error']))
