@@ -14,9 +14,50 @@ class RouterController extends Controller
 {
     public function index()
     {
-        $routers=Router::latest()->get();
-        return view('Backend.Pages.Router.index',compact('routers'));
+        $routers = Router::where('status', 'active')->get();
+
+        $mikrotik_data = [];
+
+        foreach ($routers as $router) {
+            try {
+                $client = new Client([
+                    'host'     => $router->ip_address,
+                    'user'     => $router->username,
+                    'pass'     => $router->password,
+                    'port'     => (int) $router->port,
+                    'timeout'  => 3,
+                    'attempts' => 1
+                ]);
+
+
+                $query = new Query('/ppp/active/print');
+                $activeUsers = $client->query($query)->read();
+
+
+                $resourceQuery = new Query('/system/resource/print');
+                $resourceDetails = $client->query($resourceQuery)->read();
+
+                $mikrotik_data[] = [
+                    'router_id' => $router->id,
+                    'router_name' => $router->name,
+                    'online_users' => count($activeUsers),
+                    'uptime' => $resourceDetails[0]['uptime'] ?? 'N/A',
+                    'version' => $resourceDetails[0]['version'] ?? 'N/A',
+                    'hardware' => $resourceDetails[0]['hardware'] ?? 'N/A',
+                    'cpu' => $resourceDetails[0]['cpu'] ?? 'N/A',
+                    'offline_users' => 0,
+                ];
+            } catch (\Exception $e) {
+                $mikrotik_data[] = [
+                    'error' => $e->getMessage()
+                ];
+            }
+        }
+        $mikrotik_data = collect($mikrotik_data);
+        // return $mikrotik_data;
+        return view('Backend.Pages.Router.index', compact('routers', 'mikrotik_data'));
     }
+
 
 
     public function store(Request $request)

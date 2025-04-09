@@ -28,27 +28,66 @@
                         </thead>
                         <tbody>
                             @foreach ($routers as $item)
-                            <tr>
-                                <td>{{ $item->id }}</td>
-                                <td>
-                                    {{ $item->name }} <br>
-                                    <small>Port: {{ $item->port }}</small>
-                                </td>
-                                <td>
-                                    <span class="badge bg-success">Loading...</span>
-                                </td>
-                                <td>{{ $item->location }}</td>
-                                <td>{{ $item->ip_address }}</td>
-                                <td>{{ $item->password }}</td>
-                                <td>{{ $item->username }}</td>
-                                <td>{{ $item->remarks }}</td>
-                                <td>{{ $item->status }}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-primary edit-btn" data-id="{{ $item->id }}"><i class="fas fa-edit"></i></button>
-                                    <button class="btn btn-sm btn-danger delete-btn" data-id="{{ $item->id }}"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                        @endforeach
+    @php
+        $router_data = $mikrotik_data->firstWhere('router_id', $item->id);
+    @endphp
+    <tr>
+        <td>{{ $item->id }}</td>
+        <td>
+            {{ $item->name }} <br>
+            <small>Port: {{ $item->port }}</small><br>
+            @php
+                $uptime = $router_data['uptime'] ?? 'N/A';
+                preg_match('/(?:(\d+)w)?(?:(\d+)d)?(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?/', $uptime, $matches);
+                $weeks = $matches[1] ?? 0;
+                $days = $matches[2] ?? 0;
+                $hours = $matches[3] ?? 0;
+                $minutes = $matches[4] ?? 0;
+                $seconds = $matches[5] ?? 0;
+            @endphp
+            <small>Uptime:
+                @if($uptime !== 'N/A')
+                    <span class="badge bg-primary">{{ $weeks }}w</span>
+                    <span class="badge bg-success">{{ $days }}d</span>
+                    <span class="badge bg-warning text-dark">{{ $hours }}h</span>
+                    <span class="badge bg-info text-dark">{{ $minutes }}m</span>
+                    <span class="badge bg-secondary">{{ $seconds }}s</span>
+                @else
+                    <span class="badge bg-danger">N/A</span>
+                @endif
+            </small><br>
+            <small>Version: {{ $router_data['version'] ?? 'N/A' }}</small><br>
+            <small>Hardware: {{ $router_data['hardware'] ?? 'N/A' }}</small><br>
+            <small>CPU: {{ $router_data['cpu'] ?? 'N/A' }}</small><br>
+        </td>
+        <td>
+            @if(isset($router_data['online_users']))
+            <a href="#"><span class="badge bg-success">{{ $router_data['online_users'] }} Online</span></a>
+                <br>
+                <span class="badge bg-danger">{{ $router_data['offline_users'] }} Offline</span><br>
+            @elseif(isset($router_data['error']))
+                <span class="badge bg-danger">Error: {{ $router_data['error'] }}</span>
+            @else
+                <span class="badge bg-danger">No Data</span>
+            @endif
+        </td>
+        <td>{{ $item->location }}</td>
+        <td>{{ $item->ip_address }}</td>
+        <td>{{ $item->password }}</td>
+        <td>{{ $item->username }}</td>
+        <td>{{ $item->remarks }}</td>
+        <td>{{ $item->status }}</td>
+        <td>
+            <button class="btn btn-sm btn-primary edit-btn" data-id="{{ $item->id }}">
+                <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn btn-sm btn-danger delete-btn" data-id="{{ $item->id }}">
+                <i class="fas fa-trash"></i>
+            </button>
+        </td>
+    </tr>
+@endforeach
+
                         </tbody>
                     </table>
                 </div>
