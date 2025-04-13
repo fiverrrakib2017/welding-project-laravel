@@ -108,9 +108,9 @@
                     <hr>
                     <!-- Additional Information -->
                     <div class="card card-primary card-outline shadow-sm">
-                        <div class="card-header text-center">
+                        {{-- <div class="card-header text-center">
                             <h5 class="card-title mb-0"><i class="fas fa-server text-primary"></i> Mikrotik Router Info</h5>
-                        </div>
+                        </div> --}}
                         <div class="card-body">
 
                             <div class="row mb-3">
