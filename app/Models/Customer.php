@@ -22,4 +22,7 @@ class Customer extends Model
     public function package(){
         return $this->belongsTo(Branch_package::class,'package_id','id');
     }
+    public function router(){
+        return $this->belongsTo(Router::class,'router_id','id');
+    }
 }

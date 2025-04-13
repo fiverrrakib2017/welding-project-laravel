@@ -1,3 +1,4 @@
+
 @extends('Backend.Layout.App')
 @section('title', 'Dashboard | Admin Panel')
 @section('style')
@@ -106,78 +107,162 @@
                     </p>
                     <hr>
                     <!-- Additional Information -->
-                    <div class="mt-3">
-                        <div class="row text-center">
-                            <div class="col-6">
-                                <p><i class="fas fa-clock text-warning"></i> <strong>Up Time:</strong> <span class="text-danger">00:04:13 Hrs</span></p>
-                            </div>
-                            <div class="col-6">
-                                <p><i class="fas fa-chart-line text-success"></i> <strong>Monthly Usage:</strong> <span class="text-primary">7.802 MB</span></p>
-                            </div>
+                    <div class="card card-primary card-outline shadow-sm">
+                        <div class="card-header text-center">
+                            <h5 class="card-title mb-0"><i class="fas fa-server text-primary"></i> Mikrotik Router Info</h5>
                         </div>
+                        <div class="card-body">
 
-                        <div class="row text-center mt-2">
-                            <div class="col-6">
-                                <p><i class="fas fa-arrow-up text-success"></i> <strong>Upload Speed:</strong> <span class="text-primary">7.802 Mbps</span></p>
-                            </div>
-                            <div class="col-6">
-                                <p><i class="fas fa-arrow-down text-danger"></i> <strong>Download Speed:</strong> <span>{{ $data->download_speed ?? 'N/A' }} Mbps</span></p>
-                            </div>
-                        </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6 text-center border-end">
+                                    <p class="mb-1"><i class="fas fa-clock text-warning fa-lg"></i></p>
+                                    <strong>Up Time</strong>
+                                    <div class="mt-2">
+                                        @php
+                                            $uptime = $mikrotik_data['uptime'] ?? null;
+                                            if ($uptime) {
+                                                preg_match('/(?:(\d+)w)?(?:(\d+)d)?(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?/', $uptime, $matches);
+                                                $weeks = $matches[1] ?? 0;
+                                                $days = $matches[2] ?? 0;
+                                                $hours = $matches[3] ?? 0;
+                                                $minutes = $matches[4] ?? 0;
+                                                $seconds = $matches[5] ?? 0;
+                                            }
+                                        @endphp
 
-                        <div class="row text-center mt-2">
-                            <div class="col-6">
-                                <p><i class="fas fa-plug text-info"></i> <strong>Interface:</strong> <span>{{ $data->interface ?? 'N/A' }}</span></p>
-                            </div>
-                            <div class="col-6">
-                                <p><i class="fas fa-address-card text-warning"></i> <strong>MAC Address:</strong> <span>{{ $data->mac_address ?? 'N/A' }}</span></p>
-                            </div>
-                        </div>
+                                        @if ($uptime)
+                                            @if ($weeks > 0)
+                                                <span class="badge bg-primary me-1"><i class="fas fa-calendar-week"></i> {{ $weeks }}w</span>
+                                            @endif
+                                            @if ($days > 0)
+                                                <span class="badge bg-success me-1"><i class="fas fa-calendar-day"></i> {{ $days }}d</span>
+                                            @endif
+                                            @if ($hours > 0)
+                                                <span class="badge bg-warning text-dark me-1"><i class="fas fa-hourglass-half"></i> {{ $hours }}h</span>
+                                            @endif
+                                            @if ($minutes > 0)
+                                                <span class="badge bg-info text-dark me-1"><i class="fas fa-stopwatch"></i> {{ $minutes }}m</span>
+                                            @endif
+                                            @if ($seconds > 0)
+                                                <span class="badge bg-secondary me-1"><i class="fas fa-clock"></i> {{ $seconds }}s</span>
+                                            @endif
+                                        @else
+                                            <span class="badge bg-danger">N/A</span>
+                                        @endif
+                                    </div>
+                                </div>
 
-                        <div class="row text-center mt-2">
-                            <div class="col-6">
-                                <p><i class="fas fa-laptop-code text-secondary"></i> <strong>Remote IP:</strong> <span>{{ $data->remote_ip ?? 'N/A' }}</span></p>
+
+                                <div class="col-md-6 text-center">
+                                    <p class="mb-1"><i class="fas fa-chart-line text-success"></i></p>
+                                    <strong>Monthly Usage</strong>
+                                    <p class="text-primary">{{ $mikrotik_data['download_speed']?? 'N/A' }}  MB</p>
+                                </div>
                             </div>
-                            <div class="col-6">
-                                <p><i class="fas fa-route text-success"></i> <strong>Router Used:</strong> <span>{{ $data->router_used ?? 'N/A' }}</span></p>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6 text-center border-right">
+                                    <p class="mb-1"><i class="fas fa-arrow-up text-success"></i></p>
+                                    <strong>Upload Speed</strong>
+                                    <p class="text-primary">{{ $mikrotik_data['upload_speed'] ?? 'N/A' }} Mbps</p>
+                                </div>
+                                <div class="col-md-6 text-center">
+                                    <p class="mb-1"><i class="fas fa-arrow-down text-danger"></i></p>
+                                    <strong>Download Speed</strong>
+                                    <p class="text-primary">{{ $mikrotik_data['download_speed'] ?? 'N/A' }} Mbps</p>
+                                </div>
                             </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6 text-center border-right">
+                                    <p class="mb-1"><i class="fas fa-plug text-info"></i></p>
+                                    <strong>Interface</strong>
+                                    <p class="text-muted">{{ $data->interface ?? 'N/A' }}</p>
+                                </div>
+                                <div class="col-md-6 text-center">
+                                    <p class="mb-1"><i class="fas fa-address-card text-warning"></i></p>
+                                    <strong>MAC Address</strong>
+                                    <p class="text-muted">{{ $mikrotik_data['caller-id'] ?? 'N/A' }}</p>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 text-center border-right">
+                                    <p class="mb-1"><i class="fas fa-laptop-code text-secondary"></i></p>
+                                    <strong>IP Address</strong>
+                                    <p class="text-muted">{{ $mikrotik_data['address'] ?? 'N/A' }}</p>
+                                </div>
+                                <div class="col-md-6 text-center">
+                                    <p class="mb-1"><i class="fas fa-route text-success"></i></p>
+                                    <strong>Router Used</strong>
+                                    <p class="text-muted">{{ $data->router->name ?? 'N/A' }}</p>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
 
-                    <ul class="list-group list-group-flush mt-3">
-                        <li class="list-group-item">
-                            <i class="fas fa-user-alt text-primary"></i> <strong>Username:</strong>
-                            <span class="float-right">{{ $data->username ?? 'N/A' }}</span>
-                        </li>
-                        <li class="list-group-item">
-                            <i class="fas fa-phone-alt text-success"></i> <strong>Phone:</strong>
-                            <span class="float-right">{{ $data->phone ?? 'N/A' }}</span>
-                        </li>
-                        <li class="list-group-item">
-                            <i class="fas fa-map-marker-alt text-info"></i> <strong>Address:</strong>
-                            <span class="float-right">{{ $data->address ?? 'N/A' }}</span>
-                        </li>
-                        <li class="list-group-item">
-                            <i class="fas fa-building text-warning"></i> <strong>POP Branch:</strong>
-                            <span class="float-right">{{ $data->pop->name ?? 'N/A' }}</span>
-                        </li>
-                        <li class="list-group-item">
-                            <i class="fas fa-map text-danger"></i> <strong>Area:</strong>
-                            <span class="float-right">{{ $data->area->name ?? 'N/A' }}</span>
-                        </li>
-                        <li class="list-group-item">
-                            <i class="fas fa-network-wired text-secondary"></i> <strong>Package:</strong>
-                            <span class="float-right">{{ $data->package->name ?? 'N/A' }}</span>
-                        </li>
-                        <li class="list-group-item">
-                            <i class="fas fa-dollar-sign text-primary"></i> <strong>Monthly Charge:</strong>
-                            <span class="float-right">{{ number_format($data->amount, 2) }} ৳</span>
-                        </li>
-                        <li class="list-group-item">
-                            <i class="fas fa-hand-holding-usd text-success"></i> <strong>Connection Charge:</strong>
-                            <span class="float-right">{{ number_format($data->con_charge, 2) }} ৳</span>
-                        </li>
-                    </ul>
+
+                    <div class="card  shadow-sm">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0"><i class="fas fa-user"></i> Customer Information</h5>
+                        </div>
+                        <ul class="list-group list-group-flush">
+
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-user-alt text-primary mr-2"></i> <strong>Username:</strong>
+                                </div>
+                                <span class="badge badge-primary badge-pill">{{ $data->username ?? 'N/A' }}</span>
+                            </li>
+
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-phone-alt text-success mr-2"></i> <strong>Phone:</strong>
+                                </div>
+                                <span class="badge badge-success badge-pill">{{ $data->phone ?? 'N/A' }}</span>
+                            </li>
+
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-map-marker-alt text-info mr-2"></i> <strong>Address:</strong>
+                                </div>
+                                <span class="badge badge-info badge-pill">{{ $data->address ?? 'N/A' }}</span>
+                            </li>
+
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-building text-warning mr-2"></i> <strong>POP Branch:</strong>
+                                </div>
+                                <span class="badge badge-warning badge-pill">{{ $data->pop->name ?? 'N/A' }}</span>
+                            </li>
+
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-map text-danger mr-2"></i> <strong>Area:</strong>
+                                </div>
+                                <span class="badge badge-danger badge-pill">{{ $data->area->name ?? 'N/A' }}</span>
+                            </li>
+
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-network-wired text-secondary mr-2"></i> <strong>Package:</strong>
+                                </div>
+                                <span class="badge badge-secondary badge-pill">{{ $data->package->name ?? 'N/A' }}</span>
+                            </li>
+
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-dollar-sign text-primary mr-2"></i> <strong>Monthly Charge:</strong>
+                                </div>
+                                <span class="badge badge-primary badge-pill">{{ number_format($data->amount, 2) }} ৳</span>
+                            </li>
+
+
+
+                        </ul>
+                    </div>
+
                 </div>
             </div>
         </div>

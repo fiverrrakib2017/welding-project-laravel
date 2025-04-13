@@ -5,12 +5,15 @@ use App\Models\Branch_transaction;
 use App\Models\Customer;
 use App\Models\Customer_log;
 use App\Models\Customer_recharge;
+use App\Models\Router as Mikrotik_router;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use function App\Helpers\check_pop_balance;
 use function App\Helpers\customer_log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use RouterOS\Client;
+use RouterOS\Query;
 
 class CustomerController extends Controller
 {
@@ -266,7 +269,7 @@ class CustomerController extends Controller
     }
     public function view($id)
     {
-        $data = Customer::with(['pop', 'area', 'package'])->find($id);
+        $data = Customer::with(['pop', 'area', 'package','router'])->find($id);
 
         $total_recharged = Customer_recharge::where('customer_id', $id)->where('transaction_type', '!=', 'due_paid')->sum('amount') ?? 0;
 
@@ -276,7 +279,37 @@ class CustomerController extends Controller
         $duePaid = Customer_recharge::where('customer_id', $id)->where('transaction_type', 'due_paid')->sum('amount') ?? 0;
 
         $totalDue = $get_total_due - $duePaid;
-        return view('Backend.Pages.Customer.Profile', compact('data', 'totalDue', 'totalPaid', 'duePaid', 'total_recharged'));
+        /*Include Mikrotik Data Customer Profile*/
+        $router = Mikrotik_router::where('status', 'active')
+        ->where('id', $data->router_id)
+        ->first();
+         /*Create Empty Array And store the mikrotik data */
+
+        if ($router) {
+            try {
+                $API = new Client([
+                    'host' => $router->ip_address,
+                    'user' => $router->username,
+                    'pass' => $router->password,
+                    'port' => (int)$router->port ?? 8728,
+                ]);
+
+
+                $pppQuery = new Query('/ppp/active/print');
+                $pppQuery->where('name', 'ak.sojeb');
+                $response = $API->query($pppQuery)->read();
+                if(count($response) > 0){
+                    $mikrotik_data=$response[0];
+                }else{
+                    $mikrotik_data=null;
+                }
+
+            } catch (\Exception $e) {
+
+            }
+        }
+        // return $mikrotik_data;
+        return view('Backend.Pages.Customer.Profile', compact('data', 'totalDue', 'totalPaid', 'duePaid', 'total_recharged', 'mikrotik_data'));
     }
     public function customer_recharge(Request $request)
     {
