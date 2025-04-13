@@ -18,7 +18,7 @@
     <div class="col-md-12 d-flex flex-wrap gap-2">
         <button class="btn btn-success m-1"  data-toggle="modal" data-target="#CustomerRechargeModal"><i class="fas fa-bolt"></i> Recharge Now</button>
         <button class="btn btn-dark m-1" data-toggle="modal" data-target="#ticketModal"><i class="fas fa-ticket-alt"></i> Add Ticket</button>
-        <button class="btn btn-warning m-1"><i class="fas fa-undo-alt"></i> Ree-Connect</button>
+        <button type="submit" name="customer_re_connect_btn" class="btn btn-warning m-1" data-id="{{ $data->id }}"><i class="fas fa-undo-alt"></i> Ree-Connect</button>
 
         <!--------Customer Disable And Enable Button--------->
         @if($data->status=='disabled')
@@ -433,6 +433,30 @@
                 button.html('<i class="fas fa-spinner fa-spin"></i> Undoing...').prop('disabled', true);
                 $.ajax({
                     url: "{{ route('admin.customer.recharge.undo', ':id') }}".replace(':id', id),
+                    method: 'GET',
+                    success: function(response) {
+                        if (response.success) {
+                            row.fadeOut(300, function() {
+                                $(this).remove();
+                                toastr.success('Successfully Undo!');
+                            });
+
+                        }
+                    },
+                    error: function() {
+                        toastr.error('An error occurred. Please try again.');
+                    }
+                });
+            }
+        });
+        /** Customer Re-connect button click **/
+        $(document).on('click', 'button[name="customer_re_connect_btn"]', function() {
+            if(confirm('Are you sure you want to undo this action?')){
+                var id = $(this).data('id');
+                let button = $(this);
+                button.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Reconnecting...');
+                $.ajax({
+                    url: "{{ route('admin.customer.mikrotik.reconnect', ':id') }}".replace(':id', id),
                     method: 'GET',
                     success: function(response) {
                         if (response.success) {

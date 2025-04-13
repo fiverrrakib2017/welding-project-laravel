@@ -311,6 +311,46 @@ class CustomerController extends Controller
         // return $mikrotik_data;
         return view('Backend.Pages.Customer.Profile', compact('data', 'totalDue', 'totalPaid', 'duePaid', 'total_recharged', 'mikrotik_data'));
     }
+    public function customer_mikrotik_reconnect($id){
+
+
+    $user = Customer::find($id);
+    $router = $user->router;
+
+    if (!$router || !$user) {
+        return response()->json(['success' => false, 'message' => 'Router or User not found']);
+    }
+
+    try {
+        $API = new Client([
+            'host' => $router->ip_address,
+            'user' => $router->username,
+            'pass' => $router->password,
+            'port' => (int)$router->port ?? 8728,
+        ]);
+
+        // 1. Disconnect user
+        $disconnectQuery = new Query('/ppp/active/print');
+        $disconnectQuery->where('name', $user->username);
+        $activeUser = $API->query($disconnectQuery)->read();
+
+        if (count($activeUser)) {
+            $removeId = $activeUser[0]['.id'];
+            $removeQuery = new Query('/ppp/active/remove');
+            $removeQuery->equal('.id', $removeId);
+            $API->query($removeQuery)->read();
+        }
+        sleep(2);
+        $enableQuery = new Query('/ppp/secret/set');
+        $enableQuery->equal('.id', $user->username)->equal('disabled', 'no');
+        $API->query($enableQuery)->read();
+
+        return response()->json(['success' => true, 'message' => 'Reconnected!']);
+
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => $e->getMessage()]);
+    }
+    }
     public function customer_recharge(Request $request)
     {
         /*Validate the form data*/
