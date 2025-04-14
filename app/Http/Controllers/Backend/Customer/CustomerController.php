@@ -329,7 +329,6 @@ class CustomerController extends Controller
     {
         $object = Customer::find($request->id);
 
-        /* MikroTik credentials*/
         $router = Mikrotik_router::where('status', 'active')->where('id', $object->router_id)->first();
         if (!$router || !$object) {
             return response()->json(['success' => false, 'message' => 'Router or Customer not found']);
@@ -343,36 +342,63 @@ class CustomerController extends Controller
                 'port' => (int) $router->port ?? 8728,
             ]);
 
-            /* Change in MikroTik*/
-            $query = new Query('/ppp/secret/print');
-            $query->where('name', $object->username);
-            $user = $API->query($query)->read();
+            $API->connect();
 
-            if (!empty($user)) {
-                $id = $user[0]['.id'];
-                $currentDisabled = $user[0]['disabled'] ?? 'false';
+            /* Find secret ID by username*/
+            $secretQuery = new Query('/ppp/secret/print');
+            $secretQuery->where('name', $object->username);
+            $secrets = $API->query($secretQuery)->read();
 
-                $setQuery = new Query('/ppp/secret/set');
-                $setQuery->equal('.id', $id);
-                $setQuery->equal('disabled', $currentDisabled === 'true' ? 'false' : 'true');
-                $API->query($setQuery);
-
-                /*Update Customer Database Table*/
-                $object->status = $currentDisabled === 'true' ? 'online' : 'disabled';
-                $object->save();
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Successfully Changed',
-                    'new_status' => $object->status,
-                ]);
+            if (empty($secrets)) {
+                return response()->json(['success' => false, 'message' => 'PPP Secret not found']);
             }
 
-            return response()->json(['success' => false, 'message' => 'User not found in MikroTik!'], 404);
+            $secretId = $secrets[0]['.id'];
+
+            /*Find active session*/
+            $activeQuery = new Query('/ppp/active/print');
+            $activeQuery->where('name', $object->username);
+            $activeUser = $API->query($activeQuery)->read();
+
+            /*Determine action*/
+            if ($object->status === 'disabled') {
+                /*Enable user*/
+                $enableQuery = new Query('/ppp/secret/set');
+                $enableQuery->equal('.id', $secretId)->equal('disabled', 'no');
+                $API->query($enableQuery)->read();
+
+                $object->status = 'online';
+            } else {
+                /* Disable user*/
+                $disableQuery = new Query('/ppp/secret/set');
+                $disableQuery->equal('.id', $secretId)->equal('disabled', 'yes');
+                $API->query($disableQuery)->read();
+
+                /*Disconnect if active*/
+                if (!empty($activeUser)) {
+                    $activeId = $activeUser[0]['.id'];
+                    $removeQuery = new Query('/ppp/active/remove');
+                    $removeQuery->equal('.id', $activeId);
+                    $API->query($removeQuery)->read();
+                }
+
+                $object->status = 'disabled';
+            }
+
+            $object->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Successfully Changed',
+                'new_status' => $object->status,
+            ]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
-    public function customer_live_bandwith_update($id){
+
+    public function customer_live_bandwith_update($id)
+    {
         $object = Customer::find($id);
         $router = Mikrotik_router::where('status', 'active')->where('id', $object->router_id)->first(); //
 
@@ -400,7 +426,7 @@ class CustomerController extends Controller
             $torchQuery->equal('interface', 'ether1');
 
             $usage = $API->query($torchQuery)->read();
-            return response()->json($usage); 
+            return response()->json($usage);
             $rx = 0;
             $tx = 0;
 
@@ -412,9 +438,8 @@ class CustomerController extends Controller
             return response()->json([
                 'success' => true,
                 'download' => round($rx / 1024, 2), // kbps
-                'upload' => round($tx / 1024, 2),   // kbps
+                'upload' => round($tx / 1024, 2), // kbps
             ]);
-
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
         }
