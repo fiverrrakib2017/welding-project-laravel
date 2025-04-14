@@ -286,7 +286,7 @@ class CustomerController extends Controller
         ->where('id', $data->router_id)
         ->first();
         /*Get Mikrotik Data via reusable function */
-        $mikrotik_data = $router ? get_mikrotik_user_info($router, 'RDP.Jabed') : null;
+        $mikrotik_data = $router ? get_mikrotik_user_info($router, $data->username) : null;
         return view('Backend.Pages.Customer.Profile', compact('data', 'totalDue', 'totalPaid', 'duePaid', 'total_recharged', 'mikrotik_data'));
     }
     public function customer_mikrotik_reconnect($id){
@@ -328,30 +328,54 @@ class CustomerController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage()]);
         }
     }
-    public function customer_change_status($id){
-        $object =Customer::find($id);
-        if (!$object) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Customer not found!'
-            ], 404);
-        }
-        if($object->status==='disabled'){
-            $object->status ='online';
-        }
-        if($object->status==='disabled'|| $object->status==='active'){
-            $object->status ='online';
-        }
-        $object->status = $object->status == 'disabled' ? 'online' : 'disabled';
+    public function customer_change_status(Request $request){
+        $object = Customer::find($request->id);
 
+    /* MikroTik credentials*/
+    $router = Mikrotik_router::where('status', 'active')
+    ->where('id', $object->router_id)
+    ->first();
+    if (!$router || !$object) {
+        return response()->json(['success' => false, 'message' => 'Router or Customer not found']);
+    }
 
-        /* Update to the database table*/
-        $object->update();
-        return response()->json([
-            'success' => true,
-            'message' => 'Status changed successfully!',
-            'new_status' => $object->status
+    try {
+        $API = new Client([
+            'host' => $router->ip_address,
+            'user' => $router->username,
+            'pass' => $router->password,
+            'port' => (int)$router->port ?? 8728,
         ]);
+
+        /* Change in MikroTik*/
+        $query = new Query('/ppp/secret/print');
+        $query->where('name', $object->username);
+        $user = $API->query($query)->read();
+
+        if (!empty($user)) {
+            $id = $user[0]['.id'];
+            $currentDisabled = $user[0]['disabled'] ?? 'false';
+
+            $setQuery = new Query('/ppp/secret/set');
+            $setQuery->equal('.id', $id);
+            $setQuery->equal('disabled', $currentDisabled === 'true' ? 'false' : 'true');
+            $API->query($setQuery);
+
+            /*Update Customer Database Table*/
+            $object->status = $currentDisabled === 'true' ? 'online' : 'disabled';
+            $object->save();
+            return response()->json([
+                'success' => true,
+                'message' => 'Successfully Changed',
+                'new_status' => $object->status
+            ]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'User not found in MikroTik!'], 404);
+
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+    }
     }
     public function customer_recharge(Request $request)
     {

@@ -21,12 +21,16 @@
         <button type="submit" name="customer_re_connect_btn" class="btn btn-warning m-1" data-id="{{ $data->id }}"><i class="fas fa-undo-alt"></i> Ree-Connect</button>
 
         <!--------Customer Disable And Enable Button--------->
-        @if($data->status=='disabled')
-            <button type="button" class="btn btn-{{ $data && $data->status == 'disabled' ? 'success' : 'danger' }} m-1 change-status" data-id="{{ $data->id }}">
+        @if(in_array($data->status, ['disabled', 'offline', 'online']))
+            <button type="button"
+                    class="btn btn-{{ in_array($data->status, ['disabled', 'offline']) ? 'success' : 'danger' }} m-1 change-status"
+                    data-id="{{ $data->id }}"
+                    data-username="{{ $data->username }}">
                 <i class="fas fa-user-lock"></i>
-                {{ $data && $data->status == 'disabled' ? 'Enable' : 'Disable' }} This User
+                {{ in_array($data->status, ['disabled', 'offline']) ? 'Enable' : 'Disable' }} This User
             </button>
         @endif
+
 
 
         <button type="button" class="btn btn-sm btn-primary m-1 customer_edit_btn" data-id="{{ $data->id }}"><i class="fas fa-edit"></i> Edit Profile</button>
@@ -74,7 +78,7 @@
 
                             switch($data->status) {
                                 case 'online':
-                                    $icon = 'fas fa-check-circle text-success';
+                                    $icon = 'fas fa-unlock text-success';
                                     $badgeColor = 'success';
                                     break;
                                 case 'offline':
@@ -94,8 +98,8 @@
                                     $badgeColor = 'secondary';
                                     break;
                                 case 'disabled':
-                                    $icon = 'fas fa-slash text-dark';
-                                    $badgeColor = 'dark';
+                                    $icon = 'fas fa-lock text-danger';
+                                    $badgeColor = 'danger';
                                     break;
                                 default:
                                     $icon = 'fas fa-question-circle text-muted';
@@ -393,21 +397,25 @@
         $("#recharge_datatable").DataTable();
         /************** Customer Enable And Disabled Start**************************/
         $(document).on("click", ".change-status", function () {
-            let id = $(this).data("id");
+            let id = $(this).data('id');
+            let username = $(this).data('username');
             let btn = $(this);
             let originalHtml = btn.html();
             btn.html('<i class="fas fa-spinner fa-spin"></i> Processing...').prop("disabled", true);
             $.ajax({
-                url: "{{ route('admin.customer.change_status', '') }}/" + id,
-                type: "GET",
+                url: "{{ route('admin.customer.change_status', '') }}",
+                type: "POST",
+                data: {
+                    username: username,
+                    id:id,
+                    _token: '{{ csrf_token() }}'
+                },
                 success: function (response) {
-                    if (response.success) {
-                        let newStatus = response.new_status;
-                        btn.toggleClass("btn-danger btn-success");
-                        btn.html(
-                            `<i class="fas fa-user-lock"></i> ` +
-                            (newStatus == 1 ? "Disable" : "Enable") + " POP/Branch"
-                        );
+                    if (response.success==true) {
+                        toastr.success(response.message);
+                        setTimeout(()=>{
+                            location.reload();
+                        },1000);
                     }
                     if(response.success==false){
                         toastr.error(response.message);
@@ -464,13 +472,16 @@
                     success: function(response) {
                         if (response.success) {
                            toastr.success(response.message);
+                           setTimeout(() => {
+                            location.reload();
+                           }, 1000);
                         }
                     },
                     error: function() {
                         toastr.error('An error occurred. Please try again.');
                     },
                     complete:function(){
-                        button.prop('disabled', false).html('Ree-Connect');
+                        button.html('<i class="fas fa-undo-alt"> Ree-Connect').prop('disabled', false);
                     }
                 });
             }
