@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use function App\Helpers\check_pop_balance;
 use function App\Helpers\customer_log;
+use function App\Helpers\get_mikrotik_user_info;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use RouterOS\Client;
@@ -283,73 +285,73 @@ class CustomerController extends Controller
         $router = Mikrotik_router::where('status', 'active')
         ->where('id', $data->router_id)
         ->first();
-         /*Create Empty Array And store the mikrotik data */
-
-        if ($router) {
-            try {
-                $API = new Client([
-                    'host' => $router->ip_address,
-                    'user' => $router->username,
-                    'pass' => $router->password,
-                    'port' => (int)$router->port ?? 8728,
-                ]);
-
-
-                $pppQuery = new Query('/ppp/active/print');
-                $pppQuery->where('name', 'ak.sojeb');
-                $response = $API->query($pppQuery)->read();
-                if(count($response) > 0){
-                    $mikrotik_data=$response[0];
-                }else{
-                    $mikrotik_data=null;
-                }
-
-            } catch (\Exception $e) {
-
-            }
-        }
-        // return $mikrotik_data;
+        /*Get Mikrotik Data via reusable function */
+        $mikrotik_data = $router ? get_mikrotik_user_info($router, 'RDP.Jabed') : null;
         return view('Backend.Pages.Customer.Profile', compact('data', 'totalDue', 'totalPaid', 'duePaid', 'total_recharged', 'mikrotik_data'));
     }
     public function customer_mikrotik_reconnect($id){
-
-
-    $user = Customer::find($id);
-    $router = $user->router;
-
-    if (!$router || !$user) {
-        return response()->json(['success' => false, 'message' => 'Router or User not found']);
-    }
-
-    try {
-        $API = new Client([
-            'host' => $router->ip_address,
-            'user' => $router->username,
-            'pass' => $router->password,
-            'port' => (int)$router->port ?? 8728,
-        ]);
-
-        // 1. Disconnect user
-        $disconnectQuery = new Query('/ppp/active/print');
-        $disconnectQuery->where('name', $user->username);
-        $activeUser = $API->query($disconnectQuery)->read();
-
-        if (count($activeUser)) {
-            $removeId = $activeUser[0]['.id'];
-            $removeQuery = new Query('/ppp/active/remove');
-            $removeQuery->equal('.id', $removeId);
-            $API->query($removeQuery)->read();
+        $customer = Customer::find($id);
+        $router = Mikrotik_router::where('status', 'active')
+        ->where('id', $customer->router_id)
+        ->first();
+        if (!$router || !$customer) {
+            return response()->json(['success' => false, 'message' => 'Router or User not found']);
         }
-        sleep(2);
-        $enableQuery = new Query('/ppp/secret/set');
-        $enableQuery->equal('.id', $user->username)->equal('disabled', 'no');
-        $API->query($enableQuery)->read();
 
-        return response()->json(['success' => true, 'message' => 'Reconnected!']);
+        try {
+            $API = new Client([
+                'host' => $router->ip_address,
+                'user' => $router->username,
+                'pass' => $router->password,
+                'port' => (int)$router->port ?? 8728,
+            ]);
 
-    } catch (\Exception $e) {
-        return response()->json(['success' => false, 'message' => $e->getMessage()]);
+            /*Disconnect user*/
+            $disconnectQuery = new Query('/ppp/active/print');
+            $disconnectQuery->where('name', $customer->username);
+            $activeUser = $API->query($disconnectQuery)->read();
+
+            if (count($activeUser)) {
+                $removeId = $activeUser[0]['.id'];
+                $removeQuery = new Query('/ppp/active/remove');
+                $removeQuery->equal('.id', $removeId);
+                $API->query($removeQuery)->read();
+            }
+            sleep(2);
+            $enableQuery = new Query('/ppp/secret/set');
+            $enableQuery->equal('.id', $customer->username)->equal('disabled', 'no');
+            $API->query($enableQuery)->read();
+
+            return response()->json(['success' => true, 'message' => 'Reconnected!']);
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
     }
+    public function customer_change_status($id){
+        $object =Customer::find($id);
+        if (!$object) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Customer not found!'
+            ], 404);
+        }
+        if($object->status==='disabled'){
+            $object->status ='online';
+        }
+        if($object->status==='disabled'|| $object->status==='active'){
+            $object->status ='online';
+        }
+        $object->status = $object->status == 'disabled' ? 'online' : 'disabled';
+
+
+        /* Update to the database table*/
+        $object->update();
+        return response()->json([
+            'success' => true,
+            'message' => 'Status changed successfully!',
+            'new_status' => $object->status
+        ]);
     }
     public function customer_recharge(Request $request)
     {

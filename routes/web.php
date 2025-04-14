@@ -172,6 +172,8 @@ Route::group(['middleware'=>'admin'],function(){
               Route::get('/upload/csv-file', [CustomerController::class, 'upload_csv_file'])->name('admin.customer.upload_csv_file');
                /***** Customer Mikrotik Re-connect *******/
                Route::get('/mikrotik/reconnect/{customer_id}','customer_mikrotik_reconnect')->name('admin.customer.mikrotik.reconnect');
+               /***** Customer Change Status *******/
+              Route::get('/change/status/{customer_id}','customer_change_status')->name('admin.customer.change_status');
         });
         /* IP POOL Route */
         Route::prefix('ip-pool')->group(function() {

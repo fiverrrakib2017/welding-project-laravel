@@ -22,9 +22,9 @@
 
         <!--------Customer Disable And Enable Button--------->
         @if($data->status=='disabled')
-            <button type="button" class="btn btn-{{ $data && $data->status == 'disabled' ? 'danger' : 'success' }} m-1 change-status" data-id="{{ $data->id }}">
+            <button type="button" class="btn btn-{{ $data && $data->status == 'disabled' ? 'success' : 'danger' }} m-1 change-status" data-id="{{ $data->id }}">
                 <i class="fas fa-user-lock"></i>
-                {{ $data && $data->status == 'disabled' ? 'Disable' : 'Enable' }} This User
+                {{ $data && $data->status == 'disabled' ? 'Enable' : 'Disable' }} This User
             </button>
         @endif
 
@@ -156,7 +156,7 @@
                                 <div class="col-md-6 text-center">
                                     <p class="mb-1"><i class="fas fa-chart-line text-success"></i></p>
                                     <strong>Monthly Usage</strong>
-                                    <p class="text-primary">{{ $mikrotik_data['download_speed']?? 'N/A' }}  MB</p>
+                                    <p class="text-primary">{{ $mikrotik_data['monthly_usage']?? 'N/A' }}  MB</p>
                                 </div>
                             </div>
 
@@ -182,7 +182,7 @@
                                 <div class="col-md-6 text-center">
                                     <p class="mb-1"><i class="fas fa-address-card text-warning"></i></p>
                                     <strong>MAC Address</strong>
-                                    <p class="text-muted">{{ $mikrotik_data['caller-id'] ?? 'N/A' }}</p>
+                                    <p class="text-muted">{{ $mikrotik_data['mac'] ?? 'N/A' }}</p>
                                 </div>
                             </div>
 
@@ -190,7 +190,7 @@
                                 <div class="col-md-6 text-center border-right">
                                     <p class="mb-1"><i class="fas fa-laptop-code text-secondary"></i></p>
                                     <strong>IP Address</strong>
-                                    <p class="text-muted">{{ $mikrotik_data['address'] ?? 'N/A' }}</p>
+                                    <p class="text-muted">{{ $mikrotik_data['ip'] ?? 'N/A' }}</p>
                                 </div>
                                 <div class="col-md-6 text-center">
                                     <p class="mb-1"><i class="fas fa-route text-success"></i></p>
@@ -398,11 +398,8 @@
             let originalHtml = btn.html();
             btn.html('<i class="fas fa-spinner fa-spin"></i> Processing...').prop("disabled", true);
             $.ajax({
-                url: "{{ route('admin.pop.change_status', '') }}/" + id,
-                type: "POST",
-                data: {
-                    _token: "{{ csrf_token() }}"
-                },
+                url: "{{ route('admin.customer.change_status', '') }}/" + id,
+                type: "GET",
                 success: function (response) {
                     if (response.success) {
                         let newStatus = response.new_status;
@@ -411,6 +408,9 @@
                             `<i class="fas fa-user-lock"></i> ` +
                             (newStatus == 1 ? "Disable" : "Enable") + " POP/Branch"
                         );
+                    }
+                    if(response.success==false){
+                        toastr.error(response.message);
                     }
                 },
                 error: function () {
@@ -421,8 +421,6 @@
                 }
             });
         });
-        /************** Customer Enable And Disabled End**************************/
-
         /** Handle Customer Undo Recharge button click **/
         $(document).on('click', '.customer_recharge_undo_btn', function() {
             if(confirm('Are you sure you want to undo this action?')){
@@ -440,11 +438,16 @@
                                 $(this).remove();
                                 toastr.success('Successfully Undo!');
                             });
-
+                        }
+                        if(response.success==false){
+                            toastr.error(response.message);
                         }
                     },
                     error: function() {
                         toastr.error('An error occurred. Please try again.');
+                    },
+                    complete:function(){
+                        button.html('Recharge Now').prop('disabled', false);
                     }
                 });
             }
@@ -460,15 +463,14 @@
                     method: 'GET',
                     success: function(response) {
                         if (response.success) {
-                            row.fadeOut(300, function() {
-                                $(this).remove();
-                                toastr.success('Successfully Undo!');
-                            });
-
+                           toastr.success(response.message);
                         }
                     },
                     error: function() {
                         toastr.error('An error occurred. Please try again.');
+                    },
+                    complete:function(){
+                        button.prop('disabled', false).html('Ree-Connect');
                     }
                 });
             }
