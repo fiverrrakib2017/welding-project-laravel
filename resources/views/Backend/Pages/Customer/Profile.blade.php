@@ -281,7 +281,6 @@
 
         <div class="col-md-8">
 
-
             <div class="row">
                 @php
                     $dashboardCards = [
@@ -306,77 +305,84 @@
                 @endforeach
             </div>
 
-          <div class="card">
-            <div class="card-header p-2">
-              <ul class="nav nav-pills">
-                <li class="nav-item"><a class="nav-link active" href="#tickets" data-toggle="tab">Tickets</a></li>
-                <li class="nav-item"><a class="nav-link" href="#recharge" data-toggle="tab">Recharge History</a></li>
+            <div class="card">
+                <div class="card-header p-2">
+                <ul class="nav nav-pills">
+                    <li class="nav-item"><a class="nav-link active" href="#tickets" data-toggle="tab">Tickets</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#recharge" data-toggle="tab">Recharge History</a></li>
 
-              </ul>
-            </div><!-- /.card-header -->
-            <div class="card-body">
-              <div class="tab-content">
-                <!-- Tickets -->
-                <div class="active tab-pane" id="tickets">
-                    <div class="table-responsive">
-                        @include('Backend.Component.Tickets.Tickets',['customer_id' => $data->id])
+                </ul>
+                </div><!-- /.card-header -->
+                <div class="card-body">
+                <div class="tab-content">
+                    <!-- Tickets -->
+                    <div class="active tab-pane" id="tickets">
+                        <div class="table-responsive">
+                            @include('Backend.Component.Tickets.Tickets',['customer_id' => $data->id])
+                        </div>
                     </div>
-                </div>
-                <!-- Invoice -->
-                <div class="tab-pane" id="recharge">
-                    <div class="table-responsive">
-                        <table id="recharge_datatable"
-                            class="table table-bordered dt-responsive nowrap"
-                            style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Months</th>
-                                    <th>Type</th>
-                                    <th>Remarks</th>
-                                    <th>Paid until</th>
-                                    <th>Amount</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @php
-                                    $total_recharge_data=App\Models\Customer_recharge::where('customer_id',$data->id)->get();
-                                @endphp
-                                 @foreach ($total_recharge_data as $item)
-                                 <tr>
-                                     <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d M Y') }}</td>
-                                     <td>{{ $item->recharge_month }}</td>
-                                     <td>
-                                        @if ($item->transaction_type == 'cash')
-                                            <span class="badge bg-success">{{ ucfirst($item->transaction_type) }}</span>
-                                        @elseif($item->transaction_type == 'credit')
-                                        <span class="badge bg-danger">{{ ucfirst($item->transaction_type) }}</span>
-                                        @elseif($item->transaction_type == 'due_paid')
-                                        <span class="badge bg-success">{{ ucfirst($item->transaction_type) }}</span>
-                                        @else
+                    <!-- Customer Recharge Section  -->
+                    <div class="tab-pane" id="recharge">
+                        <div class="table-responsive">
+                            <table id="recharge_datatable"
+                                class="table table-bordered dt-responsive nowrap"
+                                style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Months</th>
+                                        <th>Type</th>
+                                        <th>Remarks</th>
+                                        <th>Paid until</th>
+                                        <th>Amount</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $total_recharge_data=App\Models\Customer_recharge::where('customer_id',$data->id)->get();
+                                    @endphp
+                                    @foreach ($total_recharge_data as $item)
+                                    <tr>
+                                        <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d M Y') }}</td>
+                                        <td>{{ $item->recharge_month }}</td>
+                                        <td>
+                                            @if ($item->transaction_type == 'cash')
+                                                <span class="badge bg-success">{{ ucfirst($item->transaction_type) }}</span>
+                                            @elseif($item->transaction_type == 'credit')
                                             <span class="badge bg-danger">{{ ucfirst($item->transaction_type) }}</span>
-                                        @endif
-                                    </td>
+                                            @elseif($item->transaction_type == 'due_paid')
+                                            <span class="badge bg-success">{{ ucfirst($item->transaction_type) }}</span>
+                                            @else
+                                                <span class="badge bg-danger">{{ ucfirst($item->transaction_type) }}</span>
+                                            @endif
+                                        </td>
 
-                                     <td>{{ ucfirst($item->note) }}</td>
-                                     <td>{{ ucfirst($item->paid_until) }}</td>
+                                        <td>{{ ucfirst($item->note) }}</td>
+                                        <td>{{ ucfirst($item->paid_until) }}</td>
 
-                                     <td>{{ number_format($item->amount, 2) }} BDT</td>
-                                     <td>
-                                         <button class="btn btn-danger btn-sm customer_recharge_undo_btn" data-id="{{ $item->id }}"><i class="fas fa-undo"></i></button>
-                                     </td>
-                                 </tr>
-                                 @endforeach
-                            </tbody>
-                        </table>
+                                        <td>{{ number_format($item->amount, 2) }} BDT</td>
+                                        <td>
+                                            <button class="btn btn-danger btn-sm customer_recharge_undo_btn" data-id="{{ $item->id }}"><i class="fas fa-undo"></i></button>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-              </div>
-              <!-- /.tab-content -->
-            </div><!-- /.card-body -->
-          </div>
-          <!-- /.nav-tabs-custom -->
+                <!-- /.tab-content -->
+                </div><!-- /.card-body -->
+            </div>
+            <div class="card mt-4">
+                <div class="card-header">
+                    Bandwidth Usage (Current Session)
+                </div>
+                <div class="card-body">
+                    <canvas id="liveBandwidthChart" height="100"></canvas>
+                </div>
+            </div>
         </div>
 
       </div>
@@ -392,6 +398,8 @@
 <script src="{{ asset('Backend/assets/js/__handle_submit.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
 <script src="{{ asset('Backend/assets/js/delete_data.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script type="text/javascript">
     $(document).ready(function(){
         $("#recharge_datatable").DataTable();
@@ -403,7 +411,7 @@
             let originalHtml = btn.html();
             btn.html('<i class="fas fa-spinner fa-spin"></i> Processing...').prop("disabled", true);
             $.ajax({
-                url: "{{ route('admin.customer.change_status', '') }}",
+                url: "{{ route('admin.customer.change_status') }}",
                 type: "POST",
                 data: {
                     username: username,
@@ -487,7 +495,43 @@
             }
         });
     });
+    /************** Customer Bandwith Graph **************************/
+    const ctx = document.getElementById('liveBandwidthChart').getContext('2d');
+    const bandwidthChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Download', 'Upload'],
+            datasets: [{
+                label: 'Speed (kbps)',
+                data: [0, 0],
+                backgroundColor: ['#36A2EB', '#FF6384']
+            }]
+        },
+        options: {
+            responsive: true,
+            animation: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
 
+    function fetch_live_bandwith_data() {
+        $.ajax({
+            url: "{{ route('admin.customer.live_bandwith_update', ':id') }}".replace(':id', "{{ $data->id }}"),
+            method: 'GET',
+            success: function(response) {
+                if (response.success) {
+                    bandwidthChart.data.datasets[0].data = [response.download, response.upload];
+                    bandwidthChart.update();
+                }
+            }
+        });
+    }
+    fetch_live_bandwith_data();
+    //setInterval(fetch_live_bandwith_data, 1000);
 
 </script>
 

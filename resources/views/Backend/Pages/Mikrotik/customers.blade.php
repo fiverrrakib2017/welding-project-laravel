@@ -1,14 +1,10 @@
 @extends('Backend.Layout.App')
-@section('title', 'Dashboard | Admin Panel')
-@section('style')
-
-    {{-- <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css"> --}}
-@endsection
+@section('title', 'Dashboard-Mikrotik Online Users | Admin Panel')
 @section('content')
     <div class="row">
         <div class="col-md-12 ">
             <div class="card">
-                <div class="card-header">Mikrotik Logs</div>
+                <div class="card-header">Mikrotik Users</div>
                 <div class="card-body">
                     <div class="table-responsive" id="tableStyle">
                         <table id="customers_log_datatable1" class="table table-bordered dt-responsive nowrap"

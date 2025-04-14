@@ -167,13 +167,15 @@ Route::group(['middleware'=>'admin'],function(){
              Route::post('/customer/restore/back', 'customer_restore_back')->name('admin.customer.restore.back');
               /***** Customer Import *******/
               Route::get('/import/index','customer_import')->name('admin.customer.customer_import');
-              Route::post('/import/store','customer_csv_file_import')->name('admin.customer.customer_csv_file_import');
-              Route::get('/delete-csv-file/{file}', [CustomerController::class, 'delete_csv_file'])->name('admin.customer.delete_csv_file');
-              Route::get('/upload/csv-file', [CustomerController::class, 'upload_csv_file'])->name('admin.customer.upload_csv_file');
-               /***** Customer Mikrotik Re-connect *******/
-               Route::get('/mikrotik/reconnect/{customer_id}','customer_mikrotik_reconnect')->name('admin.customer.mikrotik.reconnect');
-               /***** Customer Change Status *******/
-              Route::post('/change/status','customer_change_status')->name('admin.customer.change_status');
+            Route::post('/import/store','customer_csv_file_import')->name('admin.customer.customer_csv_file_import');
+            Route::get('/delete-csv-file/{file}', [CustomerController::class, 'delete_csv_file'])->name('admin.customer.delete_csv_file');
+            Route::get('/upload/csv-file', [CustomerController::class, 'upload_csv_file'])->name('admin.customer.upload_csv_file');
+            /***** Customer Mikrotik Re-connect *******/
+            Route::get('/mikrotik/reconnect/{customer_id}','customer_mikrotik_reconnect')->name('admin.customer.mikrotik.reconnect');
+            /***** Customer Change Status *******/
+            Route::post('/change/status','customer_change_status')->name('admin.customer.change_status');
+            /***** Customer Live Bandwith With Her Profile *******/
+            Route::get('/live-bandwith-update/{customer_id}','customer_live_bandwith_update')->name('admin.customer.live_bandwith_update');
         });
         /* IP POOL Route */
         Route::prefix('ip-pool')->group(function() {
