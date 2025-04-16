@@ -400,50 +400,68 @@ class CustomerController extends Controller
     public function customer_live_bandwith_update($id)
     {
         $object = Customer::find($id);
-        $router = Mikrotik_router::where('status', 'active')->where('id', $object->router_id)->first(); //
+        if (!$object) {
+            return response()->json(['success' => false, 'message' => 'Customer not found']);
+        }
+
+        $router = Mikrotik_router::where('status', 'active')->where('id', $object->router_id)->first();
+        if (!$router) {
+            return response()->json(['success' => false, 'message' => 'Router not found']);
+        }
 
         try {
             $API = new Client([
                 'host' => $router->ip_address,
                 'user' => $router->username,
                 'pass' => $router->password,
-                'port' => (int) $router->port,
+                'port' => (int) $router->port ?? 8728,
             ]);
 
+            $API->connect();
+
+            // Step 1: Get active PPP user session info (get IP address)
             $activeQuery = new Query('/ppp/active/print');
             $activeQuery->where('name', $object->username);
-            $result = $API->query($activeQuery)->read();
+            $activeUser = $API->query($activeQuery)->read();
 
-            if (empty($result) || !isset($result[0]['address'])) {
-                return response()->json(['success' => false, 'message' => 'Active user IP not found']);
+            if (empty($activeUser) || !isset($activeUser[0]['address'])) {
+                return response()->json(['success' => false, 'message' => 'User not active or IP not found']);
             }
 
-            $ip = $result[0]['address'];
+            $ip = $activeUser[0]['address'];
 
-            // Use torch to get traffic
+            // Step 2: Use torch tool to get bandwidth usage
             $torchQuery = new Query('/tool/torch');
-            $torchQuery->equal('src-address', $ip);
-            $torchQuery->equal('interface', 'ether1');
+            $torchQuery
+                ->equal('interface', 'ether1') // আপনার ইউজারের ইন্টারফেস
+                ->equal('src-address', $ip)
+                ->equal('duration', '1'); // 1 second snapshot
 
-            $usage = $API->query($torchQuery)->read();
-            return response()->json($usage);
+            $usageData = $API->query($torchQuery)->read();
+
             $rx = 0;
             $tx = 0;
 
-            foreach ($usage as $u) {
-                $rx += isset($u['rx-rate']) ? (int) $u['rx-rate'] : 0;
-                $tx += isset($u['tx-rate']) ? (int) $u['tx-rate'] : 0;
+            foreach ($usageData as $data) {
+                if (isset($data['rx-rate'])) {
+                    $rx += (int) $data['rx-rate'];
+                }
+                if (isset($data['tx-rate'])) {
+                    $tx += (int) $data['tx-rate'];
+                }
             }
 
             return response()->json([
                 'success' => true,
-                'download' => round($rx / 1024, 2), // kbps
-                'upload' => round($tx / 1024, 2), // kbps
+                'ip' => $ip,
+                'download' => round($rx / 1024, 2), // in Kbps
+                'upload' => round($tx / 1024, 2), // in Kbps
             ]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
         }
     }
+
     public function customer_recharge(Request $request)
     {
         /*Validate the form data*/
@@ -544,6 +562,16 @@ class CustomerController extends Controller
             return response()->json(['success' => false, 'message' => 'Not found.']);
         }
     }
+    public function customer_recharge_print($recharge_id){
+        $data = Customer_recharge::find($recharge_id);
+        if(!$data){
+            return redirect()->back();
+            exit;
+        }
+        return view('Backend.Pages.Customer.print',compact('data'));
+        exit;
+    }
+
     public function customer_payment_history()
     {
         return view('Backend.Pages.Customer.Payment.payment_history');

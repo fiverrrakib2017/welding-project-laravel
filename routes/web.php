@@ -153,6 +153,7 @@ Route::group(['middleware'=>'admin'],function(){
             /***** Customer Recharge *******/
             Route::post('/recharge/store', 'customer_recharge')->name('admin.customer.recharge.store');
             Route::get('/recharge/undo/{id}', 'customer_recharge_undo')->name('admin.customer.recharge.undo');
+            Route::get('/recharge/print/{id}', 'customer_recharge_print')->name('admin.customer.recharge.print');
             /***** Customer Payment History *******/
             Route::get('/payment/history','customer_payment_history')->name('admin.customer.payment.history');
             Route::get('/payment/history/get_all_data','customer_payment_history_get_all_data')->name('admin.customer.payment.history.get_all_data');

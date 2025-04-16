@@ -340,7 +340,7 @@
                                 </thead>
                                 <tbody>
                                     @php
-                                        $total_recharge_data=App\Models\Customer_recharge::where('customer_id',$data->id)->get();
+                                        $total_recharge_data=App\Models\Customer_recharge::where('customer_id',$data->id)->latest()->get();
                                     @endphp
                                     @foreach ($total_recharge_data as $item)
                                     <tr>
@@ -359,11 +359,13 @@
                                         </td>
 
                                         <td>{{ ucfirst($item->note) }}</td>
-                                        <td>{{ ucfirst($item->paid_until) }}</td>
+                                        <td>{{ \Carbon\Carbon::parse(ucfirst($item->paid_until))->format('d M Y') }}</td>
 
                                         <td>{{ number_format($item->amount, 2) }} BDT</td>
                                         <td>
                                             <button class="btn btn-danger btn-sm customer_recharge_undo_btn" data-id="{{ $item->id }}"><i class="fas fa-undo"></i></button>
+
+                                            <button class="btn btn-success btn-sm customer_recharge_print_btn" data-id="{{ $item->id }}"><i class="fas fa-print"></i></button>
                                         </td>
                                     </tr>
                                     @endforeach
@@ -468,6 +470,19 @@
                 });
             }
         });
+        /** Handle Customer Recharge Print click **/
+        $(document).on('click', '.customer_recharge_print_btn', function() {
+                var id = $(this).data('id');
+                var button = $(this);
+                var row = button.closest('tr');
+                var originalContent = button.html();
+                button.html('<i class="fas fa-spinner fa-spin"></i> Loading...').prop('disabled', true);
+                setTimeout(() => {
+                    window.open("{{ route('admin.customer.recharge.print', ':id') }}".replace(':id', id));
+                }, 1000);
+                button.html(originalContent).prop('disabled', false);
+
+        });
         /** Customer Re-connect button click **/
         $(document).on('click', 'button[name="customer_re_connect_btn"]', function() {
             if(confirm('Are you sure you want to undo this action?')){
@@ -495,28 +510,38 @@
             }
         });
     });
-    /************** Customer Bandwith Graph **************************/
-    const ctx = document.getElementById('liveBandwidthChart').getContext('2d');
-    const bandwidthChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Download', 'Upload'],
-            datasets: [{
-                label: 'Speed (kbps)',
-                data: [0, 0],
-                backgroundColor: ['#36A2EB', '#FF6384']
-            }]
-        },
-        options: {
-            responsive: true,
-            animation: false,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
+    /************** Customer Bandwidth Graph **************************/
+const ctx3 = document.getElementById('liveBandwidthChart').getContext('2d');
+
+const bandwidthChart = new Chart(ctx3, {
+    type: 'bar',
+    data: {
+        labels: ['Download', 'Upload'],
+        datasets: [{
+            label: 'Speed (kbps)',
+            data: [0, 0], // Initial dummy values
+            backgroundColor: ['#36A2EB', '#FF6384']
+        }]
+    },
+    options: {
+        responsive: true,
+        animation: false,
+        scales: {
+            y: {
+                beginAtZero: true
             }
         }
-    });
+    }
+});
+
+// Update chart every 1 second with dummy/random values
+setInterval(() => {
+    const downloadSpeed = Math.floor(Math.random() * 5000); // 0 - 5000 kbps
+    const uploadSpeed = Math.floor(Math.random() * 3000);   // 0 - 3000 kbps
+
+    bandwidthChart.data.datasets[0].data = [downloadSpeed, uploadSpeed];
+    bandwidthChart.update();
+}, 1000);
 
     function fetch_live_bandwith_data() {
         $.ajax({
