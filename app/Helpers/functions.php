@@ -185,4 +185,24 @@ if (!function_exists('get_mikrotik_user_info')) {
             return null;
         }
     }
+
+
+}
+
+
+if(!function_exists('formate_uptime')) {
+    function formate_uptime($uptime)
+    {
+        $hours = 0;
+        $minutes = 0;
+        $seconds = 0;
+
+        if (preg_match('/(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?/', $uptime, $matches)) {
+            $hours = isset($matches[1]) ? (int) $matches[1] : 0;
+            $minutes = isset($matches[2]) ? (int) $matches[2] : 0;
+            $seconds = isset($matches[3]) ? (int) $matches[3] : 0;
+        }
+
+        return "{$hours} hours {$minutes} minutes {$seconds} seconds";
+    }
 }

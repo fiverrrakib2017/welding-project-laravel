@@ -467,49 +467,45 @@ Route::group(['middleware' => 'admin'], function () {
     })->name('admin.network.diagram');
 
     Route::get('/admin/test', function () {
-        $client = new Client([
-            'host' => '10.52.0.2',
-            'user' => 'apiusers',
-            'pass' => 'apiusers@54321#',
-            'port' => (int) 8722,
-        ]);
         // $client = new Client([
-        //     'host' => '103.174.193.41',
-        //     'user' => 'billing',
-        //     'pass' => 'billing@123#',
-        //     'port' => (int) 7700,
+        //     'host' => '10.52.0.2',
+        //     'user' => 'apiusers',
+        //     'pass' => 'apiusers@54321#',
+        //     'port' => (int) 8722,
         // ]);
+        $client = new Client([
+            'host' => '103.174.193.41',
+            'user' => 'billing',
+            'pass' => 'billing@123#',
+            'port' => (int) 7700,
+        ]);
+        $username = 'ak.sojeb';
 
-        $ip='11.12.4.61';
+        // Step 1: Check if user is active
+        $query = new Query('/ppp/active/print');
+        $query->where('name', $username);
+        $response = $client->query($query)->read();
 
-         // Step 2: Use torch tool to get bandwidth usage
-         $torchQuery = new Query('/tool/torch');
-         $torchQuery
-             ->equal('interface', '18_HW_PON_18_152')
-             ->equal('src-address', $ip)
-             ->equal('duration', '1'); // 1 second snapshot
+        if (empty($response)) {
+            return response()->json(['error' => 'User is not currently active.']);
+        }
 
-         $usageData = $client->query($torchQuery)->read();
-       
-         $rx = 0;
-         $tx = 0;
+        // Step 2: Get interface info
+        $query = new Query('/interface/print');
+        $interfaces = $client->query($query)->read();
 
-         foreach ($usageData as $data) {
-             if (isset($data['rx-rate'])) {
-                 $rx += (int) $data['rx-rate'];
-             }
-             if (isset($data['tx-rate'])) {
-                 $tx += (int) $data['tx-rate'];
-             }
-         }
-
-         return response()->json([
-             'success' => true,
-             'ip' => $ip,
-             'download' => round($rx / 1024, 2), // in Kbps
-             'upload' => round($tx / 1024, 2), // in Kbps
-         ]);
-
+        foreach ($interfaces as $intf) {
+            if (strpos($intf['name'], $username) !== false) {
+                return response()->json([
+                    'interface_name' => $intf['name'],
+                    'type' => $intf['type'],
+                    'rx_mb' => round($intf['rx-byte'] / 1024 / 1024, 2),
+                    'tx_mb' => round($intf['tx-byte'] / 1024 / 1024, 2),
+                    'rx_packet' => $intf['rx-packet'],
+                    'tx_packet' => $intf['tx-packet'],
+                    'uptime' => $response[0]['uptime'] ?? 'N/A',
+                ]);
+            }
+        }
     });
-
 });

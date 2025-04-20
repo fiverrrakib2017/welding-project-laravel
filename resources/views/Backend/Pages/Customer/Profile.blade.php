@@ -123,7 +123,7 @@
                                         <div class="col-md-6 text-center border-end">
                                             <p class="mb-1"><i class="fas fa-clock text-warning fa-lg"></i></p>
                                             <strong>Up Time</strong>
-                                            <div class="mt-2">
+                                            {{-- <div class="mt-2">
                                                 @php
                                                     $uptime = $mikrotik_data['uptime'] ?? null;
                                                     if ($uptime) {
@@ -167,7 +167,8 @@
                                                 @else
                                                     <span class="badge bg-danger">N/A</span>
                                                 @endif
-                                            </div>
+                                            </div> --}}
+                                            <p class="text-dark"><span id="customer_uptime">0.00</span></p>
                                         </div>
 
 
@@ -182,12 +183,12 @@
                                         <div class="col-md-6 text-center border-right">
                                             <p class="mb-1"><i class="fas fa-arrow-up text-success"></i></p>
                                             <strong>Upload Speed</strong>
-                                            <p class="text-primary">{{ $mikrotik_data['upload_speed'] ?? 'N/A' }} Mbps</p>
+                                            <p class="text-danger"><span id="customer_upload_speed"></span> Mbps</p>
                                         </div>
                                         <div class="col-md-6 text-center">
                                             <p class="mb-1"><i class="fas fa-arrow-down text-danger"></i></p>
                                             <strong>Download Speed</strong>
-                                            <p class="text-primary">{{ $mikrotik_data['download_speed'] ?? 'N/A' }} Mbps
+                                            <p class="text-success"><span id="customer_download_speed"></span> Mbps
                                             </p>
                                         </div>
                                     </div>
@@ -196,7 +197,7 @@
                                         <div class="col-md-6 text-center border-right">
                                             <p class="mb-1"><i class="fas fa-plug text-info"></i></p>
                                             <strong>Interface</strong>
-                                            <p class="text-muted">{{ $data->interface ?? 'N/A' }}</p>
+                                            <p class="text-muted"><span id="customer_interface">N/A</span></p>
                                         </div>
                                         <div class="col-md-6 text-center">
                                             <p class="mb-1"><i class="fas fa-address-card text-warning"></i></p>
@@ -662,29 +663,11 @@
                 labels: ['Download', 'Upload'],
                 datasets: [{
                     label: 'Speed (kbps)',
-                    data: [0, 0], // Initial dummy values
+                    data: [0, 0],
                     backgroundColor: ['#36A2EB', '#FF6384']
                 }]
             },
-            options: {
-                responsive: true,
-                animation: false,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
         });
-
-        // Update chart every 1 second with dummy/random values
-        setInterval(() => {
-            const downloadSpeed = Math.floor(Math.random() * 5000); // 0 - 5000 kbps
-            const uploadSpeed = Math.floor(Math.random() * 3000); // 0 - 3000 kbps
-
-            bandwidthChart.data.datasets[0].data = [downloadSpeed, uploadSpeed];
-            bandwidthChart.update();
-        }, 1000);
 
         function fetch_live_bandwith_data() {
             $.ajax({
@@ -693,14 +676,27 @@
                 method: 'GET',
                 success: function(response) {
                     if (response.success) {
-                        bandwidthChart.data.datasets[0].data = [response.download, response.upload];
+                        const downloadSpeed = response.rx_mb;
+                        const uploadSpeed = response.tx_mb;
+                        const user_uptime = response.uptime;
+                        const user_interface_name = response.interface_name;
+                        bandwidthChart.data.datasets[0].data = [downloadSpeed, uploadSpeed];
+                        /*Update Client Data*/
+                        $("#customer_upload_speed").html(uploadSpeed);
+                        $("#customer_download_speed").html(downloadSpeed);
+
+                        $("#customer_uptime").html(user_uptime);
+                        $("#customer_interface").html(
+                                $('<div>').text(user_interface_name).html()
+                            );
+                        /** Update the chart */
                         bandwidthChart.update();
                     }
                 }
             });
         }
         fetch_live_bandwith_data();
-        //setInterval(fetch_live_bandwith_data, 1000);
+        setInterval(fetch_live_bandwith_data, 1000);
     </script>
 
 @endsection

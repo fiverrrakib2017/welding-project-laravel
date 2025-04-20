@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use function App\Helpers\check_pop_balance;
 use function App\Helpers\customer_log;
+use function App\Helpers\formate_uptime;
 use function App\Helpers\get_mikrotik_user_info;
 use phpseclib3\Net\SSH2;
 use Illuminate\Support\Facades\DB;
@@ -405,69 +406,59 @@ class CustomerController extends Controller
     }
 
     public function customer_live_bandwith_update($id)
-    {
-        $object = Customer::find($id);
-        if (!$object) {
-            return response()->json(['success' => false, 'message' => 'Customer not found']);
-        }
-
-        $router = Mikrotik_router::where('status', 'active')->where('id', $object->router_id)->first();
-        if (!$router) {
-            return response()->json(['success' => false, 'message' => 'Router not found']);
-        }
-
-        try {
-            $API = new Client([
-                'host' => $router->ip_address,
-                'user' => $router->username,
-                'pass' => $router->password,
-                'port' => (int) $router->port ?? 8728,
-            ]);
-
-            $API->connect();
-
-            // Step 1: Get active PPP user session info (get IP address)
-            $activeQuery = new Query('/ppp/active/print');
-            $activeQuery->where('name', $object->username);
-            $activeUser = $API->query($activeQuery)->read();
-
-            if (empty($activeUser) || !isset($activeUser[0]['address'])) {
-                return response()->json(['success' => false, 'message' => 'User not active or IP not found']);
-            }
-
-            $ip = $activeUser[0]['address'];
-
-            // Step 2: Use torch tool to get bandwidth usage
-            $torchQuery = new Query('/tool/torch');
-            $torchQuery
-                ->equal('interface', 'ether1') // আপনার ইউজারের ইন্টারফেস
-                ->equal('src-address', $ip)
-                ->equal('duration', '1'); // 1 second snapshot
-
-            $usageData = $API->query($torchQuery)->read();
-
-            $rx = 0;
-            $tx = 0;
-
-            foreach ($usageData as $data) {
-                if (isset($data['rx-rate'])) {
-                    $rx += (int) $data['rx-rate'];
-                }
-                if (isset($data['tx-rate'])) {
-                    $tx += (int) $data['tx-rate'];
-                }
-            }
-
-            return response()->json([
-                'success' => true,
-                'ip' => $ip,
-                'download' => round($rx / 1024, 2), // in Kbps
-                'upload' => round($tx / 1024, 2), // in Kbps
-            ]);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
-        }
+{
+    $object = Customer::find($id);
+    if (!$object) {
+        return response()->json(['success' => false, 'message' => 'Customer not found']);
     }
+
+    $router = Mikrotik_router::where('status', 'active')->where('id', $object->router_id)->first();
+    if (!$router) {
+        return response()->json(['success' => false, 'message' => 'Router not found']);
+    }
+
+    try {
+        $client = new Client([
+            'host' => $router->ip_address,
+            'user' => $router->username,
+            'pass' => $router->password,
+            'port' => (int) $router->port ?? 8728,
+        ]);
+
+        $interfaces = $client->query(new Query('/interface/print'))->read();
+        $sessions = $client->query(new Query('/ppp/active/print'))->read();
+
+        $uptime = 'N/A';
+        foreach ($sessions as $session) {
+            if ($session['name'] == $object->username) {
+                $uptime = $session['uptime'];
+                break;
+            }
+        }
+
+        foreach ($interfaces as $intf) {
+            if (strpos($intf['name'], $object->username) !== false) {
+                return response()->json([
+                    'success' => true,
+                    'interface_name' => $intf['name'],
+                    'type' => $intf['type'],
+                    'rx_mb' => round($intf['rx-byte'] / 1024 / 1024, 2),
+                    'tx_mb' => round($intf['tx-byte'] / 1024 / 1024, 2),
+                    'rx_packet' => $intf['rx-packet'],
+                    'tx_packet' => $intf['tx-packet'],
+                    'uptime' => formate_uptime($uptime),
+                ]);
+            }
+        }
+
+        return response()->json(['success' => false, 'message' => 'Interface not found for this customer']);
+
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+    }
+
+}
+
 
     public function customer_recharge(Request $request)
     {
