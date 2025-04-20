@@ -60,45 +60,40 @@ if (!function_exists('fetch_customer_data')) {
         ]);
     }
 }
-
 if (!function_exists('send_message')) {
-    function send_message($phone_number, $message)
+    function send_message($phone_number, $message_text)
     {
-        /**GET Message Api Details From Database Table**/
-        $message = Sms_configuration::latest()->first();
-        $api_url = $message->api_url;
-        $api_token = $message->api_token;
+        /** SMS API Details **/
+        $sms_config = Sms_configuration::latest()->first();
+        $api_url = $sms_config->api_url;
+        $api_key = $sms_config->api_key;
+        $senderid = $sms_config->sender_id;
 
-        $data = json_encode([
-            'phone' => $phone_number,
-            'message' => $message,
-        ]);
+        /* Prepare data */
+        $data = [
+            'api_key' => $api_key,
+            'senderid' => $senderid,
+            'number' => $phone_number,
+            'message' => $message_text,
+        ];
 
-        $curl = curl_init();
+        /* Initialize cURL */
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $api_url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
-        curl_setopt_array($curl, [
-            CURLOPT_URL => $api_url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => $data,
-            CURLOPT_HTTPHEADER => ['Content-Type: application/json', "Token: $api_token"],
-        ]);
+        /* Execute request */
+        $response = curl_exec($ch);
+        curl_close($ch);
 
-        $response = curl_exec($curl);
-        $http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        $error = curl_error($curl);
-
-        curl_close($curl);
-
-        if ($error) {
-            return 'cURL Error: ' . $error;
-        } elseif ($http_code !== 201) {
-            return 'Error: Received HTTP status code ' . $http_code . ' - Response: ' . $response;
-        }
-
-        return true;
+        $responseData = json_decode($response, true);
+        return $responseData;
     }
 }
+
 function customer_log($customerId, $actionType, $userId, $description = null)
 {
     $object = new Customer_log();
@@ -191,4 +186,3 @@ if (!function_exists('get_mikrotik_user_info')) {
         }
     }
 }
-

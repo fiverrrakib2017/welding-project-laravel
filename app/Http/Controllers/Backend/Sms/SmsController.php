@@ -137,7 +137,6 @@ class SmsController extends Controller
 
     }
     public function send_message_store(Request $request){
-
         /*Validate the form data*/
         $rules = [
             'customer_id' => 'required|integer',
@@ -154,8 +153,7 @@ class SmsController extends Controller
                 422,
             );
         }
-        /*Call Send Message Function */
-        send_message($request->phone, $request->message);
+
         /*Get POP ID From Customer table*/
         $customer=Customer::find($request->customer_id);
         /* Create a new Instance*/
@@ -164,6 +162,10 @@ class SmsController extends Controller
         $object->customer_id = $request->customer_id;
         $object->message = $request->message;
         $object->sent_at = Carbon::now();
+
+
+         /*Call Send Message Function */
+        send_message($customer->phone, $request->message);
 
         /* Save to the database table*/
         $object->save();
@@ -207,6 +209,18 @@ class SmsController extends Controller
     public function sms_template_delete(Request $request)
     {
         $object = Message_template::find($request->id);
+
+        if (empty($object)) {
+            return response()->json(['error' => 'Not found.'], 404);
+        }
+
+        /* Delete it From Database Table */
+        $object->delete();
+
+        return response()->json(['success' => true, 'message' => 'Deleted successfully.']);
+    }
+    public function send_message_delete(Request $request){
+        $object = Send_message::find($request->id);
 
         if (empty($object)) {
             return response()->json(['error' => 'Not found.'], 404);

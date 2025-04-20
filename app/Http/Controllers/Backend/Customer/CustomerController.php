@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use function App\Helpers\check_pop_balance;
 use function App\Helpers\customer_log;
 use function App\Helpers\get_mikrotik_user_info;
-
+use phpseclib3\Net\SSH2;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use RouterOS\Client;
@@ -286,6 +286,13 @@ class CustomerController extends Controller
         $router = Mikrotik_router::where('status', 'active')->where('id', $data->router_id)->first();
         /*Get Mikrotik Data via reusable function */
         $mikrotik_data = $router ? get_mikrotik_user_info($router, $data->username) : null;
+         /*Get Onu Information */
+        //  $ssh = new SSH2('OLT_IP_ADDRESS');
+        //  if (!$ssh->login('username', 'password')) {
+        //     return response()->json(['error' => 'Login Failed']);
+        //  }
+        // /*Send MAC search command*/
+        // $response = $ssh->exec("show mac-address-table | include $mikrotik_data['mac']");
         return view('Backend.Pages.Customer.Profile', compact('data', 'totalDue', 'totalPaid', 'duePaid', 'total_recharged', 'mikrotik_data'));
     }
     public function customer_mikrotik_reconnect($id)
