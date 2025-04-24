@@ -13,7 +13,7 @@ button#submitButton {
 <!-- br-pageheader -->
 <div class="row">
     <div class="container-fluid">
-        <form id="form-data" action="{{ route('admin.customer.invoice.store_invoice') }}" method="post">
+        <form id="form-data" action="{{ route('admin.client.invoice.store_invoice') }}" method="post">
             @csrf
             <div class="row">
                 <div class="col-md-12">
@@ -33,10 +33,10 @@ button#submitButton {
                                         <select type="text" id="client_name" name="client_id" class="form-control">
                                             <option value="">---Select---</option>
                                             @php
-                                            $customers = \App\Models\Customer::latest()->get();
+                                            $data = \App\Models\Client::latest()->get();
                                             @endphp
-                                            @if($customers->isNotEmpty())
-                                                @foreach($customers as $item)
+                                            @if($data->isNotEmpty())
+                                                @foreach($data as $item)
                                                     <option value="{{ $item->id }}">{{ $item->fullname }}</option>
                                                 @endforeach
                                             @endif
@@ -139,7 +139,7 @@ button#submitButton {
         </form>
     </div>
 </div>
-@include('Backend.Modal.customer_modal')
+@include('Backend.Modal.Client.client_modal')
 @include('Backend.Modal.product_modal')
 @include('Backend.Modal.invoice_modal')
 @endsection

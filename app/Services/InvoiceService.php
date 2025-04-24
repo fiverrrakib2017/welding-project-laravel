@@ -1,14 +1,10 @@
 <?php
 namespace App\Services;
-use App\Models\Customer;
-use App\Models\Customer_Invoice;
 use App\Models\Account_transaction;
+use App\Models\Client;
 use App\Models\Client_invoice;
 use App\Models\Client_invoice_details;
-use App\Models\Customer_Invoice_Details;
 use App\Models\Supplier_Invoice_Details;
-use App\Models\Ledger;
-use App\Models\Sub_ledger;
 use App\Models\Supplier;
 use App\Models\Product;
 use App\Models\Supplier_Invoice;
@@ -19,16 +15,16 @@ class InvoiceService{
     public function createInvoice($type){
         $data=array();
         $data['product']=Product::latest()->get();
-        if ($type === 'Customer') {
-            $data['customer'] = Customer::latest()->get();
-            return view('Backend.Pages.Customer.invoice_create')->with($data);
+        if ($type === 'client') {
+            $data['client'] = Client::latest()->get();
+            return view('Backend.Pages.Client.invoice_create')->with($data);
         } elseif ($type === 'Supplier') {
             $data['supplier']=Supplier::latest()->get();
             return view('Backend.Pages.Supplier.invoice_create')->with($data);
         }
 
     }
-    public function store_invoice($request, $userId=1, $type = 'customer')
+    public function store_invoice($request, $userId=1, $type = 'client')
     {
         $this->__validate_method($request);
         DB::beginTransaction();
@@ -39,7 +35,7 @@ class InvoiceService{
             $invoice->usr_id = $userId;
 
             /*Create A logic for customer and supplier*/
-            if (!empty($type) && isset($type) && $type === 'customer') {
+            if (!empty($type) && isset($type) && $type === 'client') {
                 $invoice->customer_id = $request->client_id;
             }else{
                 $invoice->supplier_id = $request->client_id;
@@ -67,11 +63,11 @@ class InvoiceService{
         $this->__validate_method($request);
         DB::beginTransaction();
         try {
-            $invoice = $type === 'supplier' ? Supplier_Invoice::find($invoiceId) : Customer_Invoice::find($invoiceId);
+            $invoice = $type === 'supplier' ? Supplier_Invoice::find($invoiceId) : Client_invoice::find($invoiceId);
             $invoice->usr_id = $userId;
 
             /*Create A logic for customer and supplier*/
-            if (!empty($type) && isset($type) && $type === 'customer') {
+            if (!empty($type) && isset($type) && $type === 'client') {
                 $invoice->customer_id = $request->client_id;
             }else{
                 $invoice->supplier_id = $request->client_id;
@@ -88,13 +84,13 @@ class InvoiceService{
             $invoice->update();
 
             /*Delete Previous invoice details*/
-            if ($type==="customer") {
+            if ($type==="client") {
                 Client_invoice_details::where('invoice_id', $invoiceId)->delete();
-                Account_transaction::where('transaction_number', $invoice->transaction_number)->delete();
+
             }
             if ($type==="supplier") {
                 Supplier_Invoice_Details::where('invoice_id', $invoiceId)->delete();
-                Account_transaction::where('transaction_number', $invoice->transaction_number)->delete();
+
             }
 
             /* Insert invoice details AND Accounts transaction*/
@@ -107,9 +103,9 @@ class InvoiceService{
             return response()->json(['success' => false, 'message' => 'Error Update invoice: ' . $e->getMessage()]);
         }
     }
-    public function delete_invoice($request,$type='customer'){
+    public function delete_invoice($request,$type='client'){
         try {
-            $invoice = $type ==='customer' ? Client_invoice::find($request->id) : Supplier_Invoice::find($request->id);
+            $invoice = $type ==='client' ? Client_invoice::find($request->id) : Supplier_Invoice::find($request->id);
             if (empty($invoice)) {
                 return response()->json(['success' => false, 'message' => 'Invoice not found.']);
             }

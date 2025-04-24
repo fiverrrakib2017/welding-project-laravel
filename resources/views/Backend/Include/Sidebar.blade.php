@@ -456,7 +456,7 @@
                 </li>
                 <!-----------Invenotry Menu------------------->
                 @php
-                    $active_prefix = ['admin.category.index','admin.brand.index','admin.store.index','admin.unit.index','admin.supplier.index','admin.supplier.invoice.create_invoice','admin.supplier.invoice.show_invoice','admin.client.index'];
+                    $active_prefix = ['admin.category.index','admin.brand.index','admin.store.index','admin.unit.index','admin.supplier.index','admin.supplier.invoice.create_invoice','admin.supplier.invoice.show_invoice','admin.client.index','admin.client.invoice.create_invoice','admin.client.invoice.show_invoice'];
                 @endphp
                 <li class="nav-item">
                     <a href="#" class="nav-link {{ in_array($route, $active_prefix) ? ' active' : '' }}">
@@ -466,13 +466,13 @@
                     <ul class="nav nav-treeview"  style="{{ Str::startsWith($currentRoute, $active_prefix) ? 'display: block;' : 'display: none;' }}">
 
                         <li class="nav-item">
-                            <a href=""
-                                class="nav-link  "><i class="far fa-circle nav-icon"></i>
+                            <a href="{{ route('admin.client.invoice.create_invoice') }}"
+                                class="nav-link  {{ Route::currentRouteName() == 'admin.client.invoice.create_invoice' ? 'active' : '' }}"><i class="far fa-circle nav-icon"></i>
                                 <p>Sale</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="" class="nav-link "><i
+                            <a href="{{ route('admin.client.invoice.show_invoice') }}" class="nav-link {{ Route::currentRouteName() == 'admin.client.invoice.show_invoice' ? 'active' : '' }}"><i
                                     class="far fa-circle nav-icon"></i>
                                 <p>Sale Invoice</p>
                             </a>

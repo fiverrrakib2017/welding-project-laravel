@@ -5,6 +5,7 @@ use App\Http\Controllers\Backend\Accounts\Master_Ledger\MasterLedgerController;
 use App\Http\Controllers\Backend\Accounts\Sub_Ledger\SubLedgerController;
 use App\Http\Controllers\Backend\Accounts\Transaction\TransactionController;
 use App\Http\Controllers\Backend\Admin\AdminController;
+use App\Http\Controllers\Backend\Client\Client_invoiceController;
 use App\Http\Controllers\Backend\Customer\CustomerController;
 use App\Http\Controllers\Backend\Student\ExamRoutine_controller;
 use App\Http\Controllers\Backend\Supplier\Supplier_invoiceController;
@@ -246,20 +247,20 @@ Route::group(['middleware' => 'admin'], function () {
             Route::post('/update/{id}', 'update')->name('admin.client.update');
         });
         /** Client Invoice Route **/
-        // Route::prefix('invoice')
-        //     ->controller(Supplier_invoiceController::class)
-        //     ->group(function () {
-        //         Route::get('/create', 'create_invoice')->name('admin.supplier.invoice.create_invoice');
-        //         Route::get('/get_all_data', 'show_invoice_data')->name('admin.supplier.invoice.show_invoice_data');
-        //         Route::post('/search_data', 'search_product_data')->name('admin.supplier.invoice.search_product_data');
-        //         Route::get('/show', 'show_invoice')->name('admin.supplier.invoice.show_invoice');
-        //         Route::post('/pay', 'pay_due_amount')->name('admin.supplier.invoice.pay_due_amount');
-        //         Route::post('/store', 'store_invoice')->name('admin.supplier.invoice.store_invoice');
-        //         Route::get('/view/{id}', 'view_invoice')->name('admin.supplier.invoice.view_invoice');
-        //         Route::get('/edit/{id}', 'edit_invoice')->name('admin.supplier.invoice.edit_invoice');
-        //         Route::post('/update', 'update_invoice')->name('admin.supplier.invoice.update_invoice');
-        //         Route::post('/delete', 'delete_invoice')->name('admin.supplier.invoice.delete_invoice');
-        //     });
+        Route::prefix('invoice')
+            ->controller(Client_invoiceController::class)
+            ->group(function () {
+                Route::get('/create', 'create_invoice')->name('admin.client.invoice.create_invoice');
+                Route::get('/get_all_data', 'show_invoice_data')->name('admin.client.invoice.show_invoice_data');
+                Route::post('/search_data', 'search_product_data')->name('admin.client.invoice.search_product_data');
+                Route::get('/show', 'show_invoice')->name('admin.client.invoice.show_invoice');
+                Route::post('/pay', 'pay_due_amount')->name('admin.client.invoice.pay_due_amount');
+                Route::post('/store', 'store_invoice')->name('admin.client.invoice.store_invoice');
+                Route::get('/view/{id}', 'view_invoice')->name('admin.client.invoice.view_invoice');
+                Route::get('/edit/{id}', 'edit_invoice')->name('admin.client.invoice.edit_invoice');
+                Route::post('/update', 'update_invoice')->name('admin.client.invoice.update_invoice');
+                Route::post('/delete', 'delete_invoice')->name('admin.client.invoice.delete_invoice');
+            });
     });
 
     /* Product Route */
