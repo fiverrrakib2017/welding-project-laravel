@@ -175,8 +175,26 @@ class CustomerController extends Controller
             /* Create Customer Log */
             customer_log($customer->id, 'add', auth()->guard('admin')->user()->id, 'Customer Created Successfully!');
 
-            DB::commit();
+            $router = Mikrotik_router::where('status', 'active')->where('id', $request->router_id)->first();
+            $client = new Client([
+                'host' => $router->ip,
+                'user' => $router->username,
+                'pass' => $router->password,
+            ]);
+            /*Check if alreay exist*/
+            $check_Query = new Query('/ppp/secret/print');
+            $check_Query->where('name', $request->username);
+            $check_customer = $client->query($check_Query)->read();
+            if (empty($check_customer)) {
+                $query = new Query('/ppp/secret/add');
+                $query->equal('name', $request->username);
+                $query->equal('password', $request->password);
+                $query->equal('service', 'any');
+                $query->equal('profile', $object->package->name);
+                $client->query($query)->read();
+            }
 
+            DB::commit();
             return response()->json([
                 'success' => true,
                 'message' => 'Customer Created Successfully!',
