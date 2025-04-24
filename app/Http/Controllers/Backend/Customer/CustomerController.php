@@ -287,7 +287,7 @@ class CustomerController extends Controller
         $router = Mikrotik_router::where('status', 'active')->where('id', $data->router_id)->first();
         /*Get Mikrotik Data via reusable function */
         $mikrotik_data = $router ? get_mikrotik_user_info($router, $data->username) : null;
-         /*Get Onu Information */
+        /*Get Onu Information */
         //  $ssh = new SSH2('OLT_IP_ADDRESS');
         //  if (!$ssh->login('username', 'password')) {
         //     return response()->json(['error' => 'Login Failed']);
@@ -406,59 +406,95 @@ class CustomerController extends Controller
     }
 
     public function customer_live_bandwith_update($id)
-{
-    $object = Customer::find($id);
-    if (!$object) {
-        return response()->json(['success' => false, 'message' => 'Customer not found']);
-    }
+    {
+        $object = Customer::find($id);
+        if (!$object) {
+            return response()->json(['success' => false, 'message' => 'Customer not found']);
+        }
 
-    $router = Mikrotik_router::where('status', 'active')->where('id', $object->router_id)->first();
-    if (!$router) {
-        return response()->json(['success' => false, 'message' => 'Router not found']);
-    }
+        $router = Mikrotik_router::where('status', 'active')->where('id', $object->router_id)->first();
+        if (!$router) {
+            return response()->json(['success' => false, 'message' => 'Router not found']);
+        }
 
-    try {
-        $client = new Client([
-            'host' => $router->ip_address,
-            'user' => $router->username,
-            'pass' => $router->password,
-            'port' => (int) $router->port ?? 8728,
+        try {
+            $client = new Client([
+                'host' => $router->ip_address,
+                'user' => $router->username,
+                'pass' => $router->password,
+                'port' => (int) $router->port ?? 8728,
+            ]);
+
+            $interfaces = $client->query(new Query('/interface/print'))->read();
+            $sessions = $client->query(new Query('/ppp/active/print'))->read();
+
+            $uptime = 'N/A';
+            foreach ($sessions as $session) {
+                if ($session['name'] == $object->username) {
+                    $uptime = $session['uptime'];
+                    break;
+                }
+            }
+
+            foreach ($interfaces as $intf) {
+                if (strpos($intf['name'], $object->username) !== false) {
+                    return response()->json([
+                        'success' => true,
+                        'interface_name' => $intf['name'],
+                        'type' => $intf['type'],
+                        'rx_mb' => round($intf['rx-byte'] / 1024 / 1024, 2),
+                        'tx_mb' => round($intf['tx-byte'] / 1024 / 1024, 2),
+                        'rx_packet' => $intf['rx-packet'],
+                        'tx_packet' => $intf['tx-packet'],
+                        'uptime' => formate_uptime($uptime),
+                    ]);
+                }
+            }
+
+            return response()->json(['success' => false, 'message' => 'Interface not found for this customer']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+        }
+    }
+    // public function getMonthlyUsage($username)
+    // {
+    //     $month = now()->month;
+    //     $year = now()->year;
+
+    //     $totalDownload = UserUsage::where('username', $username)->whereMonth('date', $month)->whereYear('date', $year)->sum('download_gb');
+
+    //     $totalUpload = UserUsage::where('username', $username)->whereMonth('date', $month)->whereYear('date', $year)->sum('upload_gb');
+
+    //     return response()->json([
+    //         'username' => $username,
+    //         'download_gb' => round($totalDownload, 2),
+    //         'upload_gb' => round($totalUpload, 2),
+    //     ]);
+    // }
+
+    public function get_onu_info(Request $request)
+    {
+        $ip = '160.250.8.8';
+        $username = 'admin';
+        $password = 'admin';
+        //$mac = strtolower(str_replace('-', ':', $request->mac_address));
+
+        $ssh = new SSH2($ip);
+
+        if (!$ssh->login($username, $password)) {
+            return response()->json(['error' => 'Login Failed']);
+        }
+
+        // MAC search command, depending on your OLT brand
+        $command = "show mac-address-table | include $request->mac_address";
+
+        $output = $ssh->exec($command);
+
+        return response()->json([
+            'raw_output' => $output,
+            'message' => 'Success',
         ]);
-
-        $interfaces = $client->query(new Query('/interface/print'))->read();
-        $sessions = $client->query(new Query('/ppp/active/print'))->read();
-
-        $uptime = 'N/A';
-        foreach ($sessions as $session) {
-            if ($session['name'] == $object->username) {
-                $uptime = $session['uptime'];
-                break;
-            }
-        }
-
-        foreach ($interfaces as $intf) {
-            if (strpos($intf['name'], $object->username) !== false) {
-                return response()->json([
-                    'success' => true,
-                    'interface_name' => $intf['name'],
-                    'type' => $intf['type'],
-                    'rx_mb' => round($intf['rx-byte'] / 1024 / 1024, 2),
-                    'tx_mb' => round($intf['tx-byte'] / 1024 / 1024, 2),
-                    'rx_packet' => $intf['rx-packet'],
-                    'tx_packet' => $intf['tx-packet'],
-                    'uptime' => formate_uptime($uptime),
-                ]);
-            }
-        }
-
-        return response()->json(['success' => false, 'message' => 'Interface not found for this customer']);
-
-    } catch (\Exception $e) {
-        return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
     }
-
-}
-
 
     public function customer_recharge(Request $request)
     {
@@ -560,14 +596,15 @@ class CustomerController extends Controller
             return response()->json(['success' => false, 'message' => 'Not found.']);
         }
     }
-    public function customer_recharge_print($recharge_id){
+    public function customer_recharge_print($recharge_id)
+    {
         $data = Customer_recharge::find($recharge_id);
-        if(!$data){
+        if (!$data) {
             return redirect()->back();
-            exit;
+            exit();
         }
-        return view('Backend.Pages.Customer.print',compact('data'));
-        exit;
+        return view('Backend.Pages.Customer.print', compact('data'));
+        exit();
     }
 
     public function customer_payment_history()

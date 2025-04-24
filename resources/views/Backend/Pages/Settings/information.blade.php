@@ -1,5 +1,5 @@
 @extends('Backend.Layout.App')
-@section('title', 'School Settings | Admin Panel')
+@section('title', 'Application Settings | Admin Panel')
 
 @section('style')
     <!-- Custom styles for the page can be added here -->

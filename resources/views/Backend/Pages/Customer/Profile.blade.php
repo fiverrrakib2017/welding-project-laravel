@@ -182,12 +182,12 @@
                                     <div class="row mb-3">
                                         <div class="col-md-6 text-center border-right">
                                             <p class="mb-1"><i class="fas fa-arrow-up text-success"></i></p>
-                                            <strong>Upload Speed</strong>
+                                            <strong>Upload</strong>
                                             <p class="text-danger"><span id="customer_upload_speed"></span> Mbps</p>
                                         </div>
                                         <div class="col-md-6 text-center">
                                             <p class="mb-1"><i class="fas fa-arrow-down text-danger"></i></p>
-                                            <strong>Download Speed</strong>
+                                            <strong>Download</strong>
                                             <p class="text-success"><span id="customer_download_speed"></span> Mbps
                                             </p>
                                         </div>
@@ -697,6 +697,23 @@
         }
         fetch_live_bandwith_data();
         setInterval(fetch_live_bandwith_data, 1000);
+
+
+
+        $.ajax({
+            url: "{{ route('admin.customer.get_onu_info') }}",
+            type: "POST",
+            data: {
+                mac_address: "{{ $mikrotik_data['mac'] ?? 'N/A' }}",
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                console.log(response);
+            },
+            error: function() {
+                toastr.error("Something went wrong!");
+            },
+        });
     </script>
 
 @endsection

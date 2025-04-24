@@ -203,6 +203,6 @@ if(!function_exists('formate_uptime')) {
             $seconds = isset($matches[3]) ? (int) $matches[3] : 0;
         }
 
-        return "{$hours} hours {$minutes} minutes {$seconds} seconds";
+        return "{$hours} h {$minutes} m {$seconds} sec";
     }
 }

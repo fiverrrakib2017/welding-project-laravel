@@ -42,6 +42,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use RouterOS\Client;
 use RouterOS\Query;
+use function App\Helpers\formate_uptime;
 /*Backend Route*/
 Route::get('/admin/login', [AdminController::class, 'login_form'])->name('admin.login');
 Route::post('login-functionality', [AdminController::class, 'login_functionality'])->name('login.functionality');
@@ -175,6 +176,8 @@ Route::group(['middleware' => 'admin'], function () {
             Route::post('/change/status', 'customer_change_status')->name('admin.customer.change_status');
             /***** Customer Live Bandwith With Her Profile *******/
             Route::get('/live-bandwith-update/{customer_id}', 'customer_live_bandwith_update')->name('admin.customer.live_bandwith_update');
+             /***** Onu Information *******/
+             Route::post('/get-onu-information', 'get_onu_info')->name('admin.customer.get_onu_info');
         });
         /* IP POOL Route */
         Route::prefix('ip-pool')->group(function () {
@@ -480,32 +483,33 @@ Route::group(['middleware' => 'admin'], function () {
             'port' => (int) 7700,
         ]);
         $username = 'ak.sojeb';
+        $interfaces = $client->query(new Query('/interface/print'))->read();
+                $sessions = $client->query(new Query('/ppp/active/print'))->read();
 
-        // Step 1: Check if user is active
-        $query = new Query('/ppp/active/print');
-        $query->where('name', $username);
-        $response = $client->query($query)->read();
+                $uptime = 'N/A';
+                foreach ($sessions as $session) {
+                    if ($session['name'] == $username) {
+                        $uptime = $session['uptime'];
+                        break;
+                    }
+                }
 
-        if (empty($response)) {
-            return response()->json(['error' => 'User is not currently active.']);
-        }
+                foreach ($interfaces as $intf) {
+                    if (strpos($intf['name'], $username) !== false) {
+                        return response()->json([
+                            'success' => true,
+                            'interface_name' => $intf['name'],
+                            'type' => $intf['type'],
+                            'rx_mb' => round($intf['rx-byte'] / 1024 / 1024, 2),
+                            'tx_mb' => round($intf['tx-byte'] / 1024 / 1024, 2),
+                            'rx_packet' => $intf['rx-packet'],
+                            'tx_packet' => $intf['tx-packet'],
+                            'uptime' => formate_uptime($uptime),
+                        ]);
+                    }
+                }
 
-        // Step 2: Get interface info
-        $query = new Query('/interface/print');
-        $interfaces = $client->query($query)->read();
 
-        foreach ($interfaces as $intf) {
-            if (strpos($intf['name'], $username) !== false) {
-                return response()->json([
-                    'interface_name' => $intf['name'],
-                    'type' => $intf['type'],
-                    'rx_mb' => round($intf['rx-byte'] / 1024 / 1024, 2),
-                    'tx_mb' => round($intf['tx-byte'] / 1024 / 1024, 2),
-                    'rx_packet' => $intf['rx-packet'],
-                    'tx_packet' => $intf['tx-packet'],
-                    'uptime' => $response[0]['uptime'] ?? 'N/A',
-                ]);
-            }
-        }
+
     });
 });
