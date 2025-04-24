@@ -26,6 +26,6 @@ class Product extends Model
         return $this->hasMany(Supplier_Invoice_Details::class)->where('status',1);
     }
     public function sales(){
-        return $this->hasMany(Customer_Invoice_Details::class)->where('status',1);
+        return $this->hasMany(Client_invoice_details::class)->where('status',1);
     }
 }
