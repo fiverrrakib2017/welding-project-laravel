@@ -8,7 +8,7 @@
         <div class="card">
             <div class="card-body">
                 <button data-toggle="modal" data-target="#CustomerModal" type="button" class=" btn btn-success mb-2"><i class="mdi mdi-account-plus"></i>
-                    Add New Customer</button>
+                    Add New Client</button>
 
                 <div class="table-responsive" id="tableStyle">
                     <table id="datatable1" class="table table-striped table-bordered    " cellspacing="0" width="100%">
@@ -30,7 +30,7 @@
 
     </div>
 </div>
-@include('Backend.Modal.customer_modal')
+@include('Backend.Modal.Client.client_modal')
 @include('Backend.Modal.delete_modal')
 
 
@@ -49,7 +49,7 @@
     "serverSide":true,
     beforeSend: function () {},
     complete: function(){},
-    ajax: "{{ route('admin.customer.get_all_data') }}",
+    ajax: "{{ route('admin.client.get_all_data') }}",
     language: {
         searchPlaceholder: 'Search...',
         sSearch: '',
@@ -62,7 +62,7 @@
           {
             "data":"fullname",
             render:function(data,type,row){
-              var link ="{{ route('admin.customer.view', ':id') }}".replace(':id', row.id);
+              var link ="{{ route('admin.client.view', ':id') }}".replace(':id', row.id);
               return '<a href="'+link+'">'+row.fullname+'</a>';
             }
           },
@@ -80,7 +80,7 @@
             data:null,
             render: function (data, type, row) {
 
-              var viewUrl = "{{ route('admin.customer.view', ':id') }}".replace(':id', row.id);
+              var viewUrl = "{{ route('admin.client.view', ':id') }}".replace(':id', row.id);
 
 
               return `<button  class="btn btn-primary btn-sm mr-3 edit-btn" data-id="${row.id}"><i class="fa fa-edit"></i></button>
@@ -115,11 +115,11 @@
         var id = $(this).data('id');
 
         $.ajax({
-            url: "{{ route('admin.customer.edit', ':id') }}".replace(':id', id),
+            url: "{{ route('admin.client.edit', ':id') }}".replace(':id', id),
             method: 'GET',
             success: function(response) {
                 if (response.success) {
-                    $('#CustomerForm').attr('action', "{{ route('admin.customer.update', ':id') }}".replace(':id', id));
+                    $('#CustomerForm').attr('action', "{{ route('admin.client.update', ':id') }}".replace(':id', id));
                     $('#customerModalLabel').html('<span class="mdi mdi-account-edit mdi-18px"></span> &nbsp;Edit Customer');
                     $('#CustomerForm input[name="fullname"]').val(response.data.fullname);
                     $('#CustomerForm input[name="company"]').val(response.data.company_name);
@@ -131,7 +131,7 @@
                     // Show the modal
                     $('#CustomerModal').modal('show');
                 } else {
-                    toastr.error('Failed to fetch customer data.');
+                    toastr.error('Failed to fetch client data.');
                 }
             },
             error: function() {
@@ -143,7 +143,7 @@
     /** Handle Delete button click**/
     $('#datatable1 tbody').on('click', '.delete-btn', function () {
         var id = $(this).data('id');
-        var deleteUrl = "{{ route('admin.customer.delete', ':id') }}".replace(':id', id);
+        var deleteUrl = "{{ route('admin.client.delete', ':id') }}".replace(':id', id);
 
         $('#deleteForm').attr('action', deleteUrl);
         $('#deleteModal').find('input[name="id"]').val(id);

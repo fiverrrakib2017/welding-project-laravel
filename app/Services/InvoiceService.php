@@ -3,6 +3,8 @@ namespace App\Services;
 use App\Models\Customer;
 use App\Models\Customer_Invoice;
 use App\Models\Account_transaction;
+use App\Models\Client_invoice;
+use App\Models\Client_invoice_details;
 use App\Models\Customer_Invoice_Details;
 use App\Models\Supplier_Invoice_Details;
 use App\Models\Ledger;
@@ -31,8 +33,8 @@ class InvoiceService{
         $this->__validate_method($request);
         DB::beginTransaction();
         try {
-            $invoice = new Customer_Invoice();
-            $invoice = $type === 'supplier' ? new Supplier_Invoice() : new Customer_Invoice();
+            $invoice = new Client_invoice();
+            $invoice = $type === 'supplier' ? new Supplier_Invoice() : new Client_invoice();
             $invoice->transaction_number = "TRANSID-".strtoupper(uniqid());
             $invoice->usr_id = $userId;
 
@@ -87,7 +89,7 @@ class InvoiceService{
 
             /*Delete Previous invoice details*/
             if ($type==="customer") {
-                Customer_Invoice_Details::where('invoice_id', $invoiceId)->delete();
+                Client_invoice_details::where('invoice_id', $invoiceId)->delete();
                 Account_transaction::where('transaction_number', $invoice->transaction_number)->delete();
             }
             if ($type==="supplier") {
@@ -107,7 +109,7 @@ class InvoiceService{
     }
     public function delete_invoice($request,$type='customer'){
         try {
-            $invoice = $type ==='customer' ? Customer_Invoice::find($request->id) : Supplier_Invoice::find($request->id);
+            $invoice = $type ==='customer' ? Client_invoice::find($request->id) : Supplier_Invoice::find($request->id);
             if (empty($invoice)) {
                 return response()->json(['success' => false, 'message' => 'Invoice not found.']);
             }
@@ -150,39 +152,8 @@ class InvoiceService{
    }
    private function _hadle_invoice_details($request,$invoice,$type){
     foreach ($request->table_product_id as $index => $productId) {
-        if (!empty($request->table_status) && $request->table_status == '1' && isset($request->table_status)) {
-            $product = Product::find($productId);
-            if (!empty($product)) {
-                $sub_ledger_id = $product->sales_ac;
-                $sub_ledger_id = $type === 'supplier' ? $product->purchase_ac : $product->sales_ac;
-                $sub_ledger = Sub_ledger::find($sub_ledger_id);
 
-                if (!empty($sub_ledger)) {
-                    $ledger_id = $sub_ledger->ledger_id;
-                    $master_ledger = Ledger::find($ledger_id);
-
-                    if (!empty($master_ledger)) {
-                        $master_ledger_id = $master_ledger->master_ledger_id ;
-                        /*Ledger Transaction Data Insert*/
-                        $account_transaction=new Account_transaction();
-                        $account_transaction->refer_no=$type==='supplier'?'SI-'.strtoupper(uniqid()):'CI-'.strtoupper(uniqid());
-                        $account_transaction->transaction_number=$invoice->transaction_number;
-                        $account_transaction->description='default===oops';
-                        $account_transaction->master_ledger_id=$master_ledger_id;
-                        $account_transaction->ledger_id=$ledger_id;
-                        $account_transaction->sub_ledger_id=$sub_ledger_id;
-                        $account_transaction->qty=$request->table_qty[$index];
-                        $account_transaction->value=intval($request->table_price[$index]);
-                        $account_transaction->total=intval($request->table_qty[$index] * $request->table_price[$index]);
-                        $account_transaction->status=1;
-                        $account_transaction->date=$request->date;
-                        $account_transaction->save();
-                    }
-                }
-            }
-
-        }
-        $inv_details = $type ==='customer' ? new Customer_Invoice_Details() : new Supplier_Invoice_Details();
+        $inv_details = $type ==='client' ? new Client_invoice_details() : new Supplier_Invoice_Details();
         $inv_details->invoice_id = $invoice->id;
         $inv_details->transaction_number = $invoice->transaction_number;
         $inv_details->product_id = $productId;

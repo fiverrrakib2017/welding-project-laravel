@@ -29,10 +29,11 @@
                         @endphp
                         @if ($customers->isNotEmpty())
                             @foreach ($customers as $item)
-                            @php
-                                $status_icon = $item->status == 'online' ? '🟢' : '🔴';
-                            @endphp
-                                <option value="{{ $item->id }}"> {!! $status_icon !!} [{{ $item->id }}] - {{ $item->username }} ||
+                                @php
+                                    $status_icon = $item->status == 'online' ? '🟢' : '🔴';
+                                @endphp
+                                <option value="{{ $item->id }}"> {!! $status_icon !!} [{{ $item->id }}] -
+                                    {{ $item->username }} ||
                                     {{ $item->fullname }}, ({{ $item->phone }})</option>
                             @endforeach
                         @else
@@ -54,7 +55,14 @@
                     </script>
                 </li>
                 @php
-                    $active_prefix = ['admin.customer.index','admin.customer.create','admin.customer.restore.index','admin.customer.log.index','admin.customer.customer_import','admin.router.log.index'];
+                    $active_prefix = [
+                        'admin.customer.index',
+                        'admin.customer.create',
+                        'admin.customer.restore.index',
+                        'admin.customer.log.index',
+                        'admin.customer.customer_import',
+                        'admin.router.log.index',
+                    ];
                 @endphp
                 <li class="nav-item has-treeview mt-2">
                     <a href="#"
@@ -114,7 +122,7 @@
                 </li>
                 {{-- Customer Billings And Payment --}}
                 @php
-                    $active_prefix = ['admin.customer.payment.history','admin.customer.customer_credit_recharge_list'];
+                    $active_prefix = ['admin.customer.payment.history', 'admin.customer.customer_credit_recharge_list'];
                 @endphp
                 <li class="nav-item has-treeview">
                     <a href="#"
@@ -146,7 +154,7 @@
                 </li>
                 {{-- Customer Package --}}
                 @php
-                    $active_prefix = ['admin.customer.ip_pool.index','admin.customer.package.index'];
+                    $active_prefix = ['admin.customer.ip_pool.index', 'admin.customer.package.index'];
                 @endphp
                 <li class="nav-item has-treeview">
                     <a href="#"
@@ -158,10 +166,10 @@
                         style="{{ Str::startsWith($currentRoute, $active_prefix) ? 'display: block;' : 'display: none;' }}">
 
                         <li class="nav-item"><a href="{{ route('admin.customer.ip_pool.index') }}"
-                            class="nav-link {{ $route == 'admin.customer.ip_pool.index' ? 'active' : '' }}"><i
-                                class="far fa-circle nav-icon"></i>
-                            <p>IP Pool</p>
-                        </a></li>
+                                class="nav-link {{ $route == 'admin.customer.ip_pool.index' ? 'active' : '' }}"><i
+                                    class="far fa-circle nav-icon"></i>
+                                <p>IP Pool</p>
+                            </a></li>
 
                         <li class="nav-item">
                             <a href="{{ route('admin.customer.package.index') }}"
@@ -180,14 +188,15 @@
                     <a href="#"
                         class="nav-link  {{ Str::startsWith($currentRoute, $active_prefix) ? 'active' : '' }}">
                         <i class="nav-icon fas fa-network-wired"></i>
-                        <p>Network Diagram  <i class="right fas fa-angle-left"></i></p>
+                        <p>Network Diagram <i class="right fas fa-angle-left"></i></p>
                     </a>
                     <ul class="nav nav-treeview"
                         style="{{ Str::startsWith($currentRoute, $active_prefix) ? 'display: block;' : 'display: none;' }}">
 
-                          <!-- Add Network Diagram menu item here -->
+                        <!-- Add Network Diagram menu item here -->
                         <li class="nav-item">
-                            <a href="{{ route('admin.network.diagram') }}" class="nav-link {{ $route == 'admin.network.diagram' ? 'active' : '' }}">
+                            <a href="{{ route('admin.network.diagram') }}"
+                                class="nav-link {{ $route == 'admin.network.diagram' ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Network Diagram</p>
                             </a>
@@ -324,7 +333,7 @@
                 </li>
 
                 @php
-                    $active_prefix = ['admin.sms.config','admin.sms.template_list','admin.sms.message_send_list'];
+                    $active_prefix = ['admin.sms.config', 'admin.sms.template_list', 'admin.sms.message_send_list'];
                 @endphp
                 <li class="nav-item has-treeview">
                     <a href="#" class="nav-link{{ in_array($route, $active_prefix) ? ' active' : '' }}">
@@ -333,7 +342,8 @@
                     </a>
                     <ul class="nav nav-treeview"
                         style="{{ Str::startsWith($currentRoute, $active_prefix) ? 'display: block;' : 'display: none;' }}">
-                        <li class="nav-item"><a href="{{ route('admin.sms.message_send_list') }}" class="nav-link {{ $route == 'admin.sms.message_send_list' ? 'active' : '' }}"><i
+                        <li class="nav-item"><a href="{{ route('admin.sms.message_send_list') }}"
+                                class="nav-link {{ $route == 'admin.sms.message_send_list' ? 'active' : '' }}"><i
                                     class="far fa-circle nav-icon"></i>
                                 <p>Send SMS</p>
                             </a></li>
@@ -343,10 +353,10 @@
                                     class="far fa-circle nav-icon"></i>
                                 <p>SMS Template</p>
                             </a></li>
-                            <li class="nav-item"><a href="#" class="nav-link"><i
-                                class="far fa-circle nav-icon"></i>
-                            <p>SMS Logs</p>
-                        </a></li>
+                        <li class="nav-item"><a href="#" class="nav-link"><i
+                                    class="far fa-circle nav-icon"></i>
+                                <p>SMS Logs</p>
+                            </a></li>
                         <li class="nav-item"><a href="{{ route('admin.sms.config') }}"
                                 class="nav-link {{ $route == 'admin.sms.config' ? 'active' : '' }}"><i
                                     class="far fa-circle nav-icon"></i>
@@ -444,52 +454,92 @@
                         </li>
                     </ul>
                 </li>
- <!-----------Invenotry Menu------------------->
- <li class="nav-item">
-    <a href="#" class="nav-link ">
-        <i class="nav-icon fas fa-warehouse"></i>
-      <p>&nbsp; Inventory <i class="right fas fa-angle-left"></i> </p>
-    </a>
-    <ul class="nav nav-treeview" style="display: none;">
+                <!-----------Invenotry Menu------------------->
+                @php
+                    $active_prefix = ['admin.category.index','admin.brand.index','admin.store.index','admin.unit.index','admin.supplier.index','admin.supplier.invoice.create_invoice','admin.supplier.invoice.show_invoice','admin.client.index'];
+                @endphp
+                <li class="nav-item">
+                    <a href="#" class="nav-link {{ in_array($route, $active_prefix) ? ' active' : '' }}">
+                        <i class="nav-icon fas fa-warehouse"></i>
+                        <p>&nbsp; Inventory <i class="right fas fa-angle-left"></i> </p>
+                    </a>
+                    <ul class="nav nav-treeview"  style="{{ Str::startsWith($currentRoute, $active_prefix) ? 'display: block;' : 'display: none;' }}">
 
-      <li class="nav-item">
-         <a href="https://admin.futureictbd.com/admin/customer/invoice/create" class="nav-link  "><i class="far fa-circle nav-icon"></i><p>Sale</p></a>
-      </li>
-      <li class="nav-item">
-         <a href="https://admin.futureictbd.com/admin/customer/invoice/show" class="nav-link "><i class="far fa-circle nav-icon"></i><p>Sale Invoice</p></a>
-      </li>
-      <li class="nav-item">
-         <a href="https://admin.futureictbd.com/admin/supplier/invoice/create" class="nav-link "><i class="far fa-circle nav-icon"></i><p>Purchase</p></a>
-      </li>
-      <li class="nav-item">
-        <a href="https://admin.futureictbd.com/admin/supplier/invoice/show" class="nav-link "><i class="far fa-circle nav-icon"></i><p>Purchase Invoice</p></a>
-      </li>
-      <li class="nav-item">
-        <a href="https://admin.futureictbd.com/admin/product/brand/list" class="nav-link "><i class="far fa-circle nav-icon"></i><p>Brand</p></a>
-      </li>
-      <li class="nav-item">
-         <a href="https://admin.futureictbd.com/admin/product/category/list" class="nav-link "><i class="far fa-circle nav-icon"></i><p>Category</p></a>
-      </li>
-      <li class="nav-item">
-         <a href="https://admin.futureictbd.com/admin/product/unit/list" class="nav-link "><i class="far fa-circle nav-icon"></i><p>Units</p></a>
-      </li>
-      <li class="nav-item">
-         <a href="https://admin.futureictbd.com/admin/product/store/list" class="nav-link "><i class="far fa-circle nav-icon"></i><p>Store</p></a>
-      </li>
-      <li class="nav-item">
-         <a href="https://admin.futureictbd.com/admin/product/list" class="nav-link  "><i class="far fa-circle nav-icon"></i><p>Products</p></a>
-      </li>
-      <li class="nav-item">
-         <a href="https://admin.futureictbd.com/admin/supplier/list" class="nav-link "><i class="far fa-circle nav-icon"></i><p>Supplier</p></a>
-      </li>
-      <li class="nav-item">
-         <a href="https://admin.futureictbd.com/admin/customer/list" class="nav-link "><i class="far fa-circle nav-icon"></i><p>Customer</p></a>
-      </li>
-      <li class="nav-item">
-         <a href="https://admin.futureictbd.com/admin/customer/ticket/list" class="nav-link "><i class="far fa-circle nav-icon"></i><p>Customer Ticket</p></a>
-      </li>
-    </ul>
-  </li>
+                        <li class="nav-item">
+                            <a href=""
+                                class="nav-link  "><i class="far fa-circle nav-icon"></i>
+                                <p>Sale</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="" class="nav-link "><i
+                                    class="far fa-circle nav-icon"></i>
+                                <p>Sale Invoice</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.supplier.invoice.create_invoice') }}" class="nav-link {{ Route::currentRouteName() == 'admin.supplier.invoice.create_invoice' ? 'active' : '' }}"><i
+                                    class="far fa-circle nav-icon"></i>
+                                <p>Purchase</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.supplier.invoice.show_invoice') }}" class="nav-link {{ Route::currentRouteName() == 'admin.supplier.invoice.show_invoice' ? 'active' : '' }}"><i
+                                    class="far fa-circle nav-icon"></i>
+                                <p>Purchase Invoice</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.brand.index') }}" class="nav-link {{ Route::currentRouteName() == 'admin.brand.index' ? 'active' : '' }}"><i
+                                    class="far fa-circle nav-icon"></i>
+                                <p>Brand</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.category.index') }}"
+                                class="nav-link {{ Route::currentRouteName() == 'admin.category.index' ? 'active' : '' }}"><i
+                                    class="far fa-circle nav-icon"></i>
+                                <p>Category</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.unit.index') }}" class="nav-link {{ Route::currentRouteName() == 'admin.unit.index' ? 'active' : '' }}"><i
+                                    class="far fa-circle nav-icon"></i>
+                                <p>Units</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.store.index') }}" class="nav-link {{ Route::currentRouteName() == 'admin.store.index' ? 'active' : '' }}"><i
+                                    class="far fa-circle nav-icon"></i>
+                                <p>Store</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="https://admin.futureictbd.com/admin/product/list" class="nav-link  "><i
+                                    class="far fa-circle nav-icon"></i>
+                                <p>Products</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.supplier.index') }}" class="nav-link {{ Route::currentRouteName() == 'admin.supplier.index' ? 'active' : '' }}"><i
+                                    class="far fa-circle nav-icon"></i>
+                                <p>Supplier</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.client.index') }}" class="nav-link {{ Route::currentRouteName() == 'admin.client.index' ? 'active' : '' }}"><i
+                                    class="far fa-circle nav-icon"></i>
+                                <p>Client</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="https://admin.futureictbd.com/admin/customer/ticket/list" class="nav-link "><i
+                                    class="far fa-circle nav-icon"></i>
+                                <p>Client Ticket</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 <!-----------------Accounts--------------------->
                 <li class="nav-item has-treeview">
                     <a href="#" class="nav-link">
@@ -562,22 +612,28 @@
                     </ul>
                 </li>
                 <!-----------------Settings--------------------->
-            @php
-            $active_prefix=['admin.settings.information.index'];
-        @endphp
-      <li class="nav-item">
-        <a href="#" class="nav-link  {{ Str::startsWith($currentRoute, $active_prefix) ? 'active' : '' }}">
-            <i class="fa fa-cog mr-2 "></i>
-          <p>&nbsp; Settings <i class="right fas fa-angle-left"></i> </p>
-        </a>
-        <ul class="nav nav-treeview"  style="{{ Str::startsWith($currentRoute, $active_prefix) ? 'display: block;' : 'display: none;' }}">
+                @php
+                    $active_prefix = ['admin.settings.information.index'];
+                @endphp
+                <li class="nav-item">
+                    <a href="#"
+                        class="nav-link  {{ Str::startsWith($currentRoute, $active_prefix) ? 'active' : '' }}">
+                        <i class="fa fa-cog mr-2 "></i>
+                        <p>&nbsp; Settings <i class="right fas fa-angle-left"></i> </p>
+                    </a>
+                    <ul class="nav nav-treeview"
+                        style="{{ Str::startsWith($currentRoute, $active_prefix) ? 'display: block;' : 'display: none;' }}">
 
-          <li class="nav-item">
-             <a href="{{ route('admin.settings.information.index') }}" class="nav-link {{($route=='admin.settings.information.index') ?  'active':''}}"><i class="far fa-circle nav-icon"></i><p>Application Information</p></a>
-          </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.settings.information.index') }}"
+                                class="nav-link {{ $route == 'admin.settings.information.index' ? 'active' : '' }}"><i
+                                    class="far fa-circle nav-icon"></i>
+                                <p>Application Information</p>
+                            </a>
+                        </li>
 
-        </ul>
-      </li>
+                    </ul>
+                </li>
                 @php
                     $active_prefix = ['admin.router'];
                 @endphp

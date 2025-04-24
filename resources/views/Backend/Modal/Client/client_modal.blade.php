@@ -4,13 +4,13 @@
                         <div class="modal-content col-md-12">
                            <div class="modal-header">
                               <h5 class="modal-title" id="customerModalLabel"><span
-                                 class="mdi mdi-account-check mdi-18px"></span> &nbsp;New Customer</h5>
+                                 class="mdi mdi-account-check mdi-18px"></span> &nbsp;New Client</h5>
                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                   </button>
                            </div>
 						   <div class="modal-body">
-							  <form action="{{ route('admin.customer.store') }}" id="CustomerForm" method="POST" enctype="multipart/form-data">
+							  <form action="{{ route('admin.client.store') }}" id="CustomerForm" method="POST" enctype="multipart/form-data">
                                 @csrf
 									<div class="form-group mb-2">
 										<label>Fullname</label>

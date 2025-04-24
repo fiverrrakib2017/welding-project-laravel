@@ -70,46 +70,6 @@
 
                     <div class="row">
                         <div class="col-md-6 mb-2">
-                            <label for="purchase_ac">Purchase A/C</label>
-                            <select id="purchase_ac" name="purchase_ac" style="width: 100%;" class="form-select" required>
-                                <option value="">---Select---</option>
-                                @php
-                                    $purchaseAccounts = \App\Models\Ledger::where('master_ledger_id', 2)->get();
-                                @endphp
-                                @foreach($purchaseAccounts as $account)
-                                    <optgroup label="{{ $account->ledger_name }}">
-                                        @php
-                                            $subLedgers = \App\Models\Sub_ledger::where('ledger_id', $account->id)->get();
-                                        @endphp
-                                        @foreach($subLedgers as $subLedger)
-                                            <option value="{{ $subLedger->id }}">{{ $subLedger->sub_ledger_name }}</option>
-                                        @endforeach
-                                    </optgroup>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-6 mb-2">
-                            <label for="sales_ac">Sales A/C</label>
-                            <select id="sales_ac" name="sales_ac" class="form-select" style="width: 100%;" width="100%" required>
-                                <option value="">---Select---</option>
-                                @php
-                                    $salesAccounts = \App\Models\Ledger::where('master_ledger_id', 1)->get();
-                                @endphp
-                                @foreach($salesAccounts as $account)
-                                    <optgroup label="{{ $account->ledger_name }}">
-                                        @php
-                                            $subLedgers = \App\Models\Sub_ledger::where('ledger_id', $account->id)->get();
-                                        @endphp
-                                        @foreach($subLedgers as $subLedger)
-                                            <option value="{{ $subLedger->id }}">{{ $subLedger->sub_ledger_name }}</option>
-                                        @endforeach
-                                    </optgroup>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-2">
                             <label for="">Purchase Price</label>
                             <input type="text" name="purchase_price" class="form-control" placeholder="Enter Your Purchase Price" required />
                         </div>

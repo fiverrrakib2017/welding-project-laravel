@@ -81,8 +81,6 @@ class ProductController extends Controller
         $product->name = $request->name;
         $product->brand_id = $request->brand_id;
         $product->category_id = $request->category_id;
-        $product->purchase_ac = $request->purchase_ac;
-        $product->sales_ac = $request->sales_ac;
         $product->purchase_price = $request->purchase_price;
         $product->sale_price = $request->sales_price;
         $product->unit_id = $request->unit_id;
@@ -188,8 +186,6 @@ class ProductController extends Controller
         $product->name = $request->name;
         $product->brand_id = $request->brand_id;
         $product->category_id = $request->category_id;
-        $product->purchase_ac = $request->purchase_ac;
-        $product->sales_ac = $request->sales_ac;
         $product->purchase_price = $request->purchase_price;
         $product->sale_price = $request->sales_price;
         $product->unit_id = $request->unit_id;
@@ -210,8 +206,7 @@ class ProductController extends Controller
             'name' => 'required|string|max:255|unique:products,name',
             'brand' => 'required|integer|exists:product_brands,id',
             'category' => 'required|integer|exists:product_categories,id',
-            'purchase_ac' => 'required|integer|exists:sub_ledgers,id',
-            'sales_ac' => 'required|integer|exists:sub_ledgers,id',
+          
             'unit_id' => 'required|integer|exists:units,id',
             'store' => 'required|integer|exists:stores,id',
         ];

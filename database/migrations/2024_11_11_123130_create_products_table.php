@@ -16,8 +16,7 @@ return new class extends Migration
             $table->string('name', 55);
             $table->unsignedBigInteger('category_id');
             $table->unsignedBigInteger('brand_id');
-            $table->integer('purchase_ac');
-            $table->integer('sales_ac');
+       
             $table->unsignedBigInteger('unit_id');
             $table->double('purchase_price');
             $table->double('sale_price');
