@@ -177,9 +177,10 @@ class CustomerController extends Controller
 
             $router = Mikrotik_router::where('status', 'active')->where('id', $request->router_id)->first();
             $client = new Client([
-                'host' => $router->ip,
+               'host' => $router->ip_address,
                 'user' => $router->username,
                 'pass' => $router->password,
+                'port' => (int) $router->port ?? 8728,
             ]);
             /*Check if alreay exist*/
             $check_Query = new Query('/ppp/secret/print');
@@ -573,6 +574,24 @@ class CustomerController extends Controller
 
             if ($object->save()) {
                 customer_log($object->customer_id, 'recharge', auth()->guard('admin')->user()->id, 'Customer Recharge Completed!');
+                /*Check This user Mikrotik Router Connection*/
+                $router = Mikrotik_router::where('status', 'active')->where('id', $customer->router_id)->first();
+                $client = new Client([
+                    'host' => $router->ip_address,
+                    'user' => $router->username,
+                    'pass' => $router->password,
+                    'port' => (int) $router->port ?? 8728,
+                ]);
+                /*Check if username already exists in Mikrotik ppp active list*/
+                $checkQuery = (new Query('/ppp/active/print'))->where('name', $customer->username);
+                $existingUsers = $client->query($checkQuery)->read();
+
+                if (empty($existingUsers)) {
+                    /* User is offline, so enable the secret*/
+                    $enableQuery = new Query('/ppp/secret/enable');
+                    $enableQuery->equal('numbers', $customer->username);
+                    $client->query($enableQuery)->read();
+                }
                 return response()->json([
                     'success' => true,
                     'message' => 'Recharge successfully.',
