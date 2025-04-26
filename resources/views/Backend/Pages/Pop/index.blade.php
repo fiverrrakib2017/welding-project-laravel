@@ -11,13 +11,18 @@
                     Add New POP/Branch</button>
 
                 <div class="table-responsive" id="tableStyle">
-                    <table id="datatable1" class="table table-striped table-bordered    " cellspacing="0" width="100%">
+                    <table id="datatable1"  class="table table-bordered dt-responsive nowrap"
+                    style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead>
                             <tr>
                                 <th>ID</th>
                                 <th>Full Name</th>
                                 <th>Username</th>
                                 <th>Mobile</th>
+                                <th>Active Customer</th>
+                                <th>Online</th>
+                                <th>Offline</th>
+                                <th>Expired</th>
                                 <th>status</th>
                                 <th></th>
                             </tr>
@@ -69,6 +74,30 @@
             "data":"phone"
           },
           {
+            "data":null,
+            render: function (data, type, row) {
+              return `<span class="badge badge-primary">2350</span>`;
+            }
+          },
+          {
+            "data":null,
+            render: function (data, type, row) {
+              return `<span class="badge badge-success">2150</span>`;
+            }
+          },
+          {
+            "data":null,
+            render: function (data, type, row) {
+              return `<span class="badge badge-warning">2350</span>`;
+            }
+          },
+          {
+            "data":null,
+            render: function (data, type, row) {
+              return `<span class="badge badge-danger">250</span>`;
+            }
+          },
+          {
             "data":"status",
             render: function (data, type, row) {
               if (row.status == 1) {
@@ -82,13 +111,14 @@
           {
             data:null,
             render: function (data, type, row) {
-
+                //pop branch delete button
+                // <button class="btn btn-danger btn-sm mr-3 delete-btn"  data-id="${row.id}"><i class="fa fa-trash"></i></button>
               var viewUrl = "{{ route('admin.pop.view', ':id') }}".replace(':id', row.id);
 
 
               return `<button  class="btn btn-primary btn-sm mr-3 edit-btn" data-id="${row.id}"><i class="fa fa-edit"></i></button>
 
-              <button class="btn btn-danger btn-sm mr-3 delete-btn"  data-id="${row.id}"><i class="fa fa-trash"></i></button>
+
 
               <a href="${viewUrl}" class="btn btn-success btn-sm mr-3 "><i class="fa fa-eye"></i></a>
 
@@ -116,8 +146,6 @@
     /** Handle Edit button click **/
     $('#datatable1 tbody').on('click', '.edit-btn', function () {
         var id = $(this).data('id');
-
-        // AJAX call to fetch supplier data
         $.ajax({
             url: "{{ route('admin.pop.edit', ':id') }}".replace(':id', id),
             method: 'GET',
@@ -131,7 +159,7 @@
                     $('#popForm input[name="phone"]').val(response.data.phone);
                     $('#popForm input[name="email"]').val(response.data.email);
                     $('#popForm input[name="address"]').val(response.data.address);
-                    $('#popForm select[name="status"]').val(response.data.status);
+                    $('#popForm select[name="status"]').val(response.data.status).trigger('change');
 
                     // Show the modal
                     $('#addModal').modal('show');
