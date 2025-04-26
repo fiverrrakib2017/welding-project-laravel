@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Backend\Customer;
 use App\Http\Controllers\Controller;
+use App\Models\Branch_package;
 use App\Models\Branch_transaction;
 use App\Models\Customer;
 use App\Models\Customer_log;
@@ -126,7 +127,6 @@ class CustomerController extends Controller
     {
         /* Validate the form data */
         $this->validateForm($request);
-
         /* Check Pop Balance */
         $pop_balance = check_pop_balance($request->pop_id);
         if ($pop_balance < $request->amount) {
@@ -190,8 +190,8 @@ class CustomerController extends Controller
                 $query = new Query('/ppp/secret/add');
                 $query->equal('name', $request->username);
                 $query->equal('password', $request->password);
-                $query->equal('service', 'any');
-                $query->equal('profile', $object->package->name);
+                $query->equal('service', 'pppoe');
+                $query->equal('profile', Branch_package::find($request->package_id)->name);
                 $client->query($query)->read();
             }
 
