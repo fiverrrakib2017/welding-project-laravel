@@ -8,6 +8,7 @@ use App\Models\Customer_log;
 use App\Models\Customer_recharge;
 use App\Models\Router as Mikrotik_router;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use function App\Helpers\check_pop_balance;
 use function App\Helpers\customer_log;
@@ -43,9 +44,12 @@ class CustomerController extends Controller
 
         $orderByColumn = $request->order[0]['column'] ?? 0;
         $orderDirection = $request->order[0]['dir'] ?? 'desc';
-
+        /*Check if search value is empty*/
         $start = $request->start ?? 0;
         $length = $request->length ?? 10;
+
+        /*Check if branch user  value is empty*/
+        $branch_user_id = Auth::guard('admin')->user()->pop_id ?? null;
 
         $baseQuery = Customer::with(['pop', 'area', 'package'])
             ->where('is_delete', '!=', 1)
@@ -65,6 +69,10 @@ class CustomerController extends Controller
             })
             ->when($pop_id, function ($query) use ($pop_id) {
                 $query->where('pop_id', $pop_id);
+            })
+            /*POP/BRANCH Filter*/
+            ->when($branch_user_id, function ($query) use ($branch_user_id) {
+                $query->where('pop_id', $branch_user_id);
             })
             ->when($area_id, function ($query) use ($area_id) {
                 $query->where('area_id', $area_id);
@@ -731,6 +739,12 @@ class CustomerController extends Controller
         if ($request->to_date) {
             $query->whereDate('created_at', '<=', $request->to_date);
         }
+        if ($request->pop_id) {
+            $query->whereHas('customer', function($q) use ($request) {
+                $q->where('pop_id', $request->pop_id);
+            });
+        }
+
 
         $totalRecords = $query->count();
 

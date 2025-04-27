@@ -88,6 +88,7 @@
                     d.length = d.length || 10;
                     d.from_date = $('.from_date').val();
                     d.to_date = $('.to_date').val();
+                    d.pop_id = {{ Auth::guard('admin')->user()->pop_id ?? null }};
                 },
             },
             language: {

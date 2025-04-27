@@ -3,7 +3,7 @@
 
 @section('content')
 <div class="row justify-content-center">
-    <div class="col-lg-7">
+    <div class="col-lg-9">
         <div class="card  ">
             <form action="{{ route('admin.customer.store') }}" method="post" id="addStudentForm" enctype="multipart/form-data">
                 @csrf
@@ -49,7 +49,15 @@
                                 <label class="form-label">POP Branch</label>
                                 <select name="pop_id" class="form-control" required>
                                     <option value="">Select POP Branch</option>
-                                    @foreach (App\Models\Pop_branch::latest()->get() as $item)
+                                    @php
+                                        $branch_user_id = Auth::guard('admin')->user()->pop_id ?? null;
+                                        if($branch_user_id != null || $branch_user_id != 0){
+                                            $pops = App\Models\Pop_branch::where('id', $branch_user_id)->latest()->get();
+                                        }else{
+                                            $pops = \App\Models\Pop_branch::latest()->get();
+                                        }
+                                    @endphp
+                                    @foreach ($pops as $item)
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
                                     @endforeach
                                 </select>
@@ -58,7 +66,15 @@
                                 <label class="form-label">Area</label>
                                 <select name="area_id" class="form-control" required>
                                     <option value="">Select Area</option>
-                                    @foreach (App\Models\Pop_area::latest()->get() as $item)
+                                    @php
+                                    $branch_user_id = Auth::guard('admin')->user()->pop_id ?? null;
+                                    if($branch_user_id != null || $branch_user_id != 0){
+                                        $areas = App\Models\Pop_area::where('pop_id', $branch_user_id)->latest()->get();
+                                    }else{
+                                        $areas = \App\Models\Pop_area::latest()->get();
+                                    }
+                                @endphp
+                                    @foreach ($areas as $item)
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
                                     @endforeach
                                 </select>
