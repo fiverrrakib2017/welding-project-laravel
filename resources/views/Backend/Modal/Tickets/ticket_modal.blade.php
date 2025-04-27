@@ -62,7 +62,12 @@
                                 required>
                                 <option value="">---Select---</option>
                                 @php
+                                $branch_user_id = Auth::guard('admin')->user()->pop_id ?? null;
+                                if ($branch_user_id != null) {
+                                    $tickets_assign = \App\Models\Ticket_assign::where('pop_id', $branch_user_id)->latest()->get();
+                                } else {
                                     $tickets_assign = \App\Models\Ticket_assign::latest()->get();
+                                }
                                 @endphp
                                 @if ($tickets_assign->isNotEmpty())
                                     @foreach ($tickets_assign as $item)
@@ -80,7 +85,12 @@
                                 required>
                                 <option value="">---Select---</option>
                                 @php
-                                    $tickets_complain = \App\Models\Ticket_complain_type::latest()->get();
+                                    $branch_user_id = Auth::guard('admin')->user()->pop_id ?? null;
+                                    if ($branch_user_id != null) {
+                                        $tickets_complain = \App\Models\Ticket_complain_type::where('pop_id', $branch_user_id)->latest()->get();
+                                    } else {
+                                        $tickets_complain = \App\Models\Ticket_complain_type::latest()->get();
+                                    }
                                 @endphp
                                 @if ($tickets_complain->isNotEmpty())
                                     @foreach ($tickets_complain as $item)

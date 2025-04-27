@@ -102,12 +102,22 @@
                                     <select name="package_id" id="package_id" class="form-control" required>
                                         <option value="">Select Package</option>
                                         @php
-                                            $datas = isset($pop_id) ? App\Models\Branch_package::latest()->get() : collect();
+                                            $branch_user_id = Auth::guard('admin')->user()->pop_id ?? null;
+                                            $datas = collect();
+                                    
+                                            if(isset($pop_id) || $branch_user_id){
+                                                $search_pop_id = $pop_id ?? $branch_user_id;
+                                                $datas = App\Models\Branch_package::where('pop_id', $search_pop_id)->latest()->get();
+                                            }else{
+                                                $datas = App\Models\Branch_package::latest()->get();
+                                            }
+                    
                                         @endphp
                                         @foreach ($datas as $item)
                                             <option value="{{ $item->id }}">{{ $item->name }}</option>
                                         @endforeach
                                     </select>
+                                    
 
                                 </div>
                             </div>
