@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::create('ticket_assigns', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->unsignedBigInteger('pop_id');
             $table->timestamps();
+
+            $table->foreign('pop_id')->references('id')->on('pop_branches')->onDelete('cascade');
         });
     }
 

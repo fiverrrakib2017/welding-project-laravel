@@ -25,7 +25,7 @@ class Complain_typeController extends Controller
         $orderByColumn = $request->order[0]['column'];
         $orderDirectection = $request->order[0]['dir'];
 
-        $object = Ticket_complain_type::when($search, function ($query) use ($search) {
+        $object = Ticket_complain_type::with('pop')->when($search, function ($query) use ($search) {
             $query->where('name', 'like', "%$search%");
         })->orderBy($columnsForOrderBy[$orderByColumn], $orderDirectection);
 
@@ -46,6 +46,7 @@ class Complain_typeController extends Controller
 
         $object = new Ticket_complain_type();
         $object->name = $request->name;
+        $object->pop_id = $request->pop_id;
 
         /* Save to the database table*/
         $object->save();
@@ -89,6 +90,7 @@ class Complain_typeController extends Controller
 
         $object = Ticket_complain_type::findOrFail($id);
         $object->name = $request->name;
+        $object->pop_id = $request->pop_id;
         $object->update();
 
         return response()->json([
@@ -102,6 +104,7 @@ class Complain_typeController extends Controller
         /*Validate the form data*/
         $rules=[
             'name' => 'required|string',
+            'pop_id'=>'required|integer',
         ];
         $validator = Validator::make($request->all(), $rules);
 

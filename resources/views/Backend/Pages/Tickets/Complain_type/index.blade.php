@@ -16,6 +16,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Complain Name</th>
+                                <th>POP/Branch</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -59,6 +60,9 @@
           {
             "data":"name"
           },
+          {
+            "data":"pop.name"
+          },
 
           {
             data:null,
@@ -96,6 +100,7 @@
                     $('#complainForm').attr('action', "{{ route('admin.tickets.complain_type.update', ':id') }}".replace(':id', id));
                     $('#complainModalLabel').html('<span class="mdi mdi-account-edit mdi-18px"></span> &nbsp;Edit Complain Type');
                     $('#complainForm input[name="name"]').val(response.data.name);
+                    $('#complainForm select[name="pop_id"]').val(response.data.pop_id).trigger('change');
 
                     // Show the modal
                     $('#complainModal').modal('show');
