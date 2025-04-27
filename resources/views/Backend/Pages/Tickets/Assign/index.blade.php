@@ -17,6 +17,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Assign To</th>
+                                <th>POP/Branch</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -60,6 +61,9 @@
           {
             "data":"name"
           },
+          {
+            "data":"pop.name"
+          },
 
           {
             data:null,
@@ -97,6 +101,7 @@
                     $('#assignForm').attr('action', "{{ route('admin.tickets.assign.update', ':id') }}".replace(':id', id));
                     $('#assignModalLabel').html('<span class="mdi mdi-account-edit mdi-18px"></span> &nbsp;Edit Assign To');
                     $('#assignForm input[name="name"]').val(response.data.name);
+                    $('#assignForm select[name="pop_id"]').val(response.data.pop_id).trigger('change');
 
                     // Show the modal
                     $('#assignModal').modal('show');

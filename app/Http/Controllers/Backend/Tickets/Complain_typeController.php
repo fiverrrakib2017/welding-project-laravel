@@ -10,6 +10,7 @@ use App\Models\Ticket_complain_type;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class Complain_typeController extends Controller
 {
@@ -17,17 +18,24 @@ class Complain_typeController extends Controller
     {
         return view('Backend.Pages.Tickets.Complain_type.index');
     }
-
     public function get_all_data(Request $request)
     {
         $search = $request->search['value'];
         $columnsForOrderBy = ['id', 'name'];
         $orderByColumn = $request->order[0]['column'];
-        $orderDirectection = $request->order[0]['dir'];
+        $orderDirection = $request->order[0]['dir'];
 
-        $object = Ticket_complain_type::with('pop')->when($search, function ($query) use ($search) {
-            $query->where('name', 'like', "%$search%");
-        })->orderBy($columnsForOrderBy[$orderByColumn], $orderDirectection);
+        /* GET pop branch id when branch user logged in */
+        $branch_user_id = Auth::guard('admin')->user()->pop_id ?? null;
+
+        $object = Ticket_complain_type::with('pop')
+            ->when($search, function ($query) use ($search) {
+                $query->where('name', 'like', "%$search%");
+            })
+            ->when($branch_user_id, function ($query) use ($branch_user_id) {
+                $query->where('pop_id', $branch_user_id);
+            })
+            ->orderBy($columnsForOrderBy[$orderByColumn], $orderDirection);
 
         $total = $object->count();
         $item = $object->skip($request->start)->take($request->length)->get();

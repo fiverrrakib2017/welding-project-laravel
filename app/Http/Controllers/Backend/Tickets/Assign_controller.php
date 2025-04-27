@@ -10,8 +10,8 @@ use App\Models\Ticket_assign;
 use App\Models\Ticket_complain_type;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-
 
 class Assign_controller extends Controller
 {
@@ -25,11 +25,19 @@ class Assign_controller extends Controller
         $search = $request->search['value'];
         $columnsForOrderBy = ['id', 'name'];
         $orderByColumn = $request->order[0]['column'];
-        $orderDirectection = $request->order[0]['dir'];
+        $orderDirection = $request->order[0]['dir'];
 
-        $object = Ticket_assign::when($search, function ($query) use ($search) {
-            $query->where('name', 'like', "%$search%");
-        })->orderBy($columnsForOrderBy[$orderByColumn], $orderDirectection);
+        /* GET pop branch id when branch user logged in */
+        $branch_user_id = Auth::guard('admin')->user()->pop_id ?? null;
+
+        $object = Ticket_assign::with('pop')
+            ->when($search, function ($query) use ($search) {
+                $query->where('name', 'like', "%$search%");
+            })
+            ->when($branch_user_id, function ($query) use ($branch_user_id) {
+                $query->where('pop_id', $branch_user_id);
+            })
+            ->orderBy($columnsForOrderBy[$orderByColumn], $orderDirection);
 
         $total = $object->count();
         $item = $object->skip($request->start)->take($request->length)->get();
@@ -41,6 +49,7 @@ class Assign_controller extends Controller
             'data' => $item,
         ]);
     }
+
     public function store(Request $request)
     {
         /*Validate the form data*/
@@ -48,15 +57,15 @@ class Assign_controller extends Controller
 
         $object = new Ticket_assign();
         $object->name = $request->name;
+        $object->pop_id = $request->pop_id;
 
         /* Save to the database table*/
         $object->save();
         return response()->json([
             'success' => true,
-            'message' => 'Added successfully!'
+            'message' => 'Added successfully!',
         ]);
     }
-
 
     public function delete(Request $request)
     {
@@ -66,52 +75,53 @@ class Assign_controller extends Controller
             return response()->json(['error' => 'Not found.'], 404);
         }
 
-
         /* Delete it From Database Table */
         $object->delete();
 
-        return response()->json(['success' =>true, 'message'=> 'Deleted successfully.']);
+        return response()->json(['success' => true, 'message' => 'Deleted successfully.']);
     }
     public function edit($id)
     {
         $data = Ticket_assign::find($id);
         if ($data) {
             return response()->json(['success' => true, 'data' => $data]);
-            exit;
+            exit();
         } else {
             return response()->json(['success' => false, 'message' => 'Not found.']);
         }
     }
 
-
     public function update(Request $request, $id)
     {
-
         $this->validateForm($request);
 
         $object = Ticket_assign::findOrFail($id);
         $object->name = $request->name;
+        $object->pop_id = $request->pop_id;
         $object->update();
 
         return response()->json([
             'success' => true,
-            'message' => 'Update successfully!'
+            'message' => 'Update successfully!',
         ]);
     }
     private function validateForm($request)
     {
-
         /*Validate the form data*/
-        $rules=[
+        $rules = [
             'name' => 'required|string',
+            'pop_id' => 'required|integer',
         ];
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors()
-            ], 422);
+            return response()->json(
+                [
+                    'success' => false,
+                    'errors' => $validator->errors(),
+                ],
+                422,
+            );
         }
     }
 }

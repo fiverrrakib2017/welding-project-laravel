@@ -16,6 +16,26 @@
 										<label>Assign To</label>
 										<input name="name" placeholder="Enter Assign Name" class="form-control" type="text" required>
 									</div>
+                           <div class="form-group mb-2">
+                              <label>POP Branch</label>
+                              <select name="pop_id" id="pop_id" class="form-control" required>
+                                  <option value="">Select POP Branch</option>
+                                  @php
+                                      $branch_user_id = Auth::guard('admin')->user()->pop_id ?? null;
+                                      if(empty($pop_id)){
+                                          $pop_id = $branch_user_id;
+                                      }
+                                      if ($branch_user_id != null) {
+                                          $pops = App\Models\Pop_branch::where('id', $branch_user_id)->get();
+                                      } else {
+                                          $pops = App\Models\Pop_branch::latest()->get();
+                                      }
+                                  @endphp
+                                  @foreach ($pops as $item)
+                                      <option value="{{ $item->id }}"  @if($item->id == $pop_id) selected @endif>{{ $item->name }}</option>
+                                  @endforeach
+                              </select>
+                          </div>
 
 									<div class="modal-footer ">
 										<button data-dismiss="modal" type="button" class="btn btn-danger">Cancel</button>
