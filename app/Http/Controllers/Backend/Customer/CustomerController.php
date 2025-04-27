@@ -103,6 +103,8 @@ class CustomerController extends Controller
 
         $start = $request->start ?? 0;
         $length = $request->length ?? 10;
+        /*Check if branch user  value is empty*/
+        $branch_user_id = Auth::guard('admin')->user()->pop_id ?? null;
 
         $query = Customer::with(['pop', 'area', 'package'])
             ->where('is_delete', '!=', 0)
@@ -113,12 +115,16 @@ class CustomerController extends Controller
                     ->orWhereHas('pop', function ($query) use ($search) {
                         $query->where('fullname', 'like', "%$search%");
                     })
+                   
                     ->orWhereHas('area', function ($query) use ($search) {
                         $query->where('name', 'like', "%$search%");
                     })
                     ->orWhereHas('package', function ($query) use ($search) {
                         $query->where('name', 'like', "%$search%");
                     });
+            })
+            ->when($branch_user_id, function ($query) use ($branch_user_id){
+                $query->where('pop_id', 'like', "%$branch_user_id%");
             });
 
         /*Pagination*/
@@ -665,8 +671,13 @@ class CustomerController extends Controller
 
         $start = $request->start ?? 0;
         $length = $request->length ?? 10;
-
-        $query = Customer_recharge::with(['customer', 'customer.pop', 'customer.area', 'customer.package'])->when($search, function ($query) use ($search) {
+        // Branch User ID
+        $branch_user_id = Auth::guard('admin')->user()->pop_id ?? null;
+        $query = Customer_recharge::with(['customer', 'customer.pop', 'customer.area', 'customer.package'])
+        ->when($branch_user_id, function ($query) use ($branch_user_id) {
+            $query->where('pop_id', $branch_user_id);
+        })
+        ->when($search, function ($query) use ($search) {
             $query
                 ->where('created_at', 'like', "%$search%")
                 ->orWhere('recharge_month', 'like', "%$search%")
