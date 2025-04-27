@@ -67,9 +67,17 @@
                                     <select name="pop_id" id="pop_id" class="form-control" required>
                                         <option value="">Select POP Branch</option>
                                         @php
-                                            $get_pop_branch = App\Models\Pop_branch::latest()->get();
+                                            $branch_user_id = Auth::guard('admin')->user()->pop_id ?? null;
+                                            if(empty($pop_id)){
+                                                $pop_id = $branch_user_id;
+                                            }
+                                            if ($branch_user_id != null) {
+                                                $pops = App\Models\Pop_branch::where('id', $branch_user_id)->get();
+                                            } else {
+                                                $pops = App\Models\Pop_branch::latest()->get();
+                                            }
                                         @endphp
-                                        @foreach ($get_pop_branch as $item)
+                                        @foreach ($pops as $item)
                                             <option value="{{ $item->id }}"  @if($item->id == $pop_id) selected @endif>{{ $item->name }}</option>
                                         @endforeach
                                     </select>
@@ -242,10 +250,18 @@
                                     <select name="pop_id" id="pop_id" class="form-control" required>
                                         <option value="">Select POP Branch</option>
                                         @php
-                                            $get_pop_branch = App\Models\Pop_branch::latest()->get();
+                                            $branch_user_id = Auth::guard('admin')->user()->pop_id ?? null;
+                                            if(empty($pop_id)){
+                                                $pop_id = $branch_user_id;
+                                            }
+                                            if ($branch_user_id != null) {
+                                                $pops = App\Models\Pop_branch::where('id', $branch_user_id)->get();
+                                            } else {
+                                                $pops = App\Models\Pop_branch::latest()->get();
+                                            }
                                         @endphp
-                                        @foreach ($get_pop_branch as $item)
-                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        @foreach ($pops as $item)
+                                            <option value="{{ $item->id }}" >{{ $item->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -254,7 +270,9 @@
                                     <select name="area_id" id="area_id" class="form-control" required>
                                         <option value="">Select Area</option>
                                         @php
-                                            $datas = App\Models\Pop_area::latest()->get();
+                                            $datas = App\Models\Pop_area::when($pop_id, function ($query) use ($pop_id) {
+                                                return $query->where('pop_id', $pop_id);
+                                            })->latest()->get();
                                         @endphp
                                         @foreach ($datas as $item)
                                             <option value="{{ $item->id }}">{{ $item->name }}</option>

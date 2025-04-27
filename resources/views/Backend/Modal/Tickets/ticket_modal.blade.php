@@ -25,7 +25,12 @@
                             <select name="customer_id" class="form-select" type="text" style="width: 100%;" required>
                                 <option value="">---Select---</option>
                                 @php
-                                    $customers = \App\Models\Customer::latest()->get();
+                                    $branch_user_id = Auth::guard('admin')->user()->pop_id ?? null;
+                                    if ($branch_user_id != null) {
+                                        $customers = \App\Models\Customer::where('pop_id', $branch_user_id)->latest()->get();
+                                    } else {
+                                        $customers = \App\Models\Customer::latest()->get();
+                                    }
                                 @endphp
                                 @if ($customers->isNotEmpty())
                                     @foreach ($customers as $item)
@@ -34,8 +39,7 @@
                                             {{ $item->username }} || {{ $item->fullname }}, ({{ $item->phone }})
                                         </option>
                                     @endforeach
-                                @else
-                                    <option value="">No customer available</option>
+                            
                                 @endif
                             </select>
 
@@ -64,8 +68,7 @@
                                     @foreach ($tickets_assign as $item)
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
                                     @endforeach
-                                @else
-                                    <option value="">Not Data available</option>
+
                                 @endif
                             </select>
 
@@ -83,8 +86,7 @@
                                     @foreach ($tickets_complain as $item)
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
                                     @endforeach
-                                @else
-                                    <option value="">Not Data available</option>
+
                                 @endif
                             </select>
                         </div>
