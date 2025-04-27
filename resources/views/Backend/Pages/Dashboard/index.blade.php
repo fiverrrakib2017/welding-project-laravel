@@ -77,24 +77,20 @@
         {{-- <button class="btn btn-primary m-1"><i class="fas fa-user-clock"></i> New Request</button> --}}
         <button class="btn btn-success m-1" data-toggle="modal" data-target="#addCustomerModal" type="button"><i class="fas fa-user-plus"></i> Add Customer</button>
         <button type="button" data-toggle="modal" data-target="#ticketModal" class="btn btn-info m-1"><i class="fas fa-ticket-alt"></i> Add Ticket</button>
-        <button class="btn btn-warning m-1"><i class="fas fa-envelope"></i> SMS Notification</button>
+        <button type="button" data-toggle="modal" data-target="#addSendMessageModal" class="btn btn-primary text-white m-1"><i class="fas fa-envelope"></i> SMS Notification</button>
         <button class="btn btn-dark m-1 dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-chart-line"></i> Reports</button>
         <div class="dropdown-menu custom-dropdown-menu">
-            <a class="dropdown-item" href="/sales-report">
-                <i class="fas fa-file-invoice-dollar text-primary"></i> Sales Report
+            <a class="dropdown-item" href="{{ route('admin.customer.payment.history') }}">
+                <i class="fas fa-file-invoice-dollar text-success"></i> Payment History
             </a>
-            <a class="dropdown-item" href="/customer-report">
-                <i class="fas fa-users text-success"></i> Customer Report
+            <a class="dropdown-item" href="{{ route('admin.customer.customer_credit_recharge_list') }}">
+                <i class="fas fa-users text-primary"></i> Credit Recharge Report
             </a>
-            <a class="dropdown-item" href="/transaction-report">
-                <i class="fas fa-exchange-alt text-danger"></i> Transaction Report
+            <a class="dropdown-item" href="{{ route('admin.customer.log.index') }}">
+                <i class="fas fa-file-alt text-danger"></i> Customer Logs Report
             </a>
-            <a class="dropdown-item" href="/transaction-report">
-                <i class="fas fa-exchange-alt text-danger"></i> Transaction Report
-            </a>
-            <a class="dropdown-item" href="/transaction-report">
-                <i class="fas fa-exchange-alt text-danger"></i> Transaction Report
-            </a>
+            
+          
         </div>
         {{-- <button class="btn btn-dark m-1"><i class="fas fa-user-shield"></i> Admin Panel</button>
          <button class="btn btn-secondary m-1"><i class="fas fa-cogs"></i> Settings</button>
@@ -248,6 +244,7 @@
 
 @include('Backend.Modal.Customer.customer_modal')
 @include('Backend.Modal.Tickets.ticket_modal')
+@include('Backend.Modal.Sms.send_modal')
 @endsection
 
 @section('script')
