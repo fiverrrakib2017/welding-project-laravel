@@ -10,15 +10,24 @@ use App\Models\Ticket;
 use App\Models\Ticket_complain_type;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class Ticket_controller extends Controller
 {
     public function index()
     {
-        $tickets=Ticket::count();
-        $ticket_completed=Ticket::where('status','1')->count();
-        $ticket_pending=Ticket::where('status','0')->count();
+        $branch_user_id=Auth::guard('admin')->user()->pop_id ?? null;
+        if(!empty($branch_user_id)){
+            $tickets=Ticket::where('pop_id',$branch_user_id)->count();
+            $ticket_completed=Ticket::where('status','1')->where('pop_id',$branch_user_id)->count();
+            $ticket_pending=Ticket::where('status','0')->where('pop_id',$branch_user_id)->count();
+        }else{
+            $tickets=Ticket::count();
+            $ticket_completed=Ticket::where('status','1')->count();
+            $ticket_pending=Ticket::where('status','0')->count();
+        }
+
         return view('Backend.Pages.Tickets.index',compact('tickets','ticket_completed','ticket_pending'));
     }
 
@@ -31,7 +40,7 @@ class Ticket_controller extends Controller
         $columnsForOrderBy = ['id', 'status', 'created_at', 'priority_id', 'customer_id', 'customer_id', 'customer_id', 'customer_id', 'customer_id', 'customer_id', 'customer_id', 'created_at'];
         $orderByColumn = $request->order[0]['column'] ?? 0;
         $orderDirection = $request->order[0]['dir'] ?? 'asc';
-
+        $branch_user_id=Auth::guard('admin')->user()->pop_id ?? null;
         $query = Ticket::with(['customer', 'assign', 'complain_type', 'pop', 'area'])
             ->when($search, function ($query) use ($search) {
                 $query
@@ -51,6 +60,9 @@ class Ticket_controller extends Controller
                     ->orWhereHas('assign', function ($query) use ($search) {
                         $query->where('name', 'like', "%$search%");
                     });
+            })
+            ->when($branch_user_id, function ($query) use ($branch_user_id) {
+                $query->where('pop_id', $branch_user_id);
             })
             ->when($customer_id, function ($query) use ($customer_id) {
                 $query->where('customer_id', $customer_id);
