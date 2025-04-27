@@ -28,11 +28,20 @@
                         </thead>
                         <tbody>
                             @php
-                            $data = App\Models\Customer_recharge::select('customer_id')
-                                ->groupBy('customer_id')
-                                ->latest()
-                                ->get();
-                        @endphp
+                                $branch_user_id = Auth::guard('admin')->user()->pop_id ?? null;
+
+                                $dataQuery = App\Models\Customer_recharge::select('customer_id')
+                                    ->groupBy('customer_id')
+                                    ->latest();
+
+                                if ($branch_user_id) {
+                                    $dataQuery->whereHas('customer', function ($query) use ($branch_user_id) {
+                                        $query->where('pop_id', $branch_user_id);
+                                    });
+                                }
+
+                                $data = $dataQuery->get();
+                            @endphp
 
                         @foreach ($data as $item)
                             @php
