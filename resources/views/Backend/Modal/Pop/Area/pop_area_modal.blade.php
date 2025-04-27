@@ -17,10 +17,15 @@
 										<select name="pop_id" class="form-control" type="text" required>
                                             <option value="">---Select---</option>
                                             @php
-                                                $pops = \App\Models\Pop_branch::all();
+                                            $branch_user_id = Auth::guard('admin')->user()->pop_id ?? null;
+                                                if($branch_user_id != null){
+                                                    $pops = \App\Models\Pop_branch::where('id', $branch_user_id)->get();
+                                                }else{
+                                                    $pops = \App\Models\Pop_branch::latest()->get();
+                                                }
                                             @endphp
                                             @foreach ($pops as $item)
-                                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                                <option value="{{ $item->id }}" {{ $branch_user_id == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
                                             @endforeach
                                         </select>
 									</div>

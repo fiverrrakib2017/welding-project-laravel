@@ -25,7 +25,12 @@
                     <select class="form-control" name="sidebar_customer_id" style="width: 100%;">
                         <option value="1">---Select---</option>
                         @php
-                            $customers = \App\Models\Customer::latest()->get();
+
+                            if(!empty($branch_user_id)){
+                                $customers = \App\Models\Customer::where('pop_id',$branch_user_id)->latest()->get();
+                            }else{
+                                $customers = \App\Models\Customer::latest()->get();
+                            }
                         @endphp
                         @if ($customers->isNotEmpty())
                             @foreach ($customers as $item)
@@ -156,6 +161,7 @@
                 @php
                     $active_prefix = ['admin.customer.ip_pool.index', 'admin.customer.package.index'];
                 @endphp
+                @if (empty($branch_user_id)||$branch_user_id == null || $branch_user_id == 0)
                 <li class="nav-item has-treeview">
                     <a href="#"
                         class="nav-link  {{ Str::startsWith($currentRoute, $active_prefix) ? 'active' : '' }}">
@@ -180,6 +186,8 @@
                         </li>
                     </ul>
                 </li>
+                @endif
+
                 {{-- Network Diagram --}}
                 @php
                     $active_prefix = ['admin.network.diagram'];
@@ -214,18 +222,22 @@
                     </a>
                     <ul class="nav nav-treeview"
                         style="{{ Str::startsWith($currentRoute, $active_prefix) ? 'display: block;' : 'display: none;' }}">
-
-                        <li class="nav-item"><a href="{{ route('admin.pop.index') }}"
+                        @if (empty($branch_user_id)||$branch_user_id == null || $branch_user_id == 0)
+                            <li class="nav-item"><a href="{{ route('admin.pop.index') }}"
                                 class="nav-link  {{ $route == 'admin.pop.index' ? 'active' : '' }}"><i
-                                    class="far fa-circle nav-icon"></i>
-                                <p>View POP/Branch </p>
-                            </a></li>
+                                        class="far fa-circle nav-icon"></i>
+                                    <p>View POP/Branch </p>
+                                </a>
+                            </li>
+                        @endif
+
 
                         <li class="nav-item"><a href="{{ route('admin.pop.area.index') }}"
                                 class="nav-link {{ $route == 'admin.pop.area.index' ? 'active' : '' }}"><i
                                     class="far fa-circle nav-icon"></i>
                                 <p>POP Area</p>
-                            </a></li>
+                            </a>
+                        </li>
                     </ul>
                 </li>
 
@@ -365,6 +377,7 @@
                     </ul>
                 </li>
                 <!-- HR Management -->
+                @if (empty($branch_user_id)||$branch_user_id == null || $branch_user_id == 0)
                 <li class="nav-item has-treeview">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-users-cog"></i>
@@ -434,7 +447,10 @@
 
                     </ul>
                 </li>
+                @endif
                 <!-- Loan Management -->
+                @if (empty($branch_user_id)||$branch_user_id == null || $branch_user_id == 0)
+
                 <li class="nav-item has-treeview">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-money-check-alt"></i>
@@ -454,10 +470,15 @@
                         </li>
                     </ul>
                 </li>
+
+                @endif
+
                 <!-----------Invenotry Menu------------------->
                 @php
                     $active_prefix = ['admin.category.index','admin.brand.index','admin.store.index','admin.unit.index','admin.supplier.index','admin.supplier.invoice.create_invoice','admin.supplier.invoice.show_invoice','admin.client.index','admin.client.invoice.create_invoice','admin.client.invoice.show_invoice'];
                 @endphp
+                @if (empty($branch_user_id)||$branch_user_id == null || $branch_user_id == 0)
+
                 <li class="nav-item">
                     <a href="#" class="nav-link {{ in_array($route, $active_prefix) ? ' active' : '' }}">
                         <i class="nav-icon fas fa-warehouse"></i>
@@ -540,7 +561,11 @@
                         </li>
                     </ul>
                 </li>
+
+                @endif
+
                 <!-----------------Accounts--------------------->
+                @if (empty($branch_user_id)||$branch_user_id == null || $branch_user_id == 0)
                 <li class="nav-item has-treeview">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-calculator"></i>
@@ -578,6 +603,8 @@
 
                     </ul>
                 </li>
+                @endif
+
                 <!-----------------Task Management--------------------->
                 <li class="nav-item has-treeview">
                     <a href="#" class="nav-link">
@@ -638,6 +665,7 @@
                     $active_prefix = ['admin.router'];
                 @endphp
                 <!-----------------Router Management--------------------->
+                @if (empty($branch_user_id)||$branch_user_id == null || $branch_user_id == 0)
                 <li class="nav-item has-treeview">
                     <a href="#"
                         class="nav-link {{ Str::startsWith($currentRoute, $active_prefix) ? 'active' : '' }}">
@@ -661,6 +689,8 @@
                         </li>
                     </ul>
                 </li>
+                @endif
+
 
 
             </ul>

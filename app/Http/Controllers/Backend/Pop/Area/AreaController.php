@@ -6,6 +6,7 @@ use App\Models\Pop_area;
 use App\Models\Pop_branch;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 
@@ -22,14 +23,21 @@ class AreaController extends Controller
         $orderByColumn = $request->order[0]['column'];
         $orderDirectection = $request->order[0]['dir'];
 
-        $query = Pop_area::with(['pop'])->when($search, function ($query) use ($search) {
-            $query
-                ->where('name', 'like', "%$search%")
-                ->orWhere('billing_cycle', 'like', "%$search%")
-                ->orWhereHas('pop', function ($query) use ($search) {
-                    $query->where('name', 'like', "%$search%");
-                });
-        });
+
+        $branch_user_id = Auth::guard('admin')->user()->pop_id ?? null;
+
+        $query = Pop_area::with(['pop'])
+            ->when($search, function ($query) use ($search) {
+                $query
+                    ->where('name', 'like', "%$search%")
+                    ->orWhere('billing_cycle', 'like', "%$search%")
+                    ->orWhereHas('pop', function ($query) use ($search) {
+                        $query->where('name', 'like', "%$search%");
+                    });
+            })
+            ->when($branch_user_id, function ($query) use ($branch_user_id) {
+                $query->where('pop_id', $branch_user_id);
+            });
 
         $total = $query->count();
 
@@ -44,6 +52,7 @@ class AreaController extends Controller
             'data' => $items,
         ]);
     }
+
     public function store(Request $request)
     {
         /* Validate the form data*/
