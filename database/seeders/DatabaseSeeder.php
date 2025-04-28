@@ -17,10 +17,13 @@ class DatabaseSeeder extends Seeder
         //     StudentSeeder::class
         // ]);
         \App\Models\Admin::create([
-            'name' => 'Rakib Mahmud',
+            'name' => 'Shafiul Bashar Sumon',
             'email' => 'admin@gmail.com',
-            'username' => 'rakibas375',
+            'username' => 'admin',
             'password' => Hash::make('12345678'),
+            'password_text' => '12345678',
+            'user_type' => 1,
+            'phone' => '01757967432',
         ]);
     }
 }

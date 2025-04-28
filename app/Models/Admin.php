@@ -23,8 +23,8 @@ class Admin extends Authenticatable
         'phone',
         'email',
         'password',
+        'password_text',
         'user_type',
-        'pop_id',
     ];
 
     /**
