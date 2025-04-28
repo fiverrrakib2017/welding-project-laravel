@@ -19,6 +19,7 @@ Route::group(['middleware' => 'admin'], function () {
     Route::prefix('student')->group(function () {
        Route::controller(studentController::class)->group(function () {
             Route::get('/list', 'index')->name('admin.student.index');
+            Route::get('/get_all_data', 'get_all_data')->name('admin.student.get_all_data');
             Route::get('/create', 'create')->name('admin.student.create');
             Route::post('/store', 'store')->name('admin.student.store');
             Route::get('/course_list', 'course_list')->name('admin.student.course.list');

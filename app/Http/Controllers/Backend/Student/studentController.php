@@ -14,12 +14,48 @@ use Illuminate\Support\Facades\DB;
 class studentController extends Controller
 {
     public function index(){
-        return view('Backend.Pages.Student.index');
+        $students=Student::with('course')->latest()->get();
+        return view('Backend.Pages.Student.index',compact('students'));
     }
     public function create(){
         $courses=DB::table('courses')->get();
         return view('Backend.Pages.Student.create',compact('courses'));
     }
+    public function get_all_data(Request $request)
+{
+    $search = $request->search['value'] ?? null;
+
+    $columnsForOrderBy = ['id', 'name', 'nid_or_passport', 'mobile_number', 'father_name', 'permanent_address', 'present_address', 'course_id'];
+
+    $orderByColumnIndex = $request->order[0]['column'] ?? 0;
+    $orderByColumn = $columnsForOrderBy[$orderByColumnIndex] ?? 'id'; // fallback id
+    $orderDirection = $request->order[0]['dir'] ?? 'asc';
+
+    $query = Student::with(['course'])
+        ->when($search, function ($q) use ($search) {
+            $q->where(function ($subQuery) use ($search) {
+                $subQuery->where('name', 'like', "%{$search}%")
+                         ->orWhere('nid_or_passport', 'like', "%{$search}%")
+                         ->orWhere('mobile_number', 'like', "%{$search}%");
+            });
+        });
+
+    $totalRecords = Student::count(); // মোট কত রেকর্ড
+    $filteredRecords = $query->count(); // সার্চ করার পর কত রেকর্ড বাকি
+
+    $items = $query->orderBy($orderByColumn, $orderDirection)
+                   ->skip($request->start ?? 0)
+                   ->take($request->length ?? 10)
+                   ->get();
+
+    return response()->json([
+        'draw' => intval($request->draw),
+        'recordsTotal' => $totalRecords,
+        'recordsFiltered' => $filteredRecords,
+        'data' => $items,
+    ]);
+}
+
     public function course_list(){
         $courses=DB::table('courses')->get();
         return view('Backend.Pages.Student.course',compact('courses'));
