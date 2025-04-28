@@ -365,15 +365,23 @@
                                 <p>Send Bulk SMS</p>
                             </a></li>
 
-                        <li class="nav-item"><a href="{{ route('admin.sms.template_list') }}"
+                        <li class="nav-item">
+                            <a href="{{ route('admin.sms.template_list') }}"
                                 class="nav-link {{ $route == 'admin.sms.template_list' ? 'active' : '' }}"><i
                                     class="far fa-circle nav-icon"></i>
                                 <p>SMS Template</p>
-                            </a></li>
-                        <li class="nav-item"><a href="#" class="nav-link"><i
-                                    class="far fa-circle nav-icon"></i>
-                                <p>SMS Logs</p>
-                            </a></li>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link"><i
+                                class="far fa-circle nav-icon"></i><p>SMS Logs</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link"><i
+                                class="far fa-circle nav-icon"></i><p>SMS Report</p>
+                            </a>
+                        </li>
                         <li class="nav-item"><a href="{{ route('admin.sms.config') }}"
                                 class="nav-link {{ $route == 'admin.sms.config' ? 'active' : '' }}"><i
                                     class="far fa-circle nav-icon"></i>
