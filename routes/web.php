@@ -21,6 +21,7 @@ Route::group(['middleware' => 'admin'], function () {
             Route::get('/list', 'index')->name('admin.student.index');
             Route::get('/create', 'create')->name('admin.student.create');
             Route::post('/store', 'store')->name('admin.student.store');
+            Route::get('/course_list', 'course_list')->name('admin.student.course.list');
         });
     });
     Route::get('/optimize', function () {

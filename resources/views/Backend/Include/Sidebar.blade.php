@@ -23,7 +23,7 @@
 
 
                 @php
-                    $active_prefix = ['admin.student.index','admin.student.create'];
+                    $active_prefix = ['admin.student.index','admin.student.create','admin.student.course.list'];
                 @endphp
                 <li class="nav-item has-treeview">
                     <a href="#"
@@ -43,12 +43,20 @@
                                 <p>Student List</p>
                             </a>
                         </li>
-                        <!-- Creadit Recharge-->
+                        <!-- Student Create-->
                         <li class="nav-item">
                             <a href="{{ route('admin.student.create') }}"
                                 class="nav-link {{ $route == 'admin.student.create' ? 'active' : '' }}"><i
                                     class="far fa-circle nav-icon"></i>
                                 <p> Student Create</p>
+                            </a>
+                        </li>
+                        <!-- Student Course-->
+                        <li class="nav-item">
+                            <a href="{{ route('admin.student.course.list') }}"
+                                class="nav-link {{ $route == 'admin.student.course.list' ? 'active' : '' }}"><i
+                                    class="far fa-circle nav-icon"></i>
+                                <p> Student Course</p>
                             </a>
                         </li>
                     </ul>
@@ -57,7 +65,9 @@
 
 
                 <!-----------------User Management--------------------->
-
+                @php
+                    $active_prefix = [];
+                @endphp
                 <li class="nav-item has-treeview">
                     <a href="#"
                         class="nav-link {{ Str::startsWith($currentRoute, $active_prefix) ? 'active' : '' }}">

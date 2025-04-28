@@ -20,6 +20,10 @@ class studentController extends Controller
         $courses=DB::table('courses')->get();
         return view('Backend.Pages.Student.create',compact('courses'));
     }
+    public function course_list(){
+        $courses=DB::table('courses')->get();
+        return view('Backend.Pages.Student.course',compact('courses'));
+    }
     public function store(Request $request)
     {
         try {
