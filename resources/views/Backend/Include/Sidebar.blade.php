@@ -192,6 +192,7 @@
                 @php
                     $active_prefix = ['admin.network.diagram'];
                 @endphp
+                 @if (empty($branch_user_id)||$branch_user_id == null || $branch_user_id == 0)
                 <li class="nav-item has-treeview">
                     <a href="#"
                         class="nav-link  {{ Str::startsWith($currentRoute, $active_prefix) ? 'active' : '' }}">
@@ -211,10 +212,12 @@
                         </li>
                     </ul>
                 </li>
+                @endif
                 @php
                     $active_prefix = ['admin.pop'];
                 @endphp
-                <li class="nav-item has-treeview">
+                  @if (empty($branch_user_id)||$branch_user_id == null || $branch_user_id == 0)
+                    <li class="nav-item has-treeview">
                     <a href="#"
                         class="nav-link  {{ Str::startsWith($currentRoute, $active_prefix) ? 'active' : '' }}">
                         <i class="nav-icon fas fa-map-marker-alt"></i>
@@ -222,17 +225,13 @@
                     </a>
                     <ul class="nav nav-treeview"
                         style="{{ Str::startsWith($currentRoute, $active_prefix) ? 'display: block;' : 'display: none;' }}">
-                        @if (empty($branch_user_id)||$branch_user_id == null || $branch_user_id == 0)
                             <li class="nav-item"><a href="{{ route('admin.pop.index') }}"
                                 class="nav-link  {{ $route == 'admin.pop.index' ? 'active' : '' }}"><i
                                         class="far fa-circle nav-icon"></i>
                                     <p>View POP/Branch </p>
                                 </a>
                             </li>
-                        @endif
-
-
-                        <li class="nav-item"><a href="{{ route('admin.pop.area.index') }}"
+                            <li class="nav-item"><a href="{{ route('admin.pop.area.index') }}"
                                 class="nav-link {{ $route == 'admin.pop.area.index' ? 'active' : '' }}"><i
                                     class="far fa-circle nav-icon"></i>
                                 <p>POP Area</p>
@@ -240,6 +239,16 @@
                         </li>
                     </ul>
                 </li>
+                @else
+                    <!-- Branch Area WHEN Branch user lOGIN -->
+                    <li class="nav-item ">
+                        <a href="{{ route('admin.pop.area.index') }}"
+                            class="nav-link  {{ $route == 'admin.pop.area.index' ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-map-marker-alt"></i>
+                            <p>Branch Area</p>
+                        </a>
+                    </li>
+                @endif
 
                 {{-- <li class="nav-item has-treeview">
                 <a href="#" class="nav-link">
@@ -619,6 +628,7 @@
                 @endif
 
                 <!-----------------Task Management--------------------->
+                @if (empty($branch_user_id)||$branch_user_id == null || $branch_user_id == 0)
                 <li class="nav-item has-treeview">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-tasks"></i>
@@ -651,6 +661,7 @@
                         </li>
                     </ul>
                 </li>
+                @endif
                 <!-----------------Settings--------------------->
                 @php
                     $active_prefix = ['admin.settings.information.index'];
