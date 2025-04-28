@@ -345,7 +345,7 @@
                 </li>
 
                 @php
-                    $active_prefix = ['admin.sms.config', 'admin.sms.template_list', 'admin.sms.message_send_list'];
+                    $active_prefix = ['admin.sms.config', 'admin.sms.template_list', 'admin.sms.message_send_list','admin.sms.bulk.message_send_list'];
                 @endphp
                 <li class="nav-item has-treeview">
                     <a href="#" class="nav-link{{ in_array($route, $active_prefix) ? ' active' : '' }}">
@@ -358,6 +358,11 @@
                                 class="nav-link {{ $route == 'admin.sms.message_send_list' ? 'active' : '' }}"><i
                                     class="far fa-circle nav-icon"></i>
                                 <p>Send SMS</p>
+                            </a></li>
+                        <li class="nav-item"><a href="{{ route('admin.sms.bulk.message_send_list') }}"
+                                class="nav-link {{ $route == 'admin.sms.bulk.message_send_list' ? 'active' : '' }}"><i
+                                    class="far fa-circle nav-icon"></i>
+                                <p>Send Bulk SMS</p>
                             </a></li>
 
                         <li class="nav-item"><a href="{{ route('admin.sms.template_list') }}"

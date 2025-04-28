@@ -115,7 +115,7 @@ class CustomerController extends Controller
                     ->orWhereHas('pop', function ($query) use ($search) {
                         $query->where('fullname', 'like', "%$search%");
                     })
-                   
+
                     ->orWhereHas('area', function ($query) use ($search) {
                         $query->where('name', 'like', "%$search%");
                     })
@@ -123,7 +123,7 @@ class CustomerController extends Controller
                         $query->where('name', 'like', "%$search%");
                     });
             })
-            ->when($branch_user_id, function ($query) use ($branch_user_id){
+            ->when($branch_user_id, function ($query) use ($branch_user_id) {
                 $query->where('pop_id', 'like', "%$branch_user_id%");
             });
 
@@ -137,6 +137,56 @@ class CustomerController extends Controller
             'data' => $paginatedData->items(),
         ]);
     }
+    public function get_customer_info(Request $request)
+    {
+        /* Define A Default Query */
+        $query = Customer::with(['pop', 'area', 'package']);
+
+        if (!empty($request->pop_id)) {
+            $query->where('pop_id', $request->pop_id);
+        }
+        if (!empty($request->area_id)) {
+            $query->where('area_id', $request->area_id);
+        }
+        if (!empty($request->status)) {
+            $query->where('status', $request->status);
+        }
+
+        $customers = $query->where('is_delete', 0)->get();
+
+        if ($customers->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No data found',
+            ]);
+        }
+
+        $html = '';
+        foreach ($customers as $row) {
+            $package_name = $row->package ? $row->package->name : 'N/A';
+            $get_pop_name = $row->pop ? $row->pop->name : 'N/A';
+            $get_area_name = $row->area ? $row->area->name : 'N/A';
+
+            $html .= '<tr>';
+            $html .= '<td><input type="checkbox" class="customer-checkbox checkSingle" value="' . $row->id . '"></td>';
+            $html .= '<td>' . $row->id . '</td>';
+            $html .= '<td>' . $row->username . '</td>';
+            $html .= '<td>' . $package_name . '</td>';
+            $html .= '<td>' . $row->expire_date . '</td>';
+            $html .= '<td>' . $get_pop_name . '</td>';
+            $html .= '<td>' . $get_area_name . '</td>';
+            $html .= '<td>' . $row->phone . '</td>';
+            $html .= '<td>' . $row->address . '</td>';
+            $html .= '</tr>';
+        }
+
+        return response()->json([
+            'success' => true,
+            'html' => $html,
+        ]);
+
+    }
+
     public function store(Request $request)
     {
         /* Validate the form data */
@@ -191,7 +241,7 @@ class CustomerController extends Controller
 
             $router = Mikrotik_router::where('status', 'active')->where('id', $request->router_id)->first();
             $client = new Client([
-               'host' => $router->ip_address,
+                'host' => $router->ip_address,
                 'user' => $router->username,
                 'pass' => $router->password,
                 'port' => (int) $router->port ?? 8728,
@@ -674,20 +724,20 @@ class CustomerController extends Controller
         // Branch User ID
         $branch_user_id = Auth::guard('admin')->user()->pop_id ?? null;
         $query = Customer_recharge::with(['customer', 'customer.pop', 'customer.area', 'customer.package'])
-        ->when($branch_user_id, function ($query) use ($branch_user_id) {
-            $query->where('pop_id', $branch_user_id);
-        })
-        ->when($search, function ($query) use ($search) {
-            $query
-                ->where('created_at', 'like', "%$search%")
-                ->orWhere('recharge_month', 'like', "%$search%")
-                ->orWhereHas('customer', function ($query) use ($search) {
-                    $query->where('fullname', 'like', "%$search%");
-                })
-                ->orWhereHas('customer', function ($query) use ($search) {
-                    $query->where('username', 'like', "%$search%");
-                });
-        });
+            ->when($branch_user_id, function ($query) use ($branch_user_id) {
+                $query->where('pop_id', $branch_user_id);
+            })
+            ->when($search, function ($query) use ($search) {
+                $query
+                    ->where('created_at', 'like', "%$search%")
+                    ->orWhere('recharge_month', 'like', "%$search%")
+                    ->orWhereHas('customer', function ($query) use ($search) {
+                        $query->where('fullname', 'like', "%$search%");
+                    })
+                    ->orWhereHas('customer', function ($query) use ($search) {
+                        $query->where('username', 'like', "%$search%");
+                    });
+            });
         if ($request->from_date) {
             $query->whereDate('created_at', '>=', $request->from_date);
         }
@@ -751,11 +801,10 @@ class CustomerController extends Controller
             $query->whereDate('created_at', '<=', $request->to_date);
         }
         if ($request->pop_id) {
-            $query->whereHas('customer', function($q) use ($request) {
+            $query->whereHas('customer', function ($q) use ($request) {
                 $q->where('pop_id', $request->pop_id);
             });
         }
-
 
         $totalRecords = $query->count();
 

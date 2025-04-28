@@ -150,6 +150,7 @@ Route::group(['middleware' => 'admin'], function () {
             Route::post('/delete', 'delete')->name('admin.customer.delete');
             Route::post('/store', 'store')->name('admin.customer.store');
             Route::post('/update/{id}', 'update')->name('admin.customer.update');
+            Route::post('/get_customer_info', 'get_customer_info')->name('admin.customer.get_customer_info');
 
             /***** Customer Recharge *******/
             Route::post('/recharge/store', 'customer_recharge')->name('admin.customer.recharge.store');
@@ -452,6 +453,15 @@ Route::group(['middleware' => 'admin'], function () {
                 Route::get('/get_all_data', 'send_message_get_all_data')->name('admin.sms.send_message_get_all_data');
                 Route::post('/Store', 'send_message_store')->name('admin.sms.send_message_store');
                 Route::post('/delete', 'send_message_delete')->name('admin.sms.send_message_delete');
+            });
+        });
+        /* Send Bulk SMS Template Route */
+        Route::prefix('bulk-message')->group(function () {
+            Route::controller(SmsController::class)->group(function () {
+                Route::get('/list', 'bulk_message_send_list')->name('admin.sms.bulk.message_send_list');
+                Route::get('/get_all_data', 'bulk_message_get_all_data')->name('admin.sms.bulk.send_message_get_all_data');
+                Route::post('/Store', 'bulk_message_store')->name('admin.sms.bulk.send_message_store');
+                Route::post('/delete', 'bulk_message_delete')->name('admin.sms.bulk.send_message_delete');
             });
         });
     });

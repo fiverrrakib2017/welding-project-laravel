@@ -31,6 +31,9 @@ class SmsController extends Controller
     {
         return view('Backend.Pages.Sms.Send_list');
     }
+    public function bulk_message_send_list(){
+        return view('Backend.Pages.Sms.Bulk_send_list');
+    }
     public function sms_template_get_all_data(Request $request)
     {
         $search = $request->search['value'];
