@@ -23,7 +23,7 @@ Route::group(['middleware' => 'admin'], function () {
             Route::get('/create', 'create')->name('admin.student.create');
             Route::get('/edit/{student_id}', 'edit')->name('admin.student.edit');
             Route::post('/update/{student_id}', 'update')->name('admin.student.update');
-            
+
             /*Student Delete*/
             Route::post('/delete', 'delete')->name('admin.student.delete');
             Route::post('/recycle_delete', 'recycle_delete')->name('admin.student.recycle.delete');
@@ -35,6 +35,10 @@ Route::group(['middleware' => 'admin'], function () {
             Route::get('/student_recycle', 'student_recycle')->name('admin.student.recycle.index');
         });
     });
+    Route::get('management/user',function(){
+        return view('Backend.Pages.User.index');
+    })->name('admin.user.management.index');
+    
     Route::get('/optimize', function () {
         Artisan::call('optimize:clear');
         return 'Optimize Clear Completed';
