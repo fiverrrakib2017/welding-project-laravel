@@ -14,12 +14,15 @@ return new class extends Migration
         Schema::create('students', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->unsignedBigInteger('course_id');
+
             $table->text('nid_or_passport')->unique();
             $table->string('father_name');
             $table->text('permanent_address');
             $table->text('present_address');
             $table->string('mobile_number')->unique();
+            $table->unsignedBigInteger('course_id');
+            $table->string('course_duration');
+            $table->string('course_end');
             $table->integer('is_delete')->default('0');
             $table->timestamps();
 

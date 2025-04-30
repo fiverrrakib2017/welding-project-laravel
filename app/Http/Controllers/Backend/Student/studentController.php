@@ -75,6 +75,8 @@ class studentController extends Controller
             $student->permanent_address = $request->permanent_address;
             $student->present_address = $request->present_address;
             $student->course_id = $request->course_id;
+            $student->course_duration = $request->course_duration ?? '';
+            $student->course_end = $request->course_end ?? '';
             $student->is_delete = '0';
             $student->save();
 
@@ -115,6 +117,8 @@ class studentController extends Controller
         $student->permanent_address = $request->permanent_address;
         $student->present_address = $request->present_address;
         $student->course_id = $request->course_id;
+        $student->course_duration = $request->course_duration ?? '';
+        $student->course_end = $request->course_end ?? '';
         $student->update();
         /*Student Log*/
         $object=new Student_log();
