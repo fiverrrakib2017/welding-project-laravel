@@ -67,6 +67,14 @@
                                 <p>Student Logs</p>
                             </a>
                         </li>
+                           <!-- Student Logs-->
+                        <li class="nav-item">
+                            <a href="{{ route('admin.student.recycle.index') }}"
+                                class="nav-link {{ $route == 'admin.student.recycle.index' ? 'active' : '' }}">
+                                <i class="fas fa-trash-alt nav-icon"></i>
+                                <p>Recycle Bin</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
 

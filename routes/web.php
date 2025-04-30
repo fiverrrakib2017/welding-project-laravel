@@ -23,11 +23,16 @@ Route::group(['middleware' => 'admin'], function () {
             Route::get('/create', 'create')->name('admin.student.create');
             Route::get('/edit/{student_id}', 'edit')->name('admin.student.edit');
             Route::post('/update/{student_id}', 'update')->name('admin.student.update');
+            
+            /*Student Delete*/
             Route::post('/delete', 'delete')->name('admin.student.delete');
+            Route::post('/recycle_delete', 'recycle_delete')->name('admin.student.recycle.delete');
+
             Route::post('/store', 'store')->name('admin.student.store');
             Route::get('/course_list', 'course_list')->name('admin.student.course.list');
             Route::get('/logs', 'student_logs')->name('admin.student.log.index');
             Route::get('/logs/get_all_data', 'student_log_get_all_data')->name('admin.student.log.get_all_data');
+            Route::get('/student_recycle', 'student_recycle')->name('admin.student.recycle.index');
         });
     });
     Route::get('/optimize', function () {

@@ -153,6 +153,26 @@ class studentController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Deleted successfully.']);
     }
+    public function recycle_delete(Request $request)
+    {
+        $object = Student::find($request->id);
+
+        if (empty($object)) {
+            return response()->json(['error' => 'Not found.'], 404);
+        }
+        $object->delete();
+        /*Student Log*/
+        // $log = new Student_log();
+        // $log->student_id = $object->id;
+        // $log->action_type = 'delete';
+        // $log->user_id = Auth::guard('admin')->user()->id;
+        // $log->description = 'Student deleted Confirm By Admin: ' . Auth::guard('admin')->user()->name;
+        // $log->ip_address = request()->ip();
+        // $log->save();
+        /*End Student Log*/
+
+        return response()->json(['success' => true, 'message' => 'Deleted successfully.']);
+    }
     public function student_logs()
     {
         $logs = Student_log::with('student')->latest()->get();
@@ -197,6 +217,10 @@ class studentController extends Controller
             'recordsFiltered' => $totalRecords,
             'data' => $data,
         ]);
+    }
+    public function student_recycle(){
+        $students=Student::with('course')->where('is_delete', 1)->latest()->get();
+        return view('Backend.Pages.Student.recycle',compact('students'));
     }
     private function validateForm($request)
     {
