@@ -40,8 +40,8 @@ class studentController extends Controller
             });
         });
 
-    $totalRecords = Student::count(); // মোট কত রেকর্ড
-    $filteredRecords = $query->count(); // সার্চ করার পর কত রেকর্ড বাকি
+    $totalRecords = Student::count();
+    $filteredRecords = $query->count();
 
     $items = $query->orderBy($orderByColumn, $orderDirection)
                    ->skip($request->start ?? 0)
@@ -152,6 +152,51 @@ class studentController extends Controller
         /*End Student Log*/
 
         return response()->json(['success' => true, 'message' => 'Deleted successfully.']);
+    }
+    public function student_logs()
+    {
+        $logs = Student_log::with('student')->latest()->get();
+        return view('Backend.Pages.Student.log', compact('logs'));
+    }
+    public function student_log_get_all_data(Request $request)
+    {
+        $search = $request->search['value'] ?? null;
+        $columnsForOrderBy = ['id', 'student_id', 'user_id', 'action_type', 'description', 'created_at'];
+        $orderByColumn = $request->order[0]['column'] ?? 0;
+        $orderDirection = $request->order[0]['dir'] ?? 'desc';
+
+        $start = $request->start ?? 0;
+        $length = $request->length ?? 10;
+
+        $query = Student_log::with(['student', 'user'])->when($search, function ($query) use ($search) {
+            $query
+                ->where('created_at', 'like', "%$search%")
+                ->orWhere('description', 'like', "%$search%")
+                ->orWhereHas('student', function ($query) use ($search) {
+                    $query->where('nid_or_passport', 'like', "%$search%");
+                })
+                ->orWhereHas('user', function ($query) use ($search) {
+                    $query->where('name', 'like', "%$search%");
+                });
+        });
+        if ($request->from_date) {
+            $query->whereDate('created_at', '>=', $request->from_date);
+        }
+
+        if ($request->to_date) {
+            $query->whereDate('created_at', '<=', $request->to_date);
+        }
+
+        $totalRecords = $query->count();
+
+        $data = $query->orderBy($columnsForOrderBy[$orderByColumn], $orderDirection)->skip($start)->take($length)->get();
+
+        return response()->json([
+            'draw' => $request->draw,
+            'recordsTotal' => $totalRecords,
+            'recordsFiltered' => $totalRecords,
+            'data' => $data,
+        ]);
     }
     private function validateForm($request)
     {

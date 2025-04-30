@@ -23,7 +23,7 @@
 
 
                 @php
-                    $active_prefix = ['admin.student.index','admin.student.create','admin.student.course.list'];
+                    $active_prefix = ['admin.student.index','admin.student.create','admin.student.course.list','admin.student.log.index'];
                 @endphp
                 <li class="nav-item has-treeview">
                     <a href="#"
@@ -57,6 +57,14 @@
                                 class="nav-link {{ $route == 'admin.student.course.list' ? 'active' : '' }}"><i
                                     class="far fa-circle nav-icon"></i>
                                 <p> Student Course</p>
+                            </a>
+                        </li>
+                           <!-- Student Logs-->
+                        <li class="nav-item">
+                            <a href="{{ route('admin.student.log.index') }}"
+                                class="nav-link {{ $route == 'admin.student.log.index' ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Student Logs</p>
                             </a>
                         </li>
                     </ul>
