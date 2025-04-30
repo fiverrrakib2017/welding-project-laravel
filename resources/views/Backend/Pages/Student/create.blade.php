@@ -48,10 +48,9 @@
                                 </div>
                                 <div class="col-lg-6 mb-3">
                                     <label class="form-label">Course</label>
-                                    <select name="course_id" class="form-control" required>
-                                        <option value="">Select Course</option>
+                                    <select name="courses[]" class="form-control" multiple required>
                                         @foreach ($courses as $course)
-                                            <option value="{{ $course->id }}">{{ $course->name }}</option>
+                                            <option value="{{ $course->name }}">{{ $course->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>

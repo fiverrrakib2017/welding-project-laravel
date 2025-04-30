@@ -20,13 +20,13 @@ return new class extends Migration
             $table->text('permanent_address');
             $table->text('present_address');
             $table->string('mobile_number')->unique();
-            $table->unsignedBigInteger('course_id');
+            $table->text('course');
             $table->string('course_duration');
             $table->string('course_end');
             $table->integer('is_delete')->default('0');
             $table->timestamps();
 
-            $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
+            // $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
         });
     }
 

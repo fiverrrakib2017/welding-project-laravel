@@ -33,12 +33,15 @@ Route::group(['middleware' => 'admin'], function () {
             Route::get('/logs', 'student_logs')->name('admin.student.log.index');
             Route::get('/logs/get_all_data', 'student_log_get_all_data')->name('admin.student.log.get_all_data');
             Route::get('/student_recycle', 'student_recycle')->name('admin.student.recycle.index');
+
+
+            Route::get('/certificate/{student_id}', 'student_certificate')->name('admin.student.certificate');
         });
     });
     Route::get('management/user',function(){
         return view('Backend.Pages.User.index');
     })->name('admin.user.management.index');
-    
+
     Route::get('/optimize', function () {
         Artisan::call('optimize:clear');
         return 'Optimize Clear Completed';

@@ -38,10 +38,15 @@
                                         <td>{{ $student->father_name }}</td>
                                         <td>{{ $student->present_address }}</td>
                                         <td>{{ $student->permanent_address }}</td>
-                                        <td>{{ $student->course->name }}</td>
+                                        <td>
+                                        @foreach (explode(',', $student->course) as $course)
+                                            {{ $course }},
+                                        @endforeach
+                                        </td>
                                         <td>
                                             <a href="{{ route('admin.student.edit', $student->id) }}" class="btn btn-success btn-sm mr-3 edit-btn"><i class="fa fa-edit"></i></a>
                                             <button type="button" data-id="{{ $student->id }}" class="btn btn-danger btn-sm mr-3 delete-btn"><i class="fas fa-trash"></i></button>
+                                            <a href="{{ route('admin.student.certificate', $student->id) }}"  class="btn btn-primary btn-sm mr-3 certificate-btn">Certificate</a>
                                         </td>
                                     </tr>
                                 @endforeach

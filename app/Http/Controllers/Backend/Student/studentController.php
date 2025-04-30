@@ -74,7 +74,9 @@ class studentController extends Controller
             $student->mobile_number = $request->mobile_number;
             $student->permanent_address = $request->permanent_address;
             $student->present_address = $request->present_address;
-            $student->course_id = $request->course_id;
+
+            $student->course =implode(',', $request->courses);
+
             $student->course_duration = $request->course_duration ?? '';
             $student->course_end = $request->course_end ?? '';
             $student->is_delete = '0';
@@ -116,7 +118,7 @@ class studentController extends Controller
         $student->mobile_number = $request->mobile_number;
         $student->permanent_address = $request->permanent_address;
         $student->present_address = $request->present_address;
-        $student->course_id = $request->course_id;
+        $student->course =implode(',', $request->courses);
         $student->course_duration = $request->course_duration ?? '';
         $student->course_end = $request->course_end ?? '';
         $student->update();
@@ -133,6 +135,15 @@ class studentController extends Controller
             'success' => true,
             'message' => 'Student Updated Successfully',
         ]);
+    }
+    public function student_certificate($id){
+
+        $student=Student::with('course')->where('id',$id)->first();
+        if (empty($student)) {
+            return response()->json(['error' => 'Not found.'], 404);
+        }
+
+        return view('Backend.Pages.Student.certificate',compact('student'));
     }
     public function delete(Request $request)
     {

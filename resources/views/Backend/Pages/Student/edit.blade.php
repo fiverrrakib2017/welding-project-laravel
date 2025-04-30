@@ -40,15 +40,21 @@
                                 <label class="form-label">Present Address</label>
                                 <input name="present_address" value="{{ $student->present_address }}" class="form-control" placeholder="Enter Present Address">
                             </div>
+                            @php
+                                $selectedCourses = explode(',', $student->course);
+                            @endphp
                             <div class="col-lg-6 mb-3">
                                 <label class="form-label">Course</label>
-                                <select name="course_id" class="form-control" required>
-                                    <option value="">Select Course</option>
+                                <select name="courses[]" class="form-control" multiple required>
                                     @foreach ($courses as $course)
-                                        <option value="{{ $course->id }}" @if($course->id == $student->course_id) selected @endif >{{ $course->name }}</option>
+                                        <option value="{{ $course->name }}"
+                                            {{ in_array($course->name, $selectedCourses) ? 'selected' : '' }}>
+                                            {{ $course->name }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
+
                             <div class="col-lg-6 mb-3">
                                 <label class="form-label">Duration</label>
                                 <select name="course_duration" class="form-control" required>
