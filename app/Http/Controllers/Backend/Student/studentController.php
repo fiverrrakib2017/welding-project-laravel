@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 class studentController extends Controller
 {
     public function index(){
-        $students=Student::with('course')->latest()->get();
+        $students=Student::with('course')->where('is_delete', 0)->latest()->get();
         return view('Backend.Pages.Student.index',compact('students'));
     }
     public function create(){
@@ -129,6 +129,29 @@ class studentController extends Controller
             'success' => true,
             'message' => 'Student Updated Successfully',
         ]);
+    }
+    public function delete(Request $request)
+    {
+        $object = Student::find($request->id);
+
+        if (empty($object)) {
+            return response()->json(['error' => 'Not found.'], 404);
+        }
+
+        /* Delete it From Database Table */
+        $object->is_delete = 1;
+        $object->save();
+        /*Student Log*/
+        $log = new Student_log();
+        $log->student_id = $object->id;
+        $log->action_type = 'delete';
+        $log->user_id = Auth::guard('admin')->user()->id;
+        $log->description = 'Student deleted: ' . $object->name;
+        $log->ip_address = request()->ip();
+        $log->save();
+        /*End Student Log*/
+
+        return response()->json(['success' => true, 'message' => 'Deleted successfully.']);
     }
     private function validateForm($request)
     {
