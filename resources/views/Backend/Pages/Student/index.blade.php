@@ -40,7 +40,7 @@
                                         <td>{{ $student->permanent_address }}</td>
                                         <td>{{ $student->course->name }}</td>
                                         <td>
-                                            <a href="" class="btn btn-success btn-sm mr-3 edit-btn"><i class="fa fa-eye"></i></a>
+                                            <a href="{{ route('admin.student.edit', $student->id) }}" class="btn btn-success btn-sm mr-3 edit-btn"><i class="fa fa-edit"></i></a>
                                             <button data-toggle="modal" data-target="#deleteModal" class="btn btn-danger btn-sm mr-3"><i class="fas fa-trash"></i></button>
                                         </td>
                                     </tr>

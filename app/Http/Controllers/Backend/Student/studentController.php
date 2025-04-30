@@ -105,6 +105,31 @@ class studentController extends Controller
         $courses=DB::table('courses')->get();
         return view('Backend.Pages.Student.edit',compact('student','courses'));
     }
+    public function update(Request $request,$id){
+        $this->validateForm($request);
+        $student=Student::findOrFail($id);
+        $student->name = $request->name;
+        $student->nid_or_passport = $request->nid_or_passport;
+        $student->father_name = $request->father_name;
+        $student->mobile_number = $request->mobile_number;
+        $student->permanent_address = $request->permanent_address;
+        $student->present_address = $request->present_address;
+        $student->course_id = $request->course_id;
+        $student->update();
+        /*Student Log*/
+        $object=new Student_log();
+        $object->student_id=$student->id;
+        $object->action_type='edit';
+        $object->user_id=Auth::guard('admin')->user()->id;
+        $object->description='Student updated: ' . $student->name;
+        $object->ip_address=request()->ip();
+        $object->save();
+        /*End Student Log*/
+        return response()->json([
+            'success' => true,
+            'message' => 'Student Updated Successfully',
+        ]);
+    }
     private function validateForm($request)
     {
         /*Validate the form data*/
