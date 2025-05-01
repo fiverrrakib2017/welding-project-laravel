@@ -1,8 +1,7 @@
 <?php
 
 use App\Http\Controllers\Backend\Admin\AdminController;
-use App\Http\Controllers\Backend\Router\RouterController;
-use App\Http\Controllers\Backend\Sms\SmsController;
+use App\Http\Controllers\Backend\Signature\signatureController;
 use App\Http\Controllers\Backend\Student\studentController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
@@ -34,6 +33,15 @@ Route::group(['middleware' => 'admin'], function () {
             Route::get('/logs/get_all_data', 'student_log_get_all_data')->name('admin.student.log.get_all_data');
             Route::get('/student_recycle', 'student_recycle')->name('admin.student.recycle.index');
             Route::post('/change_status/{id}', 'change_status')->name('admin.student.change_status');
+
+        });
+    });
+    /* Student Management Route */
+    Route::prefix('signature')->group(function () {
+       Route::controller(App\Http\Controllers\Backend\Signature\SignatureController::class)->group(function () {
+            Route::get('/list', 'index')->name('admin.signature.index');
+            Route::post('/store', 'store')->name('admin.signature.store');
+            Route::post('/delete', 'delete')->name('admin.signature.delete');
 
         });
     });
