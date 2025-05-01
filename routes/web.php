@@ -33,8 +33,7 @@ Route::group(['middleware' => 'admin'], function () {
             Route::get('/logs', 'student_logs')->name('admin.student.log.index');
             Route::get('/logs/get_all_data', 'student_log_get_all_data')->name('admin.student.log.get_all_data');
             Route::get('/student_recycle', 'student_recycle')->name('admin.student.recycle.index');
-
-
+            Route::post('/change_status/{id}', 'change_status')->name('admin.student.change_status');
 
         });
     });

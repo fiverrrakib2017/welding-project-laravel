@@ -46,7 +46,11 @@
                                         <td>
                                             <a href="{{ route('admin.student.edit', $student->id) }}" class="btn btn-success btn-sm mr-3 edit-btn"><i class="fa fa-edit"></i></a>
                                             <button type="button" data-id="{{ $student->id }}" class="btn btn-danger btn-sm mr-3 delete-btn"><i class="fas fa-trash"></i></button>
+                                            @if($student->is_completed == 1)
                                             <a href="{{ route('admin.student.certificate', $student->id) }}"  class="btn btn-primary btn-sm mr-3 certificate-btn">Certificate</a>
+                                            @else
+                                                <button class=" btn btn-info btn-sm mr-3 course_completed_btn" data-id="{{ $student->id }}"> <i class="fas fa-check-circle"></i> </button>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach
@@ -151,6 +155,38 @@
                 },
                 complete: function() {
                     submitBtn.html(originalBtnText);
+                }
+            });
+        });
+
+        /** Handle Completed button click**/
+        $(document).on("click", ".course_completed_btn", function() {
+            let id = $(this).data("id");
+            let btn = $(this);
+            let originalHtml = btn.html();
+            btn.html('<i class="fas fa-spinner fa-spin"></i> Processing...').prop("disabled", true);
+            $.ajax({
+                url: "{{ route('admin.student.change_status', '') }}/" + id,
+                type: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function(response) {
+                    if (response.success) {
+                        btn.html(originalHtml).prop("disabled", false);
+                        toastr.success(response.message);
+                     setTimeout(() => {
+                        location.reload();
+                     }, 1000);
+                    } else if (response.success == false) {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function() {
+                    toastr.error("Something went wrong!");
+                },
+                complete: function() {
+                    btn.prop("disabled", false);
                 }
             });
         });

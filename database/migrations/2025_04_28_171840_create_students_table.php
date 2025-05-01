@@ -20,10 +20,13 @@ return new class extends Migration
             $table->text('permanent_address');
             $table->text('present_address');
             $table->string('mobile_number')->unique();
+            $table->text('reg_no')->nullable();
+
             $table->text('course');
             $table->string('course_duration');
             $table->string('course_end');
             $table->integer('is_delete')->default('0');
+            $table->integer('is_completed')->default('0')->nullable();
             $table->timestamps();
 
             // $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');

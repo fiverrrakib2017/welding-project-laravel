@@ -86,6 +86,10 @@
                                         @endforeach
                                     </select>
                                 </div>
+                                <div class="col-lg-6 mb-3 d-none">
+                                    <label class="form-label">Regestration No.</label>
+                                    <input type="text" name="regestration_no"  id="regestration_no" class="form-control"  placeholder="Enter Regestration No." readonly>
+                                </div>
 
 
                             </div>
@@ -187,6 +191,13 @@
 
 
         });
+
+
+        function _generate_unique_code() {
+            let code = Math.floor(10000000 + Math.random() * 90000000);
+            document.getElementById('regestration_no').value = code;
+        }
+        window.onload = _generate_unique_code;
     </script>
 
 

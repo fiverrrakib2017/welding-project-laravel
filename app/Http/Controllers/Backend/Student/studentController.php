@@ -60,6 +60,16 @@ class studentController extends Controller
         $courses=DB::table('courses')->get();
         return view('Backend.Pages.Student.course',compact('courses'));
     }
+    public function change_status($id)
+    {
+        $object = Student::find($id);
+        $object->is_completed = $object->is_completed == 1 ? 0 : 1;
+        $object->update();
+        return response()->json([
+            'success' => true,
+            'message' => 'Completed successfully!',
+        ]);
+    }
     public function store(Request $request)
     {
         try {
@@ -74,12 +84,15 @@ class studentController extends Controller
             $student->mobile_number = $request->mobile_number;
             $student->permanent_address = $request->permanent_address;
             $student->present_address = $request->present_address;
+            $student->reg_no = $request->regestration_no;
+
 
             $student->course =implode(',', $request->courses);
 
             $student->course_duration = $request->course_duration ?? '';
             $student->course_end = $request->course_end ?? '';
             $student->is_delete = '0';
+            $student->is_completed ='0';
             $student->save();
 
             /*Student Log*/
