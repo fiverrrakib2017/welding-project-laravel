@@ -42,6 +42,7 @@ Route::group(['middleware' => 'admin'], function () {
             Route::get('/list', 'index')->name('admin.signature.index');
             Route::post('/store', 'store')->name('admin.signature.store');
             Route::post('/delete', 'delete')->name('admin.signature.delete');
+            Route::post('/change_status/{id}', 'change_status')->name('admin.signature.change_status');
 
         });
     });

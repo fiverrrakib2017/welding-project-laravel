@@ -1,6 +1,53 @@
 @extends('Backend.Layout.App')
 @section('title', 'Student Course List | Admin Panel')
+@section('style')
+<style>
+  /* Toggle switch design */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 24px;
+}
 
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 24px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px; width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #28a745;
+}
+
+input:checked + .slider:before {
+  transform: translateX(22px);
+}
+
+
+</style>
+
+@endsection
 @section('content')
     <div class="row">
         <div class="col-md-12 ">
@@ -27,11 +74,23 @@
                             @foreach ($data as $item)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td> <img src="{{ asset('Backend/uploads/photos/' . $item->name) }}" class="card-img-top" alt="Singature Image" height="100" width="100"></td>
+                                    <td> <img src="{{ asset('Backend/uploads/photos/' . $item->name) }}" class="card-img-top" alt="Singature Image" height="50" width="50"></td>
                                     <td>{{ $item->user->name }}</td>
                                     <td>
                                         <button type="button" data-id="{{ $item->id }}" class="btn btn-danger btn-sm mr-3 delete-btn"><i class="fas fa-trash"></i></button>
-                                        <button class=" btn btn-info btn-sm mr-3 active_btn" data-id="{{ $item->id }}"> <i class="fas fa-check-circle"></i> </button>
+                                        @if ($item->status == 1)
+                                        <label class="switch">
+                                            <input type="checkbox" class="active_toggle" data-id="{{ $item->id }}" checked>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    @else
+                                        <label class="switch">
+                                            <input type="checkbox" class="active_toggle" data-id="{{ $item->id }}">
+                                            <span class="slider round"></span>
+                                        </label>
+                                    @endif
+
+
                                     </td>
                                 </tr>
                             @endforeach
@@ -54,7 +113,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                <form action="{{ route('admin.signature.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('admin.signature.store') }}" method="POST" enctype="multipart/form-data" id="addStudentForm">
                     @csrf
                     <div class="form-group">
                         <label>Select Signature</label>
@@ -153,36 +212,110 @@
             });
         });
 
+        $('#addStudentForm').submit(function(e) {
+                e.preventDefault();
+
+                /* Get the submit button */
+                var submitBtn = $(this).find('button[type="submit"]');
+                var originalBtnText = submitBtn.html();
+
+                submitBtn.html(
+                    '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span><span class="visually-hidden">Loading...</span>'
+                    );
+                submitBtn.prop('disabled', true);
+
+                var form = $(this);
+                var url = form.attr('action');
+                /*Change to FormData to handle file uploads*/
+                var formData = new FormData(this);
+
+                /* Use Ajax to send the request */
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function() {
+                        /* Disable the Form input */
+                        form.find(':input').prop('disabled', true);
+                        submitBtn.prop('disabled', true);
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            toastr.success(response.message);
+                            submitBtn.html(originalBtnText);
+                            submitBtn.prop('disabled', false);
+                            setTimeout(() => {
+                                location.reload();
+                            }, 500);
+                        } else {
+                            toastr.error(response.message);
+                            submitBtn.html(originalBtnText);
+                            submitBtn.prop('disabled', false);
+                        }
+                    },
+
+                    error: function(xhr, status, error) {
+                        submitBtn.html(originalBtnText);
+                        submitBtn.prop('disabled', false);
+
+                        let errorMessage = 'An error occurred while processing the request.';
+
+                        if (xhr.status === 422) {
+                            var errors = xhr.responseJSON.errors;
+                            for (var error in errors) {
+                                toastr.error(errors[error][0]);
+                            }
+                        } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMessage = xhr.responseJSON.message;
+                            toastr.error(errorMessage);
+                        } else if (xhr.responseText) {
+                            toastr.error(xhr.responseText);
+                        } else {
+                            toastr.error(errorMessage);
+                        }
+                    },
+                    complete: function() {
+                        /* Reset button text and enable the button */
+                        submitBtn.html(originalBtnText);
+                        submitBtn.prop('disabled', false);
+                    }
+                });
+            });
+
         /** Handle Change button click**/
-        $(document).on("click", ".active_btn", function() {
+        $(document).on("change", ".active_toggle", function () {
             let id = $(this).data("id");
             let btn = $(this);
-            let originalHtml = btn.html();
-            btn.html('<i class="fas fa-spinner fa-spin"></i> Processing...').prop("disabled", true);
+            btn.prop("disabled", true);
+
             $.ajax({
                 url: "{{ route('admin.signature.change_status', '') }}/" + id,
                 type: "POST",
                 data: {
                     _token: "{{ csrf_token() }}"
                 },
-                success: function(response) {
+                success: function (response) {
                     if (response.success) {
-                        btn.html(originalHtml).prop("disabled", false);
                         toastr.success(response.message);
-                     setTimeout(() => {
-                        location.reload();
-                     }, 1000);
-                    } else if (response.success == false) {
+
+                        $(".active_toggle").not(btn).prop("checked", false);
+                    } else {
                         toastr.error(response.message);
                     }
                 },
-                error: function() {
+                error: function () {
                     toastr.error("Something went wrong!");
                 },
-                complete: function() {
+                complete: function () {
                     btn.prop("disabled", false);
                 }
             });
         });
+
   </script>
 @endsection

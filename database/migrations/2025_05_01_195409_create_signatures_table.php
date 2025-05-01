@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->text('name')->nullable();
+            $table->enum('status', ['1', '0'])->default('1')->comment('1=active,0=inactive');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('admins')->onDelete('cascade');
