@@ -37,7 +37,7 @@
                                         <td>{{ $student->father_name }}</td>
                                         <td>{{ $student->present_address }}</td>
                                         <td>{{ $student->permanent_address }}</td>
-                                        <td>{{ $student->course->name }}</td>
+                                        <td>{{ $student->course }}</td>
                                         <td>
                                             <button type="button" data-id="{{ $student->id }}" class="btn btn-danger btn-sm mr-3 delete-btn">Approve Delete</button>
                                         </td>

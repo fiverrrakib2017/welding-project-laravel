@@ -43,7 +43,7 @@
                         <p>Student Course</p>
                     </a>
                 </li>
-
+                @if(Auth::guard('admin')->user()->user_type == '1')
                 <!-- Student Logs -->
                 <li class="nav-item">
                     <a href="{{ route('admin.student.log.index') }}"
@@ -52,7 +52,8 @@
                         <p>Student Logs</p>
                     </a>
                 </li>
-
+                @endif
+                @if(Auth::guard('admin')->user()->user_type == '1')
                 <!-- Recycle Bin -->
                 <li class="nav-item">
                     <a href="{{ route('admin.student.recycle.index') }}"
@@ -61,15 +62,19 @@
                         <p>Recycle Bin</p>
                     </a>
                 </li>
+                @endif
+                @if(Auth::guard('admin')->user()->user_type == '1')
+                    <!-- User Management -->
+                    <li class="nav-item">
+                        <a href="{{ route('admin.user.management.index') }}"
+                            class="nav-link {{ $route == 'admin.user.management.index' ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-users-cog"></i>
+                            <p>User Management</p>
+                        </a>
+                    </li>
+                @endif
 
-                <!-- User Management -->
-                <li class="nav-item">
-                    <a href="{{ route('admin.user.management.index') }}"
-                        class="nav-link {{ $route == 'admin.user.management.index' ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-users-cog"></i>
-                        <p>User Management</p>
-                    </a>
-                </li>
+
                 <!-- Signature -->
                 <li class="nav-item">
                     <a href="{{ route('admin.signature.index') }}"

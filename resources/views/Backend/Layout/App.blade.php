@@ -4,6 +4,7 @@
     $prefix= Request::route()->getPrefix();
     $route=Route::current()->getname();
     $currentRoute = Route::currentRouteName();
+    $user = Auth::guard('admin')->user();
 @endphp
 
 
