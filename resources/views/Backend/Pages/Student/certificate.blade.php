@@ -206,7 +206,7 @@
 
     <div class="certificate">
         <div class="reg-no">
-            <strong>REGISTRATION NO:</strong><br> 123456232323
+            <strong>REGISTRATION NO:</strong><br>  {{ $student->reg_no ?? 'N/A' }}
         </div>
         <div class="certificate-inner">
             <div class="logo">
@@ -236,8 +236,17 @@
                 <div class="qr" id="qr"></div>
 
                 <div class="box">
+                    @php
+                        if(!empty($student->user_id)){
+                            $signature = \App\Models\Signature::where('user_id',$student->user_id)->where('status','1')->first();
+                        }
+                    @endphp
+                @if(!empty($signature))
+                    <img src="{{ asset('Backend/uploads/photos/'.$signature->name) }}" alt="Signature" class="signature-img">
+                @else
                     <img src="https://th.bing.com/th/id/R.1586d36732fcb856523df8789b146070?rik=%2bEbvkKcvSuyOiw&riu=http%3a%2f%2fclipart-library.com%2fimages%2fBTarnpzpc.png&ehk=PxwN8kkbSi%2fIx4%2buzMLpDi%2bZX5YH59a1GTuIyrZ8ZoE%3d&risl=&pid=ImgRaw&r=0"
-                        alt="Signature" class="signature-img">
+                alt="Signature" class="signature-img">
+                @endif
                     <div class="label">SIGNATURE</div>
                 </div>
             </div>

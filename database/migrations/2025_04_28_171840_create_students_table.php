@@ -27,11 +27,15 @@ return new class extends Migration
             $table->string('course_end');
             $table->integer('is_delete')->default('0');
             $table->integer('is_completed')->default('0')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
 
             // $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
+            //$table->foreign('user_id')->references('id')->on('admins')->onDelete('cascade');
         });
     }
+
+
 
     /**
      * Reverse the migrations.

@@ -95,6 +95,7 @@ class studentController extends Controller
     {
         $object = Student::find($id);
         $object->is_completed = $object->is_completed == 1 ? 0 : 1;
+        $object->user_id = Auth::guard('admin')->user()->id;
         $object->update();
         return response()->json([
             'success' => true,
@@ -123,6 +124,7 @@ class studentController extends Controller
             $student->course_end = $request->course_end ?? '';
             $student->is_delete = '0';
             $student->is_completed = '0';
+            $student->user_id = '0';
             $student->save();
 
             /*Student Log*/

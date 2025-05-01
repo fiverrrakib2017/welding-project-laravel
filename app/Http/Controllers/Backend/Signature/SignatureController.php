@@ -12,7 +12,7 @@ class SignatureController extends Controller
 {
     public function index()
     {
-        $data = Signature::latest()->get();
+        $data = Signature::latest()->where('user_id', Auth::guard('admin')->user()->id)->get();
         return view('Backend.Pages.Signature.index', compact('data'));
     }
     public function store(Request $request)
@@ -27,7 +27,7 @@ class SignatureController extends Controller
        $object=new Signature();
        $object->name=$imageName;
        $object->user_id = Auth::guard('admin')->user()->id;
-       $object->status = '0'; 
+       $object->status = '0';
        $object->save();
 
         return response()->json([
