@@ -47,5 +47,12 @@ Route::group(['middleware' => 'admin'], function () {
     });
 
 });
+
+/*When student QR code screen open and || show student certificate*/
 Route::get('/student/certificate/{student_id}', [studentController::class, 'student_certificate'])->name('admin.student.certificate');
+
+Route::get('/certificate', function () {
+     return view('Backend.Pages.Student.get_certificate');
+});
+Route::post('/student/get/certificate', [studentController::class, 'get_certificate'])->name('website.student.certificate');
 
