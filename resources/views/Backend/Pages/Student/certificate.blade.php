@@ -1,259 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
 
-<html>
-    <head>
-        <title>Student Certificate</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <meta charset="UTF-8">
-        <style>
-            body {
-                margin: 0;
-                padding: 0;
-                font-family: 'kalpurush', sans-serif;
-                background: #fff;
-            }
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Certificate</title>
+    <!-- Google Font: Montserrat -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
 
-            table {
-                width: 900px;
-                height: 842px; /* roughly A4 height */
-                border-collapse: collapse;
-                margin: auto;
-            }
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Montserrat', sans-serif;
 
-            /* td {
-                vertical-align: middle;
-                text-align: center;
-                padding: 5px;
-            } */
+            /* background-color: #efefef; */
 
-            /* Prevent page break inside table */
-            @media print {
-                table, tr, td {
-                    page-break-inside: avoid !important;
-                }
-
-                * {
-                    -webkit-print-color-adjust: exact;
-                    print-color-adjust: exact;
-                }
-
-                /* @page {
-                    size: A4 portrait;
-                    margin: 0;
-                } */
-            }
-            </style>
-
-    </head>
-<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" style="height: 100vh; width: 100%;">
-<!-- Save for Web Slices (V1-1.psd) -->
-<table id="Table_01" width="3580" height="2552" border="0" cellpadding="0" cellspacing="0">
-	<tr>
-		<td colspan="14">
-			<img src="{{ asset('Backend/images/V2_01.png') }}" width="3579" height="1234" alt=""></td>
-		<td>
-			<img src="{{ asset('Backend/images/spacer.gif') }}" width="1" height="1234" alt=""></td>
-	</tr>
-
-	<tr>
-		<td rowspan="16">
-			<img src="{{ asset('Backend/images/V2_02.png') }}" width="204" height="1317" alt=""></td>
-		<td colspan="12" style="text-align: center; font-family: 'Montserrat', sans-serif; font-size: 100px; font-weight: bolder; color: black; background-image: url('{{ asset('Backend/images/certificate_background.png') }}'); background-size: cover; background-repeat: repeat;">
-            <p> {{ strtoupper($student->name) }} </p>
-
-        </td>
-		<td rowspan="16">
-			<img src="{{ asset('Backend/images/V2_04.png') }}" width="205" height="1317" alt=""></td>
-		<td>
-			<img src="{{ asset('Backend/images/spacer.gif') }}" width="1" height="124" alt=""></td>
-	</tr>
-	<tr>
-		<td colspan="12">
-			<img src="{{ asset('Backend/images/V2_05.png') }}" width="3170" height="9" alt=""></td>
-		<td>
-			<img src="{{ asset('Backend/images/spacer.gif') }}" width="1" height="9" alt=""></td>
-	</tr>
-	<tr>
-		<td colspan="12" style="text-align: center; font-family: 'Montserrat', sans-serif; font-size: 80px; font-weight: bold; color: #b58803; background-image: url('{{ asset('Backend/images/certificate_background.png') }}'); background-size: cover; background-repeat: no-repeat;   text-transform: uppercase;">
-           <p>S/O: {{ strtoupper($student->father_name) }} </p>
-
-        </td>
-		<td>
-			<img src="{{ asset('Backend/images/spacer.gif') }}" width="1" height="113" alt=""></td>
-	</tr>
-	<tr>
-		<td colspan="12">
-			<img src="{{ asset('Backend/images/V2_07.png') }}" width="3170" height="7" alt=""></td>
-		<td>
-			<img src="{{ asset('Backend/images/spacer.gif') }}" width="1" height="7" alt=""></td>
-	</tr>
-	<tr>
-		<td colspan="12"  style="text-align: center; font-family: 'Montserrat', sans-serif; font-size: 70px; font-weight: bold; color: #b58803; background-image: url('{{ asset('Backend/images/certificate_background.png') }}'); background-size: cover; background-repeat: no-repeat;">
-
-            <p>PASSPORT: {{ strtoupper($student->nid_or_passport  ?? 'N/A') }} </p>
-        </td>
-		<td>
-			<img src="{{ asset('Backend/images/spacer.gif') }}" width="1" height="101" alt=""></td>
-	</tr>
-	<tr>
-		<td colspan="12">
-			<img src="{{ asset('Backend/images/V2_09.png') }}" width="3170" height="38" alt=""></td>
-		<td>
-			<img src="{{ asset('Backend/images/spacer.gif') }}" width="1" height="38" alt=""></td>
-	</tr>
-	<tr>
-		<td colspan="7">
-			<img src="{{ asset('Backend/images/V2_10.png') }}" width="1768" height="109" alt="">
-        </td>
-
-		<td colspan="2" rowspan="2" style="text-align: center; font-family: 'Montserrat', sans-serif; font-size: 84px; font-weight: bold; color: #181201; background-image: url('{{ asset('Backend/images/certificate_background.png') }}'); background-size: cover; background-repeat: no-repeat;">
-            <p>{{ strtoupper($student->course_duration  ?? 'N/A') }} </p>
-        </td>
-
-		<td colspan="3" rowspan="2">
-			<img src="{{ asset('Backend/images/V2_12.png') }}" width="1237" height="117" alt=""></td>
-		<td>
-			<img src="{{ asset('Backend/images/spacer.gif') }}" width="1" height="109" alt=""></td>
-	</tr>
-	<tr>
-		<td rowspan="9">
-			<img src="{{ asset('Backend/images/V2_13.png') }}" width="127" height="816" alt=""></td>
-		<td colspan="3" rowspan="2" style="text-align: right; font-family: 'Montserrat', sans-serif; font-size: 84px; font-weight: 800; color: #181201; background-image: url('{{ asset('Backend/images/certificate_background.png') }}'); background-size: cover; background-repeat: no-repeat;">
-            <p>{{ $student->course_end ? strtoupper(date('d M Y', strtotime($student->course_end))) : 'N/A' }}</p>
-
-        </td>
-		<td colspan="3">
-			<img src="{{ asset('Backend/images/V2_15.png') }}" width="800" height="8" alt=""></td>
-		<td>
-			<img src="{{ asset('Backend/images/spacer.gif') }}" width="1" height="8" alt=""></td>
-	</tr>
-	<tr>
-		<td rowspan="8">
-			<img src="{{ asset('Backend/images/V2_16.png') }}" width="40" height="808" alt=""></td>
-		<td colspan="7" style="text-align: left; font-family: 'Montserrat', sans-serif; font-size: 80px; font-weight: 800; color: #181201; background-image: url('{{ asset('Backend/images/certificate_background.png') }}'); background-size: cover; background-repeat: no-repeat;">
-
-            @foreach (explode(',', $student->course) as $course)
-            {{ strtoupper($course) }},
-        @endforeach
-        {{-- {{ strtoupper($student->course) }}, --}}
-        </td>
-		<td>
-			<img src="{{ asset('Backend/images/spacer.gif') }}" width="1" height="98" alt=""></td>
-	</tr>
-	<tr>
-		<td colspan="3" rowspan="3">
-			<img src="{{ asset('Backend/images/V2_18.png') }}" width="841" height="265" alt=""></td>
-		<td colspan="7">
-			<img src="{{ asset('Backend/images/V2_19.png') }}" width="2162" height="153" alt=""></td>
-		<td>
-			<img src="{{ asset('Backend/images/spacer.gif') }}" width="1" height="153" alt=""></td>
-	</tr>
-	<tr>
-		<td rowspan="6">
-			<img src="{{ asset('Backend/images/V2_20.png') }}" width="381" height="557" alt=""></td>
-		<td colspan="2" rowspan="5">
-			{{-- <img src="{{ asset('Backend/images/V2_21.png') }}" width="393" height="391" alt=""> --}}
-            <div id="qrCodeContainer" style="width: 200px; height: 200px; margin: auto;"></div>
-
-        </td>
-		<td colspan="4">
-			<img src="{{ asset('Backend/images/V2_22.png') }}" width="1388" height="6" alt=""></td>
-		<td>
-			<img src="{{ asset('Backend/images/spacer.gif') }}" width="1" height="6" alt=""></td>
-	</tr>
-	<tr>
-		<td colspan="2" rowspan="5">
-			<img src="{{ asset('Backend/images/V2_23.png') }}" width="517" height="551" alt=""></td>
-		<td rowspan="3">
-			<img src="{{ asset('Backend/images/V2_24.png') }}" width="642" height="274" alt=""></td>
-		<td rowspan="5">
-			<img src="{{ asset('Backend/images/V2_25.png') }}" width="229" height="551" alt=""></td>
-		<td>
-			<img src="{{ asset('Backend/images/spacer.gif') }}" width="1" height="106" alt=""></td>
-	</tr>
-	<tr>
-		<td rowspan="4">
-			<img src="{{ asset('Backend/images/V2_26.png') }}" width="102" height="445" alt=""></td>
-		<td>
-			<img src="{{ asset('Backend/images/V2_27.png') }}" width="642" height="151" alt=""></td>
-		<td rowspan="4">
-			<img src="{{ asset('Backend/images/V2_28.png') }}" width="97" height="445" alt=""></td>
-		<td>
-			<img src="{{ asset('Backend/images/spacer.gif') }}" width="1" height="151" alt=""></td>
-	</tr>
-	<tr>
-		<td rowspan="3">
-			<img src="{{ asset('Backend/images/V2_29.png') }}" width="642" height="294" alt=""></td>
-		<td>
-			<img src="{{ asset('Backend/images/spacer.gif') }}" width="1" height="17" alt=""></td>
-	</tr>
-	<tr>
-		<td rowspan="2">
-			<img src="{{ asset('Backend/images/V2_30.png') }}" width="642" height="277" alt=""></td>
-		<td>
-			<img src="{{ asset('Backend/images/spacer.gif') }}" width="1" height="111" alt=""></td>
-	</tr>
-	<tr>
-		<td colspan="2">
-			<img src="{{ asset('Backend/images/V2_31.png') }}" width="393" height="166" alt=""></td>
-		<td>
-			<img src="{{ asset('Backend/images/spacer.gif') }}" width="1" height="166" alt=""></td>
-	</tr>
-	<tr>
-		<td>
-			<img src="{{ asset('Backend/images/spacer.gif') }}" width="204" height="1" alt=""></td>
-		<td>
-			<img src="{{ asset('Backend/images/spacer.gif') }}" width="127" height="1" alt=""></td>
-		<td>
-			<img src="{{ asset('Backend/images/spacer.gif') }}" width="102" height="1" alt=""></td>
-		<td>
-			<img src="{{ asset('Backend/images/spacer.gif') }}"  width="642" height="1" alt=""></td>
-		<td>
-			<img src="{{ asset('Backend/images/spacer.gif') }}"  width="97" height="1" alt=""></td>
-		<td>
-			<img src="{{ asset('Backend/images/spacer.gif') }}"  width="40" height="1" alt=""></td>
-		<td>
-			<img src="{{ asset('Backend/images/spacer.gif') }}"  width="381" height="1" alt=""></td>
-		<td>
-			<img src="{{ asset('Backend/images/spacer.gif') }}"  width="379" height="1" alt=""></td>
-		<td>
-			<img src="{{ asset('Backend/images/spacer.gif') }}"  width="14" height="1" alt=""></td>
-		<td>
-            <img src="{{ asset('Backend/images/spacer.gif') }}"  width="151" height="1" alt=""></td>
-		<td>
-			<img src="{{ asset('Backend/images/spacer.gif') }}"  width="366" height="1" alt=""></td>
-		<td>
-			<img src="{{ asset('Backend/images/spacer.gif') }}"  width="642" height="1" alt=""></td>
-		<td>
-			<img src="{{ asset('Backend/images/spacer.gif') }}"  width="229" height="1" alt=""></td>
-		<td>
-			<img src="{{ asset('Backend/images/spacer.gif') }}"  width="205" height="1" alt=""></td>
-		<td></td>
-	</tr>
-</table>
-<!-- End Save for Web Slices -->
-<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-<script type="text/javascript">
-    window.print();
-
-    const student_id = {{ $student->id }};
-    
-    var qrData = "{{ route('admin.student.certificate', $student->id) }}";
-
-    var qrCodeContainer = document.getElementById('qrCodeContainer');
-    QRCode.toDataURL(qrData, {
-        width: 200
-    }, function(err, url) {
-        if (err) {
-            console.error(err);
-            return;
         }
 
-        qrCodeContainer.innerHTML = `<img src="${url}" alt="QR Code" class="img-fluid">`;
-    });
-</script>
+        .certificate {
+            max-width: 900px;
+            margin: auto;
+            border: 10px solid #c19836;
+            padding: 0;
+            background-color: #efefef;
+            position: relative;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
 
+
+        .certificate-inner {
+            background-image: linear-gradient(135deg, #ffffff, #fdf7e9);
+            padding: 30px;
+        }
+
+        /* .certificate h1, */
+        .certificate h2,
+        .certificate h3,
+        .certificate p {
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .logo img {
+            height: 90px;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #a36e00;
+        }
+
+        .address {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .certify {
+            font-family: 'Great Vibes', cursive;
+            font-size: 38px;
+            color: #334a7d;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1d1c61;
+        }
+
+        .passport {
+            font-size: 16px;
+            font-weight: bold;
+            color: #b08500;
+        }
+
+        .details {
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .italic {
+            font-style: italic;
+            color: #555;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 40px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .footer .box {
+            width: 30%;
+            text-align: center;
+        }
+
+        .footer .label {
+            border-top: 2px solid #c19836;
+            padding-top: 5px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .qr {
+            width: 80px;
+            height: 80px;
+            background-color: #ccc;
+            display: inline-block;
+        }
+
+        /* Signature Image */
+        .signature-img {
+            height: 40px;
+            width: 100px;
+            object-fit: contain;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .certificate-inner {
+                padding: 15px;
+            }
+
+            .title {
+                font-size: 20px;
+            }
+
+            .certify {
+                font-size: 28px;
+            }
+
+            .name {
+                font-size: 20px;
+            }
+
+            .passport,
+            .details,
+            .italic {
+                font-size: 14px;
+            }
+
+            .footer {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .footer .box {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+
+            .qr {
+                margin: 20px 0;
+            }
+
+            .signature-img {
+                width: 80px;
+                height: auto;
+            }
+
+            .reg-no {
+                position: static;
+                display: block;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+        }
+
+        @media print {
+            .no-print {
+                display: none;
+            }
+        }
+
+
+        .reg-no {
+            position: absolute;
+            /* top: 15px;
+      left: 30px; */
+            font-size: 16px;
+            font-weight: bold;
+            color: #dd1212;
+            padding: 6px 10px;
+            border-radius: 5px;
+            font-family: 'Montserrat', sans-serif;
+            /* z-index: 10; */
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="certificate">
+        <div class="reg-no">
+            <strong>REGISTRATION NO:</strong><br> 123456232323
+        </div>
+        <div class="certificate-inner">
+            <div class="logo">
+                <img src="{{ asset('Backend/images/logo.png') }}" alt="Logo" />
+            </div>
+            <h1 class="title" style="font-size: 32px; font-weight: bolder; text-align: center">ANIK WELDING TECHNICAL
+                TRAINING CENTER</h1>
+            <h3 class="address">398 SHADINATA SARANI, NORTH BADDA, DHAKA-1212, BANGLADESH</h3>
+            <p class="certify">This is to certify that</p>
+            <h2 class="name"> {{ strtoupper($student->name) }}</h2>
+            <p class="passport">S/O:{{ strtoupper($student->father_name) }}<br>PASSPORT:
+                {{ strtoupper($student->nid_or_passport ?? 'N/A') }}</p>
+            <p class="details">HAS SUCCESSFULLY COMPLETED {{ strtoupper($student->course_duration ?? 'N/A') }} MONTHS
+                COURSE ON<br>
+                {{ $student->course_end ? strtoupper(date('d M Y', strtotime($student->course_end))) : 'N/A' }} -  @foreach (explode(',', $student->course) as $course)
+                        {{ strtoupper($course) }}@if (!$loop->last), @endif
+                        @endforeach
+                </p>
+            <p class="italic">at our training center</p>
+
+            <div class="footer">
+                <div class="box">
+                    <div id="current-date">25 Jun 2025</div>
+                    <div class="label">DATE</div>
+                </div>
+
+                <div class="qr" id="qr"></div>
+
+                <div class="box">
+                    <img src="https://th.bing.com/th/id/R.1586d36732fcb856523df8789b146070?rik=%2bEbvkKcvSuyOiw&riu=http%3a%2f%2fclipart-library.com%2fimages%2fBTarnpzpc.png&ehk=PxwN8kkbSi%2fIx4%2buzMLpDi%2bZX5YH59a1GTuIyrZ8ZoE%3d&risl=&pid=ImgRaw&r=0"
+                        alt="Signature" class="signature-img">
+                    <div class="label">SIGNATURE</div>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="extra no-print">
+            <button onclick="window.print()">Print</button>
+            <button onclick="downloadPDF()">Save</button>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+    <script type="text/javascript">
+        var qrData = @json(route('admin.student.certificate', $student->id));
+        var qrCodeContainer = document.getElementById('qr');
+        QRCode.toDataURL(qrData, {
+            width: 200
+        }, function(err, url) {
+            if (err) {
+                console.error(err);
+                return;
+            }
+
+            qrCodeContainer.innerHTML = `<img src="${url}" style="width:100%;" alt="QR Code" class="img-fluid">`;
+        });
+
+
+        function downloadPDF() {
+            const buttons = document.querySelectorAll('.no-print');
+            const element = document.querySelector(".certificate");
+
+            buttons.forEach(btn => btn.style.display = 'none');
+
+            const opt = {
+                margin: 0.5,
+                filename: 'certificate.pdf',
+                image: {
+                    type: 'jpeg',
+                    quality: 0.98
+                },
+                html2canvas: {
+                    scale: 2
+                },
+                jsPDF: {
+                    unit: 'in',
+                    format: 'letter',
+                    orientation: 'landscape'
+                }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                buttons.forEach(btn => btn.style.display = '');
+            });
+        }
+
+        const today = new Date();
+        const formattedDate = today.toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+        });
+        document.getElementById('current-date').innerText = formattedDate;
+    </script>
 </body>
+
 </html>

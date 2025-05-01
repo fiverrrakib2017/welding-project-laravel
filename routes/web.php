@@ -35,7 +35,7 @@ Route::group(['middleware' => 'admin'], function () {
             Route::get('/student_recycle', 'student_recycle')->name('admin.student.recycle.index');
 
 
-            Route::get('/certificate/{student_id}', 'student_certificate')->name('admin.student.certificate');
+
         });
     });
     Route::get('management/user',function(){
@@ -48,3 +48,5 @@ Route::group(['middleware' => 'admin'], function () {
     });
 
 });
+Route::get('/student/certificate/{student_id}', [studentController::class, 'student_certificate'])->name('admin.student.certificate');
+
