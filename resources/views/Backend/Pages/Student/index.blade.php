@@ -51,6 +51,7 @@
                                             @else
                                                 <button class=" btn btn-info btn-sm mr-3 course_completed_btn" data-id="{{ $student->id }}"> <i class="fas fa-check-circle"></i> </button>
                                             @endif
+                                            <a href="{{ route('admin.student.view', $student->id) }}" class="btn btn-success text-white btn-sm mr-3 " data-id="{{ $student->id }}"> <i class="fas fa-eye"></i> </a>
                                         </td>
                                     </tr>
                                 @endforeach

@@ -23,7 +23,7 @@ Route::group(['middleware' => 'admin'], function () {
             Route::get('/create', 'create')->name('admin.student.create');
             Route::get('/edit/{student_id}', 'edit')->name('admin.student.edit');
             Route::post('/update/{student_id}', 'update')->name('admin.student.update');
-
+            Route::get('/profile/{student_id}', 'view')->name('admin.student.view');
             /*Student Delete*/
             Route::post('/delete', 'delete')->name('admin.student.delete');
             Route::post('/recycle_delete', 'recycle_delete')->name('admin.student.recycle.delete');

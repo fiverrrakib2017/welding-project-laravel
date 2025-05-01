@@ -122,6 +122,10 @@ class studentController extends Controller
         $courses=DB::table('courses')->get();
         return view('Backend.Pages.Student.edit',compact('student','courses'));
     }
+    public function view($id){
+        $student=DB::table('students')->where('id',$id)->first();
+        return view('Backend.Pages.Student.Profile',compact('student'));
+    }
     public function update(Request $request,$id){
         $this->validateForm($request);
         $student=Student::findOrFail($id);
