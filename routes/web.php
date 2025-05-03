@@ -60,10 +60,6 @@ Route::group(['middleware' => 'admin'], function () {
         });
     });
 
-    Route::get('/optimize', function () {
-        Artisan::call('optimize:clear');
-        return 'Optimize Clear Completed';
-    });
 
 });
 
@@ -75,3 +71,18 @@ Route::get('/certificate', function () {
 });
 Route::post('/student/get/certificate', [studentController::class, 'get_certificate'])->name('website.student.certificate');
 
+
+Route::get('/optimize', function () {
+    Artisan::call('optimize:clear');
+    Artisan::call('cache:clear');
+    Artisan::call('config:clear');
+    Artisan::call('route:clear');
+    Artisan::call('view:clear');
+    return 'Optimize Clear Completed';
+});
+
+Route::get('/migrate-fresh-seed', function () {
+    Artisan::call('migrate:fresh --seed');
+    //Artisan::call('migrate');
+    return 'Migration and Seeding Completed';
+});
