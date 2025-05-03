@@ -47,9 +47,16 @@ Route::group(['middleware' => 'admin'], function () {
 
         });
     });
-    Route::get('management/user',function(){
-        return view('Backend.Pages.User.index');
-    })->name('admin.user.management.index');
+    /* User Management Route */
+    Route::prefix('user')->group(function () {
+       Route::controller(App\Http\Controllers\Backend\User\userController::class)->group(function () {
+            Route::get('/management/list', 'index')->name('admin.user.management.index');
+            Route::get('/create', 'create')->name('admin.user.create');
+            Route::post('/store', 'store')->name('admin.user.store');
+            Route::post('/delete', 'delete')->name('admin.user.delete');
+
+        });
+    });
 
     Route::get('/optimize', function () {
         Artisan::call('optimize:clear');

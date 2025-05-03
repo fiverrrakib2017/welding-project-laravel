@@ -5,7 +5,9 @@
 <div class="row">
     <div class="col-md-12 ">
         <div class="card">
-        <div class="card-header"><h4>User List</h4></div>
+        <div class="card-header">
+            <a href="{{ route('admin.user.create') }}" class="btn btn-success m-1">Add User</a>
+        </div>
             <div class="card-body">
                 <div class="table-responsive" id="tableStyle">
                     <table id="datatable1"  class="table table-bordered dt-responsive nowrap"
