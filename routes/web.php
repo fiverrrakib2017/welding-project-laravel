@@ -53,6 +53,8 @@ Route::group(['middleware' => 'admin'], function () {
             Route::get('/management/list', 'index')->name('admin.user.management.index');
             Route::get('/create', 'create')->name('admin.user.create');
             Route::post('/store', 'store')->name('admin.user.store');
+            Route::get('/edit/{user_id}', 'edit')->name('admin.user.edit');
+            Route::post('/update/{user_id}', 'update')->name('admin.user.update');
             Route::post('/delete', 'delete')->name('admin.user.delete');
 
         });
