@@ -173,10 +173,17 @@
             }
 
             .reg-no {
-                position: static;
-                display: block;
-                text-align: center;
-                margin-bottom: 10px;
+                position: absolute;
+                font-size: 16px;
+                font-weight: bold;
+                color: #dd1212;
+                padding: 6px 10px;
+                /* border-radius: 5px; */
+                font-family: 'Montserrat', sans-serif;
+                /* z-index: 10; */
+            }
+            .logo img {
+                margin-top: 15px;
             }
         }
 
@@ -189,13 +196,11 @@
 
         .reg-no {
             position: absolute;
-            /* top: 15px;
-      left: 30px; */
             font-size: 16px;
             font-weight: bold;
             color: #dd1212;
             padding: 6px 10px;
-            border-radius: 5px;
+            /* border-radius: 5px; */
             font-family: 'Montserrat', sans-serif;
             /* z-index: 10; */
         }

@@ -179,6 +179,9 @@
                 text-align: center;
                 margin-bottom: 10px;
             }
+            .logo img {
+                margin-top: 15px;
+            }
         }
 
         @media print {
