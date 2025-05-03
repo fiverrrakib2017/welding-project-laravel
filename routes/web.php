@@ -26,6 +26,7 @@ Route::group(['middleware' => 'admin'], function () {
             /*Student Delete*/
             Route::post('/delete', 'delete')->name('admin.student.delete');
             Route::post('/recycle_delete', 'recycle_delete')->name('admin.student.recycle.delete');
+            Route::post('/student_restore', 'student_restore')->name('admin.student.restore.delete');
 
             Route::post('/store', 'store')->name('admin.student.store');
             Route::get('/course_list', 'course_list')->name('admin.student.course.list');
