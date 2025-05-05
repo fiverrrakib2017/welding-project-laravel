@@ -38,10 +38,27 @@
     <!-- Toast Message -->
     <link rel="stylesheet" href="{{ asset('Backend/dist/css/toastr.min.css') }}">
 
-
+    <style>
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background-image: url('{{ asset('Backend/images/Asset_two.png') }}');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.6;
+            z-index: -1;
+        }
+        </style>
 </head>
 
-<body>
+<body >
+
+
     <div class="container" id="formContainer">
         <div class="row">
             <div class="col-md-12 mt-5">

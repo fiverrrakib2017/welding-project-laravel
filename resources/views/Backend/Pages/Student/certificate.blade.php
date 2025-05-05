@@ -198,7 +198,7 @@
             position: absolute;
             font-size: 16px;
             font-weight: bold;
-            color: #dd1212;
+            color: #070707;
             padding: 6px 10px;
             /* border-radius: 5px; */
             font-family: 'Montserrat', sans-serif;
@@ -230,7 +230,7 @@
                         {{ strtoupper($course) }}@if (!$loop->last), @endif
                         @endforeach
                 </p>
-            <p class="italic">at our training center</p>
+            <p class="italic" style="font-family: 'Great Vibes', cursive; color:#334a7d; font-size:30px;">at our training center.</p>
 
             <div class="footer">
                 <div class="box">
