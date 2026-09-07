@@ -86,11 +86,7 @@ class studentController extends Controller
 
     }
 
-    public function course_list()
-    {
-        $courses = DB::table('courses')->get();
-        return view('Backend.Pages.Student.course', compact('courses'));
-    }
+   
     public function change_status($id)
     {
         $object = Student::find($id);

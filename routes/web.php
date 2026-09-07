@@ -3,9 +3,10 @@
 use App\Http\Controllers\Backend\Admin\AdminController;
 use App\Http\Controllers\Backend\Signature\signatureController;
 use App\Http\Controllers\Backend\Student\studentController;
+use App\Http\Controllers\Backend\Student\CourseController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
-/*Backend Route*/
+/*-------Backend Route--------*/
 Route::get('/admin/login', [AdminController::class, 'login_form'])->name('admin.login');
 Route::post('login-functionality', [AdminController::class, 'login_functionality'])->name('login.functionality');
 Route::group(['middleware' => 'admin'], function () {
@@ -14,7 +15,7 @@ Route::group(['middleware' => 'admin'], function () {
     Route::post('/admin/get_dashboard_data', [AdminController::class, 'get_data'])->name('admin.dashboard_get_all_data');
 
 
-    /* Student Management Route */
+    /*------ Student Management Route --------*/
     Route::prefix('student')->group(function () {
        Route::controller(studentController::class)->group(function () {
             Route::get('/list', 'index')->name('admin.student.index');
@@ -29,12 +30,22 @@ Route::group(['middleware' => 'admin'], function () {
             Route::post('/student_restore', 'student_restore')->name('admin.student.restore.delete');
 
             Route::post('/store', 'store')->name('admin.student.store');
-            Route::get('/course_list', 'course_list')->name('admin.student.course.list');
+       
             Route::get('/logs', 'student_logs')->name('admin.student.log.index');
             Route::get('/logs/get_all_data', 'student_log_get_all_data')->name('admin.student.log.get_all_data');
             Route::get('/student_recycle', 'student_recycle')->name('admin.student.recycle.index');
             Route::post('/change_status/{id}', 'change_status')->name('admin.student.change_status');
 
+        });
+    });
+    /*------- Student Course Management Route -----*/
+    Route::prefix('student/course')->group(function () {
+       Route::controller(CourseController::class)->group(function () {
+            Route::get('/course_list', 'course_list')->name('admin.student.course.list');
+            Route::post('/store', 'store')->name('admin.student.course.store');
+            Route::get('/courses/edit/{id}', 'edit')->name('admin.student.course.edit');
+            Route::post('/courses/update', 'update')->name('admin.student.course.update');
+            Route::post('/courses/delete', 'destroy')->name('admin.student.course.destroy');
         });
     });
     /* Student Management Route */

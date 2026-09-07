@@ -67,12 +67,12 @@
                                     use Carbon\Carbon;
 
                                     $months = [];
-                                    $year = 2025;
+                                    $year = 2026;
                                     $currentMonth = Carbon::now()->format('F Y');
 
                                     for ($m = 1; $m <= 12; $m++) {
                                         $date = Carbon::create($year, $m, 1);
-                                        if ($date->format('F Y') != $currentMonth) {
+                                        if ($date->format('F Y')) {
                                             $months[] = $date;
                                         }
                                     }
