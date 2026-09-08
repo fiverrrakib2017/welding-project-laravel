@@ -14,9 +14,7 @@
             margin: 0;
             padding: 20px;
             font-family: 'Montserrat', sans-serif;
-
             /* background-color: #efefef; */
-
         }
 
         .certificate {
@@ -28,7 +26,6 @@
             position: relative;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-
 
         .certificate-inner {
             background-image: linear-gradient(135deg, #ffffff, #fdf7e9);
@@ -115,6 +112,37 @@
             margin-top: 5px;
         }
 
+        /* ----- New CSS for the Date Section Start ----- */
+        .start-end-dates {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .date-col {
+            text-align: center;
+        }
+
+        .mini-label {
+            font-size: 11px;
+            font-weight: bold;
+            color: #1d1c61;
+            text-transform: uppercase;
+            margin-bottom: 3px;
+        }
+
+        .date-text {
+            font-size: 14px;
+            font-weight: bold;
+            color: #1d1c61;
+        }
+
+        .date-divider {
+            border-top: 2px solid #c19836;
+            margin: 8px 0;
+        }
+        /* ----- New CSS for the Date Section End ----- */
+
         .qr {
             width: 80px;
             height: 80px;
@@ -182,6 +210,7 @@
                 font-family: 'Montserrat', sans-serif;
                 /* z-index: 10; */
             }
+
             .logo img {
                 margin-top: 15px;
             }
@@ -204,6 +233,38 @@
             font-family: 'Montserrat', sans-serif;
             /* z-index: 10; */
         }
+
+
+        /* Signature & Seal Container */
+        .signature-container {
+            position: relative;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            min-height: 60px;
+        }
+
+        .signature-img {
+            height: 45px;
+            width: auto;
+            object-fit: contain;
+            position: relative;
+            z-index: 1;
+        }
+
+        .seal-img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85px;
+            height: 85px;
+            opacity: 0.85; 
+            z-index: 2;
+            pointer-events: none;
+            mix-blend-mode: multiply; 
+        }
     </style>
 </head>
 
@@ -224,38 +285,57 @@
             <h2 class="name"> {{ strtoupper($student->name) }}</h2>
             <p class="passport">S/O:{{ strtoupper($student->father_name) }}<br>PASSPORT:
                 {{ strtoupper($student->nid_or_passport ?? 'N/A') }}</p>
-            <p class="details">HAS SUCCESSFULLY COMPLETED {{ strtoupper($student->course_duration ?? 'N/A') }} MONTHS
-                COURSE ON<br>
-                {{ $student->course_end ? strtoupper(date('d M Y', strtotime($student->course_end))) : 'N/A' }} -  @foreach (explode(',', $student->course) as $course)
+            <p class="details">HAS SUCCESSFULLY COMPLETED COURSE ON<br>
+                {{-- {{ $student->course_end ? strtoupper(date('d M Y', strtotime($student->course_end))) : 'N/A' }}--}} -  @foreach (explode(',', $student->course) as $course) 
                         {{ strtoupper($course) }}@if (!$loop->last), @endif
                         @endforeach
                 </p>
             <p class="italic" style="font-family: 'Great Vibes', cursive; color:#334a7d; font-size:30px;">at our training center.</p>
 
             <div class="footer">
+                
+                <!-- Updated Date Box Section based on image -->
                 <div class="box">
-                    <div id="current-date">25 Jun 2025</div>
-                    <div class="label">DATE</div>
+                    <div class="start-end-dates">
+                        <div class="date-col">
+                            <div class="mini-label">START DATE</div>
+                            <div class="date-text">{{ $student->course_start ? strtoupper(date('d M Y', strtotime($student->course_start))) : 'N/A' }}</div>
+                        </div>
+                        <div class="date-col">
+                            <div class="mini-label">END DATE</div>
+                            <div class="date-text">{{ $student->course_end ? strtoupper(date('d M Y', strtotime($student->course_end))) : 'N/A' }}</div>
+                        </div>
+                    </div>
+                    <div class="date-divider"></div>
+                    <div class="date-col">
+                        <div class="mini-label">DATE</div>
+                        <div class="date-text" id="current-date"></div>
+                    </div>
                 </div>
 
                 <div class="qr" id="qr"></div>
 
                 <div class="box">
-                    @php
-                        if(!empty($student->user_id)){
-                            $signature = \App\Models\Signature::where('user_id',$student->user_id)->where('status','1')->first();
-                        }
-                    @endphp
-                @if(!empty($signature))
-                    <img src="{{ asset('Backend/uploads/photos/'.$signature->name) }}" alt="Signature" class="signature-img">
-                @else
-                    <img src="https://th.bing.com/th/id/R.1586d36732fcb856523df8789b146070?rik=%2bEbvkKcvSuyOiw&riu=http%3a%2f%2fclipart-library.com%2fimages%2fBTarnpzpc.png&ehk=PxwN8kkbSi%2fIx4%2buzMLpDi%2bZX5YH59a1GTuIyrZ8ZoE%3d&risl=&pid=ImgRaw&r=0"
-                alt="Signature" class="signature-img">
-                @endif
+                    <div class="signature-container">
+                        <!-- Seal Image -->
+                        <img src="{{ asset('Backend/images/FinalSeal.png') }}" alt="Seal" class="seal-img">
+
+                        <!-- Signature Image -->
+                        @php
+                            if(!empty($student->user_id)){
+                                $signature = \App\Models\Signature::where('user_id',$student->user_id)->where('status','1')->first();
+                            }
+                        @endphp
+                        @if(!empty($signature))
+                            <img src="{{ asset('Backend/uploads/photos/'.$signature->name) }}" alt="Signature" class="signature-img">
+                        @else
+                            <img src="https://th.bing.com/th/id/R.1586d36732fcb856523df8789b146070?rik=%2bEbvkKcvSuyOiw&riu=http%3a%2f%2fclipart-library.com%2fimages%2fBTarnpzpc.png&ehk=PxwN8kkbSi%2fIx4%2buzMLpDi%2bZX5YH59a1GTuIyrZ8ZoE%3d&risl=&pid=ImgRaw&r=0"
+                        alt="Signature" class="signature-img">
+                        @endif
+                    </div>
                     <div class="label">SIGNATURE</div>
                 </div>
             </div>
-
 
         </div>
         <div class="extra no-print">
@@ -263,9 +343,10 @@
             <button onclick="downloadPDF()">Save</button>
         </div>
     </div>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+    
     <script type="text/javascript">
         var qrData = @json(route('admin.student.certificate', $student->id));
         var qrCodeContainer = document.getElementById('qr');
