@@ -93,7 +93,7 @@ Route::get('/optimize', function () {
 });
 
 Route::get('/migrate-fresh-seed', function () {
-    Artisan::call('migrate:fresh --seed');
+    Artisan::call('migrate');
     //Artisan::call('migrate');
-    return 'Migration and Seeding Completed';
+    return 'Migration Completed';
 });
