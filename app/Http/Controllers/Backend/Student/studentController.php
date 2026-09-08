@@ -174,6 +174,8 @@ class studentController extends Controller
         $student->course = implode(',', $request->courses);
         $student->course_duration = $request->course_duration ?? '';
         $student->course_end = $request->course_end ?? '';
+        $student->course_start_date = $request->course_start_date ?? '';
+        $student->course_end_date = $request->course_end_date ?? '';
         $student->update();
         /*Student Log*/
         $object = new Student_log();

@@ -1,11 +1,10 @@
-
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>StudentCertificate</title>
+    <title>Certificate</title>
     <!-- Google Font: Montserrat -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
@@ -15,9 +14,7 @@
             margin: 0;
             padding: 20px;
             font-family: 'Montserrat', sans-serif;
-
             /* background-color: #efefef; */
-
         }
 
         .certificate {
@@ -29,7 +26,6 @@
             position: relative;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-
 
         .certificate-inner {
             background-image: linear-gradient(135deg, #ffffff, #fdf7e9);
@@ -116,8 +112,40 @@
             margin-top: 5px;
         }
 
+        /* ----- New CSS for the Date Section Start ----- */
+        .start-end-dates {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .date-col {
+            text-align: center;
+        }
+
+        .mini-label {
+            font-size: 11px;
+            font-weight: bold;
+            color: #1d1c61;
+            text-transform: uppercase;
+            margin-bottom: 3px;
+        }
+
+        .date-text {
+            font-size: 14px;
+            font-weight: bold;
+            color: #1d1c61;
+            text-transform: uppercase;
+        }
+
+        .date-divider {
+            border-top: 2px solid #c19836;
+            margin: 8px 0;
+        }
+        /* ----- New CSS for the Date Section End ----- */
+
         .qr {
-            width: 80px;
+            width: 100px;
             height: 80px;
             background-color: #ccc;
             display: inline-block;
@@ -174,11 +202,16 @@
             }
 
             .reg-no {
-                position: static;
-                display: block;
-                text-align: center;
-                margin-bottom: 10px;
+                position: absolute;
+                font-size: 16px;
+                font-weight: bold;
+                color: #dd1212;
+                padding: 6px 10px;
+                /* border-radius: 5px; */
+                font-family: 'Montserrat', sans-serif;
+                /* z-index: 10; */
             }
+
             .logo img {
                 margin-top: 15px;
             }
@@ -188,24 +221,42 @@
             .no-print {
                 display: none;
             }
-            #formContainer {
-                display: none;
-            }
         }
 
 
         .reg-no {
             position: absolute;
-            /* top: 15px;
-      left: 30px; */
             font-size: 16px;
             font-weight: bold;
             color: #070707;
             padding: 6px 10px;
-            border-radius: 5px;
+            /* border-radius: 5px; */
             font-family: 'Montserrat', sans-serif;
             /* z-index: 10; */
         }
+
+
+        /* Signature & Seal Container */
+.signature-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px; 
+    width: 100%;
+    min-height: 60px;
+}
+
+.signature-img {
+    height: 45px;
+    width: auto;
+    object-fit: contain;
+}
+
+.seal-img {
+    height: 75px;
+    width: auto;
+    object-fit: contain;
+}
     </style>
 </head>
 
@@ -213,7 +264,7 @@
 
     <div class="certificate">
         <div class="reg-no">
-            <strong>REGISTRATION NO:</strong><br> {{ $student->reg_no ?? 'N/A' }}
+            <strong>REGISTRATION NO:</strong><br>  {{ $student->reg_no ?? 'N/A' }}
         </div>
         <div class="certificate-inner">
             <div class="logo">
@@ -226,39 +277,58 @@
             <h2 class="name"> {{ strtoupper($student->name) }}</h2>
             <p class="passport">S/O:{{ strtoupper($student->father_name) }}<br>PASSPORT:
                 {{ strtoupper($student->nid_or_passport ?? 'N/A') }}</p>
-            <p class="details">HAS SUCCESSFULLY COMPLETED {{ strtoupper($student->course_duration ?? 'N/A') }} MONTHS
+           <p class="details">HAS SUCCESSFULLY COMPLETED {{ strtoupper($student->course_duration ?? 'N/A') }} MONTHS
                 COURSE ON<br>
                 {{ $student->course_end ? strtoupper(date('d M Y', strtotime($student->course_end))) : 'N/A' }} -  @foreach (explode(',', $student->course) as $course)
                         {{ strtoupper($course) }}@if (!$loop->last), @endif
                         @endforeach
                 </p>
-                <p class="italic" style="font-family: 'Great Vibes', cursive; color:#334a7d; font-size:30px;">at our training center.</p>
+            <p class="italic" style="font-family: 'Great Vibes', cursive; color:#334a7d; font-size:30px;">at our training center.</p>
 
             <div class="footer">
+                
+                <!-- Updated Date Box Section based on image -->
                 <div class="box">
-                    <div id="current-date">25 Jun 2025</div>
-                    <div class="label">DATE</div>
+                    <div class="start-end-dates">
+                        <div class="date-col">
+                            <div class="mini-label">START DATE</div>
+                            <div class="date-text">{{ $student->course_start_date ? strtoupper(date('d M Y', strtotime($student->course_start_date))) : 'N/A' }}</div>
+                        </div>
+                        <div class="date-col">
+                            <div class="mini-label">END DATE</div>
+                            <div class="date-text">{{ $student->course_end_date ? strtoupper(date('d M Y', strtotime($student->course_end_date))) : 'N/A' }}</div>
+                        </div>
+                    </div>
+                    <div class="date-divider"></div>
+                    <div class="date-col">
+                        <div class="mini-label">PRINT DATE</div>
+                        <div class="date-text" id="current-date"></div>
+                    </div>
                 </div>
 
                 <div class="qr" id="qr"></div>
 
                 <div class="box">
-                    @php
-                        if(!empty($student->user_id)){
-                            $signature = \App\Models\Signature::where('user_id',$student->user_id)->where('status','1')->first();
-                        }
-                    @endphp
-                    @if(!empty($signature))
-                        <img src="{{ asset('Backend/uploads/photos/'.$signature->name) }}" alt="Signature" class="signature-img">
-                    @else
-                    <img src="https://th.bing.com/th/id/R.1586d36732fcb856523df8789b146070?rik=%2bEbvkKcvSuyOiw&riu=http%3a%2f%2fclipart-library.com%2fimages%2fBTarnpzpc.png&ehk=PxwN8kkbSi%2fIx4%2buzMLpDi%2bZX5YH59a1GTuIyrZ8ZoE%3d&risl=&pid=ImgRaw&r=0"
-                    alt="Signature" class="signature-img">
-                    @endif
+                    <div class="signature-container">
+                        <!-- Seal Image -->
+                        <img src="{{ asset('Backend/images/FinalSeal.png') }}" alt="Seal" class="seal-img">
 
+                        <!-- Signature Image -->
+                        @php
+                            if(!empty($student->user_id)){
+                                $signature = \App\Models\Signature::where('user_id',$student->user_id)->where('status','1')->first();
+                            }
+                        @endphp
+                        @if(!empty($signature))
+                            <img src="{{ asset('Backend/uploads/photos/'.$signature->name) }}" alt="Signature" class="signature-img">
+                        @else
+                            <img src="https://th.bing.com/th/id/R.1586d36732fcb856523df8789b146070?rik=%2bEbvkKcvSuyOiw&riu=http%3a%2f%2fclipart-library.com%2fimages%2fBTarnpzpc.png&ehk=PxwN8kkbSi%2fIx4%2buzMLpDi%2bZX5YH59a1GTuIyrZ8ZoE%3d&risl=&pid=ImgRaw&r=0"
+                        alt="Signature" class="signature-img">
+                        @endif
+                    </div>
                     <div class="label">SIGNATURE</div>
                 </div>
             </div>
-
 
         </div>
         <div class="extra no-print">
@@ -266,12 +336,12 @@
             <button onclick="downloadPDF()">Save</button>
         </div>
     </div>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+    
     <script type="text/javascript">
         var qrData = @json(route('admin.student.certificate', $student->id));
-
         var qrCodeContainer = document.getElementById('qr');
         QRCode.toDataURL(qrData, {
             width: 200
