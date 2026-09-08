@@ -44,14 +44,35 @@
                                         @endforeach
                                         </td>
                                         <td>
-                                            <a href="{{ route('admin.student.edit', $student->id) }}" class="btn btn-success btn-sm mr-3 edit-btn"><i class="fa fa-edit"></i></a>
-                                            <button type="button" data-id="{{ $student->id }}" class="btn btn-danger btn-sm mr-3 delete-btn"><i class="fas fa-trash"></i></button>
+                                            <!-- Edit Button -->
+                                            <a href="{{ route('admin.student.edit', $student->id) }}" class="btn btn-success btn-sm mr-1 edit-btn" title="Edit">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+
+                                            <!-- Delete Button -->
+                                            <button type="button" data-id="{{ $student->id }}" class="btn btn-danger btn-sm mr-1 delete-btn" title="Delete">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+
+                                            <!-- Completion / Certificate Logic -->
                                             @if($student->is_completed == 1)
-                                            <a href="{{ route('admin.student.certificate', $student->id) }}"  class="btn btn-primary btn-sm mr-3 certificate-btn">Certificate</a>
+                                                @if(!empty($student->course_start_date) && !empty($student->course_end_date))
+                                                    <a href="{{ route('admin.student.certificate', $student->id) }}" class="btn btn-primary btn-sm mr-1 certificate-btn" title="Certificate">
+                                                        Certificate
+                                                    </a>
+                                                @else
+                                                    <span class="badge badge-warning mr-1" title="Dates missing for certificate">Dates Missing</span>
+                                                @endif
                                             @else
-                                                <button class=" btn btn-info btn-sm mr-3 course_completed_btn" data-id="{{ $student->id }}"> <i class="fas fa-check-circle"></i> </button>
+                                                <button type="button" class="btn btn-info btn-sm mr-1 course_completed_btn" data-id="{{ $student->id }}" title="Mark as Completed">
+                                                    <i class="fas fa-check-circle"></i>
+                                                </button>
                                             @endif
-                                            <a href="{{ route('admin.student.view', $student->id) }}" class="btn btn-success text-white btn-sm mr-3 " data-id="{{ $student->id }}"> <i class="fas fa-eye"></i> </a>
+
+                                            <!-- View Button -->
+                                            <a href="{{ route('admin.student.view', $student->id) }}" class="btn btn-success text-white btn-sm mr-1" title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
                                         </td>
                                     </tr>
                                 @endforeach

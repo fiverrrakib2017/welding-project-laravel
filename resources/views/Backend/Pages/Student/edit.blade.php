@@ -64,28 +64,18 @@
                                     @endfor
                                 </select>
                             </div>
-                            @php
-                                use Carbon\Carbon;
-
-                                $months = [];
-                                $year = 2025;
-                                $currentMonth = Carbon::now()->format('F Y');
-
-                                for ($m = 1; $m <= 12; $m++) {
-                                    $date = Carbon::create($year, $m, 1);
-                                    if ($date->format('F Y') != $currentMonth) {
-                                        $months[] = $date;
-                                    }
-                                }
-                            @endphp
-
+                            <!-- Course Start Date -->
                             <div class="col-lg-6 mb-3">
-                                <label class="form-label">End Course</label>
-                                <select name="course_end" class="form-control" required>
-                                    @foreach ($months as $month)
-                                        <option value="{{ $month->format('Y-m') }}" @if($student->course_end == $month->format('Y-m')) selected @endif>{{ $month->format('F Y') }}</option>
-                                    @endforeach
-                                </select>
+                                <label class="form-label">Course Start Date</label>
+                                <input type="date" name="course_start_date" class="form-control" 
+                                    value="{{ old('course_start_date', $student->course_start_date ?? '') }}" required>
+                            </div>
+
+                            <!-- Course End Date -->
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">Course End Date</label>
+                                <input type="date" name="course_end_date" class="form-control" 
+                                    value="{{ old('course_end_date', $student->course_end_date ?? '') }}" required>
                             </div>
                         </div>
                     </fieldset>

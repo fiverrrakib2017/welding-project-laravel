@@ -299,11 +299,11 @@
                     <div class="start-end-dates">
                         <div class="date-col">
                             <div class="mini-label">START DATE</div>
-                            <div class="date-text">{{ $student->course_start ? strtoupper(date('d M Y', strtotime($student->course_start))) : 'N/A' }}</div>
+                            <div class="date-text">{{ $student->course_start_date ? strtoupper(date('d M Y', strtotime($student->course_start_date))) : 'N/A' }}</div>
                         </div>
                         <div class="date-col">
                             <div class="mini-label">END DATE</div>
-                            <div class="date-text">{{ $student->course_end ? strtoupper(date('d M Y', strtotime($student->course_end))) : 'N/A' }}</div>
+                            <div class="date-text">{{ $student->course_end_date ? strtoupper(date('d M Y', strtotime($student->course_end_date))) : 'N/A' }}</div>
                         </div>
                     </div>
                     <div class="date-divider"></div>
