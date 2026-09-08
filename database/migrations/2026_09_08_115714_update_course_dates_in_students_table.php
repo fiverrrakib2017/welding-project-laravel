@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('students', function (Blueprint $table) {
-            $table->dropColumn('course_end');
+            // $table->dropColumn('course_end');
             $table->date('course_start_date')->nullable()->after('course_duration');
             $table->date('course_end_date')->nullable()->after('course_start_date');
         });

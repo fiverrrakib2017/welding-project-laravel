@@ -135,6 +135,7 @@
             font-size: 14px;
             font-weight: bold;
             color: #1d1c61;
+            text-transform: uppercase;
         }
 
         .date-divider {
@@ -144,7 +145,7 @@
         /* ----- New CSS for the Date Section End ----- */
 
         .qr {
-            width: 80px;
+            width: 100px;
             height: 80px;
             background-color: #ccc;
             display: inline-block;
@@ -236,35 +237,26 @@
 
 
         /* Signature & Seal Container */
-        .signature-container {
-            position: relative;
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            min-height: 60px;
-        }
+.signature-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px; 
+    width: 100%;
+    min-height: 60px;
+}
 
-        .signature-img {
-            height: 45px;
-            width: auto;
-            object-fit: contain;
-            position: relative;
-            z-index: 1;
-        }
+.signature-img {
+    height: 45px;
+    width: auto;
+    object-fit: contain;
+}
 
-        .seal-img {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 85px;
-            height: 85px;
-            opacity: 0.85; 
-            z-index: 2;
-            pointer-events: none;
-            mix-blend-mode: multiply; 
-        }
+.seal-img {
+    height: 75px;
+    width: auto;
+    object-fit: contain;
+}
     </style>
 </head>
 
@@ -285,8 +277,9 @@
             <h2 class="name"> {{ strtoupper($student->name) }}</h2>
             <p class="passport">S/O:{{ strtoupper($student->father_name) }}<br>PASSPORT:
                 {{ strtoupper($student->nid_or_passport ?? 'N/A') }}</p>
-            <p class="details">HAS SUCCESSFULLY COMPLETED COURSE ON<br>
-                {{-- {{ $student->course_end ? strtoupper(date('d M Y', strtotime($student->course_end))) : 'N/A' }}--}} -  @foreach (explode(',', $student->course) as $course) 
+           <p class="details">HAS SUCCESSFULLY COMPLETED {{ strtoupper($student->course_duration ?? 'N/A') }} MONTHS
+                COURSE ON<br>
+                {{ $student->course_end ? strtoupper(date('d M Y', strtotime($student->course_end))) : 'N/A' }} -  @foreach (explode(',', $student->course) as $course)
                         {{ strtoupper($course) }}@if (!$loop->last), @endif
                         @endforeach
                 </p>
@@ -308,7 +301,7 @@
                     </div>
                     <div class="date-divider"></div>
                     <div class="date-col">
-                        <div class="mini-label">DATE</div>
+                        <div class="mini-label">PRINT DATE</div>
                         <div class="date-text" id="current-date"></div>
                     </div>
                 </div>

@@ -64,7 +64,27 @@
                                     @endfor
                                 </select>
                             </div>
-                            <!-- Course Start Date -->
+                            @php
+                                use Carbon\Carbon;
+                                
+                                $months = [];
+                                $year = date("Y");
+
+                                for ($m = 1; $m <= 12; $m++) {
+                                    $months[] = Carbon::create($year, $m, 1);
+                                }
+                            @endphp
+
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">End Course</label>
+                                <select name="course_end" class="form-control" required>
+                                    @foreach ($months as $month)
+                                        <option value="{{ $month->format('Y-m') }}" @selected($student->course_end == $month->format('Y-m'))>
+                                            {{ $month->format('F Y') }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
                             <div class="col-lg-6 mb-3">
                                 <label class="form-label">Course Start Date</label>
                                 <input type="date" name="course_start_date" class="form-control" 
@@ -77,6 +97,7 @@
                                 <input type="date" name="course_end_date" class="form-control" 
                                     value="{{ old('course_end_date', $student->course_end_date ?? '') }}" required>
                             </div>
+                           
                         </div>
                     </fieldset>
             </div>
