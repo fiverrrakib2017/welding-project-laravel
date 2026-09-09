@@ -59,7 +59,7 @@
                                     <select name="course_duration" class="form-control" required>
                                         <option value="">Select Course</option>
                                         @for ($i = 0; $i < 10; $i++)
-                                            <option value="{{ $i }}">{{ $i }} Month</option>
+                                            <option value="{{ sprintf('%02d', $i) }}">{{ sprintf('%02d', $i) }} Month</option>
                                         @endfor
                                     </select>
                                 </div>
@@ -75,24 +75,24 @@
                                     }
                                 @endphp
 
-                                <div class="col-lg-6 mb-3">
+                                {{-- <div class="col-lg-6 mb-3">
                                     <label class="form-label">End Course</label>
                                     <select name="course_end" class="form-control" required>
                                         @foreach ($months as $month)
                                             <option value="{{ $month->format('Y-m') }}">{{ $month->format('F Y') }}</option>
                                         @endforeach
                                     </select>
-                                </div>
+                                </div> --}}
                                 <div class="col-lg-6 mb-3">
                                     <label class="form-label">Course Start Date</label>
-                                    <input type="date" name="course_start_date" class="form-control" 
+                                    <input type="date" name="course_start_date" class="form-control"
                                         value="{{ old('course_start_date', $student->course_start_date ?? '') }}" required>
                                 </div>
 
                                 <!-- Course End Date -->
                                 <div class="col-lg-6 mb-3">
                                     <label class="form-label">Course End Date</label>
-                                    <input type="date" name="course_end_date" class="form-control" 
+                                    <input type="date" name="course_end_date" class="form-control"
                                         value="{{ old('course_end_date', $student->course_end_date ?? '') }}" required>
                                 </div>
                                 <div class="col-lg-6 mb-3 d-none">

@@ -48,7 +48,17 @@
                         <strong>Course Duration:</strong> {{ $student->course_duration }} Month
                     </div>
                     <div class="col-md-6">
-                        <strong>Course End:</strong> {{ $student->course_end }}
+                        <strong>Course End:</strong> {{ $student->course_end ? date('F Y',strtotime($student->course_end)): 'N/A' }}
+                    </div>
+                </div>
+               <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Start Date:</strong>
+                        {{ $student->course_start_date ? date('d F Y', strtotime($student->course_start_date)) : 'N/A' }}
+                    </div>
+                    <div class="col-md-6">
+                        <strong>End Date:</strong>
+                        {{ $student->course_end_date ? date('d F Y', strtotime($student->course_end_date)) : 'N/A' }}
                     </div>
                 </div>
 

@@ -241,7 +241,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 15px; 
+    gap: 15px;
     width: 100%;
     min-height: 60px;
 }
@@ -277,16 +277,16 @@
             <h2 class="name"> {{ strtoupper($student->name) }}</h2>
             <p class="passport">S/O:{{ strtoupper($student->father_name) }}<br>PASSPORT:
                 {{ strtoupper($student->nid_or_passport ?? 'N/A') }}</p>
-           <p class="details">HAS SUCCESSFULLY COMPLETED {{ strtoupper($student->course_duration ?? 'N/A') }} MONTHS
-                COURSE ON<br>
-                {{ $student->course_end ? strtoupper(date('d M Y', strtotime($student->course_end))) : 'N/A' }} -  @foreach (explode(',', $student->course) as $course)
+           <p class="details">HAS SUCCESSFULLY COMPLETED A {{ strtoupper($student->course_duration ?? 'N/A') }} MONTHS
+                COURSE IN<br>
+                  @foreach (explode(',', $student->course) as $course)
                         {{ strtoupper($course) }}@if (!$loop->last), @endif
                         @endforeach
                 </p>
             <p class="italic" style="font-family: 'Great Vibes', cursive; color:#334a7d; font-size:30px;">at our training center.</p>
 
             <div class="footer">
-                
+
                 <!-- Updated Date Box Section based on image -->
                 <div class="box">
                     <div class="start-end-dates">
@@ -336,10 +336,10 @@
             <button onclick="downloadPDF()">Save</button>
         </div>
     </div>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-    
+
     <script type="text/javascript">
         var qrData = @json(route('admin.student.certificate', $student->id));
         var qrCodeContainer = document.getElementById('qr');

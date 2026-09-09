@@ -30,7 +30,7 @@ Route::group(['middleware' => 'admin'], function () {
             Route::post('/student_restore', 'student_restore')->name('admin.student.restore.delete');
 
             Route::post('/store', 'store')->name('admin.student.store');
-       
+
             Route::get('/logs', 'student_logs')->name('admin.student.log.index');
             Route::get('/logs/get_all_data', 'student_log_get_all_data')->name('admin.student.log.get_all_data');
             Route::get('/student_recycle', 'student_recycle')->name('admin.student.recycle.index');
@@ -96,4 +96,8 @@ Route::get('/migrate', function () {
     Artisan::call('migrate');
     //Artisan::call('migrate');
     return 'Migration Completed';
+});
+Route::get('/rollback', function () {
+    Artisan::call('migrate:rollback');
+    return 'Rollback Completed';
 });

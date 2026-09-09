@@ -41,14 +41,15 @@
                                 <input name="present_address" value="{{ $student->present_address }}" class="form-control" placeholder="Enter Present Address">
                             </div>
                             @php
-                                $selectedCourses = explode(',', $student->course);
+                                $selectedCourses = !empty($student->course) ? array_map('trim', explode(',', $student->course)) : [];
                             @endphp
+
                             <div class="col-lg-6 mb-3">
                                 <label class="form-label">Course</label>
                                 <select name="courses[]" class="form-control" multiple required>
                                     @foreach ($courses as $course)
                                         <option value="{{ $course->name }}"
-                                            {{ in_array($course->name, $selectedCourses) ? 'selected' : '' }}>
+                                            {{ in_array($course->name, old('courses', $selectedCourses)) ? 'selected' : '' }}>
                                             {{ $course->name }}
                                         </option>
                                     @endforeach
@@ -60,13 +61,18 @@
                                 <select name="course_duration" class="form-control" required>
                                     <option value="">Select Course</option>
                                     @for ($i = 0; $i < 10; $i++)
-                                        <option value="{{ $i }}" @if($student->course_duration == $i) selected @endif>{{ $i }} Month</option>
+                                        @for ($i = 0; $i < 10; $i++)
+                                            @php $formatted = sprintf('%02d', $i); @endphp
+                                            <option value="{{ $formatted }}" {{ $student->course_duration == $i ? 'selected' : '' }}>
+                                                {{ $formatted }} Month
+                                            </option>
+                                        @endfor
                                     @endfor
                                 </select>
                             </div>
                             @php
                                 use Carbon\Carbon;
-                                
+
                                 $months = [];
                                 $year = date("Y");
 
@@ -75,7 +81,7 @@
                                 }
                             @endphp
 
-                            <div class="col-lg-6 mb-3">
+                            {{-- <div class="col-lg-6 mb-3">
                                 <label class="form-label">End Course</label>
                                 <select name="course_end" class="form-control" required>
                                     @foreach ($months as $month)
@@ -84,20 +90,20 @@
                                         </option>
                                     @endforeach
                                 </select>
-                            </div>
+                            </div> --}}
                             <div class="col-lg-6 mb-3">
                                 <label class="form-label">Course Start Date</label>
-                                <input type="date" name="course_start_date" class="form-control" 
+                                <input type="date" name="course_start_date" class="form-control"
                                     value="{{ old('course_start_date', $student->course_start_date ?? '') }}" required>
                             </div>
 
                             <!-- Course End Date -->
                             <div class="col-lg-6 mb-3">
                                 <label class="form-label">Course End Date</label>
-                                <input type="date" name="course_end_date" class="form-control" 
+                                <input type="date" name="course_end_date" class="form-control"
                                     value="{{ old('course_end_date', $student->course_end_date ?? '') }}" required>
                             </div>
-                           
+
                         </div>
                     </fieldset>
             </div>

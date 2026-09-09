@@ -86,7 +86,7 @@ class studentController extends Controller
 
     }
 
-   
+
     public function change_status($id)
     {
         $object = Student::find($id);
@@ -117,7 +117,7 @@ class studentController extends Controller
             $student->course = implode(',', $request->courses);
 
             $student->course_duration = $request->course_duration ?? '';
-            $student->course_end = $request->course_end ?? '';
+            // $student->course_end = $request->course_end ?? '';
             $student->course_start_date = $request->course_start_date ?? '';
             $student->course_end_date = $request->course_end_date ?? '';
             $student->is_delete = '0';
@@ -173,7 +173,7 @@ class studentController extends Controller
         $student->present_address = $request->present_address;
         $student->course = implode(',', $request->courses);
         $student->course_duration = $request->course_duration ?? '';
-        $student->course_end = $request->course_end ?? '';
+        // $student->course_end = $request->course_end ?? '';
         $student->course_start_date = $request->course_start_date ?? '';
         $student->course_end_date = $request->course_end_date ?? '';
         $student->update();
